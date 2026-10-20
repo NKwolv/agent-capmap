@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "linear": {
+      "url": "https://mcp.linear.app/sse"
+    },
+    "internal-api": {
+      "url": "https://mcp.internal.example.com/mcp",
+      "headers": {
+        "Authorization": "Bearer fake-bearer-value-123456"
+      }
+    },
+    "openai-tools": {
+      "command": "uvx",
+      "args": ["openai-mcp", "--api-key=sk-FAKEfakeFAKEfake1234567890"]
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "${env:BRAVE_API_KEY}"
+      }
+    }
+  }
+}

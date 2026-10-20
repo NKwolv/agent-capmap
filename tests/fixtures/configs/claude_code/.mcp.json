@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "sentry": {
+      "type": "http",
+      "url": "https://mcp.sentry.dev/mcp"
+    },
+    "github-docker": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "GITHUB_PERSONAL_ACCESS_TOKEN=ghp_FAKEfake0000000000000000000000000002",
+        "ghcr.io/github/github-mcp-server"
+      ]
+    },
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "slack-mcp"],
+      "env": {
+        "SLACK_BOT_TOKEN": "xoxb-0000-FAKE-slacktoken"
+      },
+      "disabled": true
+    },
+    "api": {
+      "type": "sse",
+      "url": "${API_BASE_URL:-https://api.example.com}/sse",
+      "headers": {
+        "X-API-Key": "${API_KEY}"
+      }
+    }
+  }
+}

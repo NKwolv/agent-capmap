@@ -1,0 +1,32 @@
+{
+  // Secrets are prompted for, never stored in the file.
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "gh-pat",
+      "description": "GitHub personal access token // not a comment",
+      "password": true
+    }
+  ],
+  "servers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${input:gh-pat}"
+      }
+    },
+    /* Browser automation, runs locally */
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+    },
+    "slack": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${workspaceFolder}/tools/slack.js"],
+      "envFile": "${workspaceFolder}/.env"
+    },
+  },
+}

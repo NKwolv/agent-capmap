@@ -1,0 +1,28 @@
+{
+  "editor.fontSize": 14,
+  "jupyter.kernels": {
+    "servers": {
+      "aws": "this is not an MCP server"
+    }
+  },
+  "mcp": {
+    "servers": {
+      "aws": {
+        "command": "uvx",
+        "args": ["awslabs.aws-api-mcp-server@latest"],
+        "env": {
+          "AWS_ACCESS_KEY_ID": "AKIAFAKEFAKEFAKE1234",
+          "AWS_SECRET_ACCESS_KEY": "wJalrXUtnFEMIK7MDENGbPxRfiCYFAKEKEY99",
+          "AWS_REGION": "us-east-1"
+        }
+      },
+      "search": {
+        "type": "http",
+        "url": "https://mcp.example.com/mcp?api_key=FAKEQUERYKEY123456&region=eu",
+        "headers": {
+          "X-API-Key": "plain-api-key-value-777"
+        }
+      }
+    }
+  }
+}
