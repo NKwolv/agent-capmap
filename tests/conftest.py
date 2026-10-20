@@ -32,6 +32,14 @@ def _block_network(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 @pytest.fixture(autouse=True)
+def _isolate_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """Keep tests off the user's classification cache and model settings."""
+    monkeypatch.setenv("AGENTCAPMAP_CACHE_DIR", str(tmp_path / "classification-cache"))
+    monkeypatch.delenv("AGENTCAPMAP_MODEL", raising=False)
+    monkeypatch.delenv("AGENTCAPMAP_EFFORT", raising=False)
+
+
+@pytest.fixture(autouse=True)
 def _reset_known_secrets() -> Iterator[None]:
     known_secrets.clear()
     yield

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NKwolv/agent-capmap/schemas/tool-tags.schema.json",
+  "title": "agent-capmap tool classification",
+  "description": "Classifier output for one MCP tool. taxonomy_version 1.",
+  "x-taxonomy-version": "1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tool", "tags", "confidence", "evidence", "suspicious_description"],
+  "properties": {
+    "tool": {
+      "type": "string",
+      "description": "Exact tool name being classified."
+    },
+    "tags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["data_access", "untrusted_input", "egress", "mutation", "execution", "privilege"],
+      "properties": {
+        "data_access": { "type": "string", "enum": ["none", "private_read", "secrets_read"] },
+        "untrusted_input": { "type": "boolean" },
+        "egress": { "type": "string", "enum": ["none", "internal", "external"] },
+        "mutation": { "type": "string", "enum": ["none", "reversible_write", "destructive"] },
+        "execution": { "type": "string", "enum": ["none", "sandboxed", "host"] },
+        "privilege": { "type": "string", "enum": ["none", "identity_admin"] }
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Overall confidence in the tags, 0 to 1."
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Per-axis phrase from the tool's description or input schema justifying the tag. Required for every non-default tag.",
+      "properties": {
+        "data_access": { "type": "string" },
+        "untrusted_input": { "type": "string" },
+        "egress": { "type": "string" },
+        "mutation": { "type": "string" },
+        "execution": { "type": "string" },
+        "privilege": { "type": "string" }
+      }
+    },
+    "suspicious_description": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flag", "reason"],
+      "properties": {
+        "flag": { "type": "boolean" },
+        "reason": { "type": "string" }
+      }
+    }
+  }
+}

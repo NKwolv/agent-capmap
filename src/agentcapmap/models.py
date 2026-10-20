@@ -7,7 +7,7 @@ server live in `LaunchSpec`, which is excluded from serialization and from repr.
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -61,12 +61,53 @@ class LaunchSpec(BaseModel):
     __str__ = __repr__
 
 
+class ToolTags(BaseModel):
+    """The six taxonomy axes (see schemas/tool-tags.schema.json)."""
+
+    data_access: Literal["none", "private_read", "secrets_read"]
+    untrusted_input: bool
+    egress: Literal["none", "internal", "external"]
+    mutation: Literal["none", "reversible_write", "destructive"]
+    execution: Literal["none", "sandboxed", "host"]
+    privilege: Literal["none", "identity_admin"]
+
+
+class SuspiciousDescription(BaseModel):
+    flag: bool
+    reason: str = ""
+
+
+class ClassificationStatus(StrEnum):
+    CLASSIFIED = "classified"
+    UNCLASSIFIED = "unclassified"
+
+
+class ToolClassification(BaseModel):
+    status: ClassificationStatus
+    # Set only when status is "classified".
+    tags: ToolTags | None = None
+    confidence: float | None = None
+    # Per-axis phrase justifying each non-default tag.
+    evidence: dict[str, str] = Field(default_factory=dict)
+    # Axes whose evidence phrase could not be found in the tool definition text.
+    unverified_evidence: list[str] = Field(default_factory=list)
+    suspicious_description: SuspiciousDescription | None = None
+    # Why the tool is unclassified.
+    error: str | None = None
+    # Provenance: results are only comparable under the same versions and model.
+    model: str | None = None
+    taxonomy_version: str
+    prompt_version: str
+    from_cache: bool = False
+
+
 class ToolDefinition(BaseModel):
     name: str
     description: str = ""
     input_schema: dict[str, Any] = Field(default_factory=dict)
     annotations: dict[str, Any] | None = None
     definition_hash: str
+    classification: ToolClassification | None = None
 
 
 class EnumerationStatus(StrEnum):
