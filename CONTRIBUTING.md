@@ -50,7 +50,7 @@ mypy
 pytest
 bandit -c pyproject.toml -r src  # SAST
 pip-audit --strict --require-hashes -r requirements/dev.lock   # SCA
-zizmor --offline --persona auditor .github/workflows/   # GitHub Actions security
+zizmor --offline --persona auditor action.yml .github/workflows/   # Actions security
 gitleaks git . --config .gitleaks.toml --redact          # secrets, full history
 ```
 

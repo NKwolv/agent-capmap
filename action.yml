@@ -1,0 +1,137 @@
+name: agent-capmap
+description: >-
+  Map the MCP tool capabilities reachable by each AI agent and flag dangerous
+  combinations with policy-as-code. Writes SARIF for GitHub code scanning.
+author: NKwolv
+branding:
+  icon: shield
+  color: orange
+
+inputs:
+  path:
+    description: Directory or config file to scan, relative to the workspace.
+    default: "."
+  policy:
+    description: Policy YAML file (default the built-in policy).
+    default: ""
+  baseline:
+    description: Baseline JSON for rug-pull detection (CAP-006).
+    default: ""
+  fail-on:
+    description: "Fail when a finding is at or above: critical, high, medium, low, info, or none."
+    default: high
+  fail-on-not-assessed:
+    description: Fail when any server or tool could not be assessed (true/false).
+    default: "false"
+  enumerate:
+    description: >-
+      Start the configured MCP servers and list their tools (true/false). This RUNS the
+      commands found in the scanned configs. Never enable it for untrusted pull requests,
+      and never in a job that holds secrets you would not hand to those commands.
+    default: "false"
+  classify:
+    description: >-
+      Classify tools with the LLM (true/false). Needs enumerate: true and, unless offline,
+      ANTHROPIC_API_KEY in the step's env.
+    default: "false"
+  offline:
+    description: With classify, use cached classifications only (true/false).
+    default: "false"
+  cache-dir:
+    description: Classification cache directory (restore it with actions/cache).
+    default: ""
+  sarif-file:
+    description: Where to write the SARIF report, relative to the workspace.
+    default: agentcapmap.sarif
+  python-version:
+    description: Python version used to run agent-capmap.
+    default: "3.12"
+
+outputs:
+  sarif-file:
+    description: Path of the SARIF report.
+    value: ${{ steps.scan.outputs.sarif-file }}
+  findings:
+    description: Total number of findings.
+    value: ${{ steps.scan.outputs.findings }}
+  not-assessed:
+    description: Number of servers or tools that could not be assessed.
+    value: ${{ steps.scan.outputs.not-assessed }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install agent-capmap (hash-pinned)
+      id: install
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+      run: |
+        set -euo pipefail
+        venv="${RUNNER_TEMP}/agentcapmap-venv"
+        python -m venv "$venv"
+        if [[ -x "$venv/bin/python" ]]; then py="$venv/bin/python"; else py="$venv/Scripts/python.exe"; fi
+        "$py" -m pip install --quiet --disable-pip-version-check --require-hashes \
+          -r "$ACTION_PATH/requirements/build.lock" -r "$ACTION_PATH/requirements/runtime.lock"
+        "$py" -m pip install --quiet --disable-pip-version-check --no-deps --no-build-isolation "$ACTION_PATH"
+        echo "python=$py" >> "$GITHUB_OUTPUT"
+
+    - name: Scan and evaluate
+      id: scan
+      shell: bash
+      env:
+        PY: ${{ steps.install.outputs.python }}
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_POLICY: ${{ inputs.policy }}
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        INPUT_FAIL_ON_NOT_ASSESSED: ${{ inputs.fail-on-not-assessed }}
+        INPUT_ENUMERATE: ${{ inputs.enumerate }}
+        INPUT_CLASSIFY: ${{ inputs.classify }}
+        INPUT_OFFLINE: ${{ inputs.offline }}
+        INPUT_CACHE_DIR: ${{ inputs.cache-dir }}
+        INPUT_SARIF_FILE: ${{ inputs.sarif-file }}
+      run: |
+        set -uo pipefail
+        fail() { echo "::error title=agent-capmap::$1"; exit 2; }
+        is_bool() { [[ "$1" == "true" || "$1" == "false" ]]; }
+        for name in INPUT_FAIL_ON_NOT_ASSESSED INPUT_ENUMERATE INPUT_CLASSIFY INPUT_OFFLINE; do
+          is_bool "${!name}" || fail "$name must be true or false"
+        done
+        case "$INPUT_FAIL_ON" in critical|high|medium|low|info|none) ;; *) fail "fail-on is invalid";; esac
+        case "$INPUT_SARIF_FILE" in /*|*..*|"") fail "sarif-file must be a relative path inside the workspace";; esac
+
+        evaluation="${RUNNER_TEMP}/agentcapmap-evaluation.json"
+        args=(scan "$INPUT_PATH" --evaluate -o "$evaluation")
+        [[ -n "$INPUT_POLICY" ]] && args+=(--policy "$INPUT_POLICY")
+        [[ -n "$INPUT_BASELINE" ]] && args+=(--baseline "$INPUT_BASELINE")
+        if [[ "$INPUT_ENUMERATE" == "true" ]]; then
+          echo "::warning title=agent-capmap::enumerate is on: the commands in the scanned configs will run"
+          args+=(--enumerate)
+        fi
+        if [[ "$INPUT_CLASSIFY" == "true" ]]; then
+          [[ "$INPUT_ENUMERATE" == "true" ]] || fail "classify needs enumerate: true"
+          args+=(--classify)
+          [[ "$INPUT_OFFLINE" == "true" ]] && args+=(--offline)
+          [[ -n "$INPUT_CACHE_DIR" ]] && args+=(--cache-dir "$INPUT_CACHE_DIR")
+        fi
+
+        "$PY" -m agentcapmap "${args[@]}" || fail "scan failed"
+        "$PY" -m agentcapmap report "$evaluation" --format sarif -o "$INPUT_SARIF_FILE" || fail "could not write SARIF"
+        "$PY" -m agentcapmap report "$evaluation" --format markdown >> "$GITHUB_STEP_SUMMARY" || true
+
+        "$PY" - "$evaluation" >> "$GITHUB_OUTPUT" <<'EOF'
+        import json, sys
+        data = json.load(open(sys.argv[1], encoding="utf-8"))
+        print(f"findings={len(data['findings'])}")
+        print(f"not-assessed={len(data['not_assessed'])}")
+        EOF
+        echo "sarif-file=$INPUT_SARIF_FILE" >> "$GITHUB_OUTPUT"
+
+        gate=(report "$evaluation" --fail-on "$INPUT_FAIL_ON" -o "${RUNNER_TEMP}/agentcapmap-gate.json")
+        [[ "$INPUT_FAIL_ON_NOT_ASSESSED" == "true" ]] && gate+=(--fail-on-not-assessed)
+        "$PY" -m agentcapmap "${gate[@]}"

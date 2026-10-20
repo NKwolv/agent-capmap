@@ -9,6 +9,13 @@
         "path": "mcp.json",
         "line": 3
       },
+      "server_locations": [
+        {
+          "server": "files",
+          "path": "mcp.json",
+          "line": 3
+        }
+      ],
       "servers": [
         "files"
       ],

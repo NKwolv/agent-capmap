@@ -60,7 +60,7 @@ jobs:
       - name: SCA (pip-audit on every locked dependency)
         run: pip-audit --strict --require-hashes -r requirements/dev.lock
       - name: Workflow security (zizmor)
-        run: zizmor --offline --persona auditor .github/workflows/
+        run: zizmor --offline --persona auditor action.yml .github/workflows/
 
   secrets:
     name: Secret scanning (gitleaks, full history)

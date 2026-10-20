@@ -3,8 +3,9 @@
 Inventory the MCP servers and tools reachable by each AI agent, classify their
 capabilities, and flag dangerous capability combinations with policy-as-code.
 
-> Status: early development. Discovery, enumeration, classification and the policy
-> engine work; SARIF/Markdown reporting and the GitHub Action are in progress.
+> Status: early development. Discovery, enumeration, classification, the policy engine,
+> reporting (JSON, Markdown, SARIF) and the GitHub Action work; the evaluation benchmark
+> is in progress.
 
 ## Quickstart
 
@@ -94,6 +95,21 @@ classified are listed under `not_assessed` rather than guessed at.
 
 The [`fixtures/`](fixtures/) directory has one example agent per rule.
 
+## CI and GitHub code scanning
+
+```sh
+# SARIF for code scanning, Markdown for humans; exit 1 at or above --fail-on
+agentcapmap evaluate inventory.json --format sarif -o agentcapmap.sarif --fail-on high
+agentcapmap report evaluation.json --format markdown     # re-render a saved evaluation
+```
+
+Exit codes: `0` passed, `1` findings at or above `--fail-on` (or not-assessed items with
+`--fail-on-not-assessed`), `2` usage or input error.
+
+The repository is also a GitHub Action; see [docs/github-action.md](docs/github-action.md)
+and the [example workflow](docs/examples/agentcapmap.yml). By default it checks configs
+only and never starts servers, which is safe for pull requests from forks.
+
 ## Safety
 
 - Secret values from configs (env vars, headers, tokens in args or URLs) are redacted
@@ -106,6 +122,7 @@ The [`fixtures/`](fixtures/) directory has one example agent per rule.
 
 - [Capability taxonomy](docs/taxonomy.md): the six axes, edge-case rulings, versioning
 - [Threat model](docs/threat-model.md): attacks covered, OWASP / MITRE ATLAS mapping, policy rules
+- [GitHub Action](docs/github-action.md)
 - [Comparison with Snyk Agent Scan (mcp-scan)](docs/vs-mcp-scan.md)
 - [Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md) · [Changelog](CHANGELOG.md)
 

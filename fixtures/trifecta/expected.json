@@ -9,6 +9,18 @@
         "path": "mcp.json",
         "line": 3
       },
+      "server_locations": [
+        {
+          "server": "github",
+          "path": "mcp.json",
+          "line": 3
+        },
+        {
+          "server": "mailer",
+          "path": "mcp.json",
+          "line": 14
+        }
+      ],
       "servers": [
         "github",
         "mailer"

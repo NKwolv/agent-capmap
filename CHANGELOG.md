@@ -8,6 +8,17 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- **Reporting and CI** (Phase 4):
+  - `--format json|markdown|sarif` on `evaluate` and `scan --evaluate`; `report` command
+    to re-render a saved evaluation.
+  - `--fail-on <severity>` and `--fail-on-not-assessed`; exit codes 0 / 1 / 2.
+  - SARIF 2.1.0 validated against the official OASIS schema: rules with
+    `security-severity`, repository-relative locations with related locations per
+    server, stable `partialFingerprints`, notifications for not-assessed items, skipped
+    rules and omitted results.
+  - Markdown report and GitHub job summary, with all untrusted text rendered inertly.
+  - Composite GitHub Action (`action.yml`) installing from hash-pinned lockfiles, with
+    an example workflow (`docs/examples/agentcapmap.yml`) and a self-test workflow.
 - **Policy engine** (Phase 3):
   - Per-agent capability graph with per-tool provenance (`agents[].capabilities`).
   - YAML policy loader hardened for untrusted files (safe loader only; anchors,

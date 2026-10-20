@@ -65,6 +65,12 @@ class FindingEvidence(BaseModel):
     unverified: list[str] = Field(default_factory=list)
 
 
+class ServerLocation(BaseModel):
+    server: str
+    path: str
+    line: int | None = None
+
+
 class Finding(BaseModel):
     rule_id: str
     severity: Severity
@@ -73,6 +79,8 @@ class Finding(BaseModel):
     agent_id: str
     config_path: str
     location: SourceLocation | None = None
+    # Where each involved server is defined (the first one is `location`).
+    server_locations: list[ServerLocation] = Field(default_factory=list)
     servers: list[str]
     tools: list[str] = Field(default_factory=list)  # "server/tool"
     evidence: list[FindingEvidence] = Field(default_factory=list)
@@ -93,6 +101,14 @@ class SkippedRule(BaseModel):
     reason: str
 
 
+class RuleInfo(BaseModel):
+    id: str
+    severity: Severity
+    message: str
+    maps_to: list[str] = Field(default_factory=list)
+    enabled: bool = True
+
+
 class PolicyInfo(BaseModel):
     source: str
     version: int
@@ -104,6 +120,7 @@ class Evaluation(BaseModel):
     schema_version: str = EVALUATION_SCHEMA_VERSION
     tool_version: str = __version__
     policy: PolicyInfo
+    rules: list[RuleInfo] = Field(default_factory=list)
     baseline_used: bool = False
     agents: list[AgentCapabilities] = Field(default_factory=list)
     findings: list[Finding] = Field(default_factory=list)

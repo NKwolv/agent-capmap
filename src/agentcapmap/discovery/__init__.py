@@ -152,8 +152,13 @@ def user_config_paths() -> list[Path]:
     ]
 
 
-def discover(paths: Iterable[Path], *, user: bool = False) -> Inventory:
-    """Build an inventory from files and/or directories, plus user-level configs if asked."""
+def discover(paths: Iterable[Path], *, user: bool = False, root: Path | None = None) -> Inventory:
+    """Build an inventory from files and/or directories, plus user-level configs if asked.
+
+    Config paths in the output are relative to `root` when given (the CLI passes the
+    working directory, so SARIF paths are repository-relative), otherwise to each
+    scanned directory.
+    """
     inventory = Inventory()
     seen: set[Path] = set()
 
@@ -172,9 +177,9 @@ def discover(paths: Iterable[Path], *, user: bool = False) -> Inventory:
     for target in paths:
         if target.is_dir():
             for candidate in iter_candidate_files(target):
-                add(candidate, target, explicit=False)
+                add(candidate, root or target, explicit=False)
         elif target.is_file():
-            add(target, Path.cwd(), explicit=True)
+            add(target, root or Path.cwd(), explicit=True)
         else:
             inventory.errors.append(DiscoveryError(path=str(target), message="path does not exist"))
 

@@ -17,9 +17,11 @@ from agentcapmap.classify.cache import ClassificationCache
 from agentcapmap.classify.provider import AnthropicProvider
 from agentcapmap.discovery import discover
 from agentcapmap.enumerate import DEFAULT_TIMEOUT, enumerate_inventory
+from agentcapmap.findings import Evaluation, Severity
 from agentcapmap.models import Inventory
 from agentcapmap.policy import PolicyError, evaluate, load_policy
 from agentcapmap.redact import RedactingFilter, get_logger, redact_text
+from agentcapmap.report import Format, render, should_fail
 
 log = get_logger("agentcapmap")
 
@@ -28,6 +30,11 @@ ENUMERATE_WARNING = (
     "connects to their URLs. Only enumerate configs you trust."
 )
 _MAX_INVENTORY_BYTES = 64 * 1024 * 1024
+
+# Exit codes: 0 success; 1 findings met --fail-on (or something was not assessed with
+# --fail-on-not-assessed); 2 usage or input error.
+EXIT_FINDINGS = 1
+EXIT_ERROR = 2
 
 
 class CliError(Exception):
@@ -65,6 +72,26 @@ def _add_classify_options(p: argparse.ArgumentParser) -> None:
 def _add_policy_options(p: argparse.ArgumentParser) -> None:
     p.add_argument("--policy", type=Path, help="policy YAML (default: built-in default policy)")
     p.add_argument("--baseline", type=Path, help="baseline JSON for rug-pull detection (CAP-006)")
+
+
+def _add_report_options(p: argparse.ArgumentParser) -> None:
+    p.add_argument(
+        "--format",
+        choices=[f.value for f in Format],
+        default=Format.JSON.value,
+        help="output format for findings (default json)",
+    )
+    p.add_argument(
+        "--fail-on",
+        choices=[*(s.value for s in Severity), "none"],
+        default="none",
+        help="exit 1 if any finding is at or above this severity (default none)",
+    )
+    p.add_argument(
+        "--fail-on-not-assessed",
+        action="store_true",
+        help="exit 1 if any server or tool could not be assessed",
+    )
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -112,6 +139,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     _add_classify_options(scan)
     _add_policy_options(scan)
+    _add_report_options(scan)
     _add_common(scan)
 
     classify = sub.add_parser("classify", help="classify the tools in a saved inventory JSON")
@@ -122,7 +150,15 @@ def _build_parser() -> argparse.ArgumentParser:
     ev = sub.add_parser("evaluate", help="apply a policy to a saved (classified) inventory")
     ev.add_argument("inventory", type=Path, help="inventory JSON from `scan`")
     _add_policy_options(ev)
+    _add_report_options(ev)
     _add_common(ev)
+
+    report = sub.add_parser(
+        "report", help="render a saved evaluation (JSON from `evaluate`) in another format"
+    )
+    report.add_argument("evaluation", type=Path, help="evaluation JSON from `evaluate`")
+    _add_report_options(report)
+    _add_common(report)
 
     baseline = sub.add_parser("baseline", help="manage tool-definition baselines")
     baseline_sub = baseline.add_subparsers(dest="baseline_command", required=True)
@@ -134,19 +170,29 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _load_inventory(path: Path) -> Inventory:
+def _read_json_file(path: Path) -> str:
     try:
         if path.stat().st_size > _MAX_INVENTORY_BYTES:
             raise CliError(f"{path} is larger than {_MAX_INVENTORY_BYTES} bytes")
-        text = path.read_text(encoding="utf-8")
+        return path.read_text(encoding="utf-8")
     except OSError as exc:
         raise CliError(f"cannot read {path}: {exc.strerror}") from None
     except UnicodeDecodeError:
         raise CliError(f"{path} is not UTF-8 text") from None
+
+
+def _load_inventory(path: Path) -> Inventory:
     try:
-        return Inventory.model_validate_json(text)
+        return Inventory.model_validate_json(_read_json_file(path))
     except ValidationError as exc:
         raise CliError(f"{path} is not a valid inventory: {exc.error_count()} error(s)") from None
+
+
+def _load_evaluation(path: Path) -> Evaluation:
+    try:
+        return Evaluation.model_validate_json(_read_json_file(path))
+    except ValidationError as exc:
+        raise CliError(f"{path} is not a valid evaluation: {exc.error_count()} error(s)") from None
 
 
 def _classify(inventory: Inventory, args: argparse.Namespace) -> None:
@@ -162,7 +208,7 @@ def _classify(inventory: Inventory, args: argparse.Namespace) -> None:
     classify_inventory(inventory, classifier, concurrency=args.classify_concurrency)
 
 
-def _evaluate(inventory: Inventory, args: argparse.Namespace) -> BaseModel:
+def _evaluate(inventory: Inventory, args: argparse.Namespace) -> Evaluation:
     try:
         policy = load_policy(args.policy)
         baseline: Baseline | None = load_baseline(args.baseline) if args.baseline else None
@@ -171,13 +217,34 @@ def _evaluate(inventory: Inventory, args: argparse.Namespace) -> BaseModel:
     return evaluate(inventory, policy, baseline)
 
 
-def _emit(model: BaseModel, output: Path | None) -> None:
-    payload = model.model_dump_json(indent=2)
+def _write(payload: str, output: Path | None) -> None:
     if output:
-        output.write_text(payload + "\n", encoding="utf-8")
+        output.write_text(payload, encoding="utf-8")
         log.info("wrote %s", output)
     else:
-        sys.stdout.write(payload + "\n")
+        sys.stdout.write(payload)
+
+
+def _emit(model: BaseModel, output: Path | None) -> None:
+    _write(model.model_dump_json(indent=2) + "\n", output)
+
+
+def _report(evaluation: Evaluation, args: argparse.Namespace) -> int:
+    """Write the evaluation in the requested format; return the exit status."""
+    _write(render(evaluation, Format(args.format)), args.output)
+    fail_on = None if args.fail_on == "none" else Severity(args.fail_on)
+    if should_fail(evaluation, fail_on, args.fail_on_not_assessed):
+        at_or_above = sum(
+            1 for f in evaluation.findings if fail_on and f.severity.rank >= fail_on.rank
+        )
+        log.warning(
+            "failing: %d finding(s) at or above --fail-on %s, %d not assessed",
+            at_or_above,
+            args.fail_on,
+            len(evaluation.not_assessed),
+        )
+        return EXIT_FINDINGS
+    return 0
 
 
 def _cmd_scan(args: argparse.Namespace) -> int:
@@ -186,10 +253,17 @@ def _cmd_scan(args: argparse.Namespace) -> int:
             "--classify needs tool definitions: add --enumerate, "
             "or run `agentcapmap classify` on a saved inventory"
         )
-    if args.save_inventory and not args.evaluate:
-        raise CliError("--save-inventory is only used with --evaluate (use -o instead)")
+    if not args.evaluate and (
+        args.save_inventory
+        or args.format != Format.JSON.value
+        or args.fail_on != "none"
+        or args.fail_on_not_assessed
+    ):
+        raise CliError(
+            "--save-inventory, --format, --fail-on and --fail-on-not-assessed need --evaluate"
+        )
     paths: list[Path] = args.paths or ([] if args.user else [Path.cwd()])
-    inventory = discover(paths, user=args.user)
+    inventory = discover(paths, user=args.user, root=Path.cwd())
     if args.enumerate:
         print(ENUMERATE_WARNING, file=sys.stderr)
         enumerate_inventory(inventory, timeout=args.timeout, concurrency=args.concurrency)
@@ -200,8 +274,7 @@ def _cmd_scan(args: argparse.Namespace) -> int:
         return 0
     if args.save_inventory:
         _emit(inventory, args.save_inventory)
-    _emit(_evaluate(inventory, args), args.output)
-    return 0
+    return _report(_evaluate(inventory, args), args)
 
 
 def _cmd_classify(args: argparse.Namespace) -> int:
@@ -212,8 +285,11 @@ def _cmd_classify(args: argparse.Namespace) -> int:
 
 
 def _cmd_evaluate(args: argparse.Namespace) -> int:
-    _emit(_evaluate(_load_inventory(args.inventory), args), args.output)
-    return 0
+    return _report(_evaluate(_load_inventory(args.inventory), args), args)
+
+
+def _cmd_report(args: argparse.Namespace) -> int:
+    return _report(_load_evaluation(args.evaluation), args)
 
 
 def _cmd_baseline(args: argparse.Namespace) -> int:
@@ -231,10 +307,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         "scan": _cmd_scan,
         "classify": _cmd_classify,
         "evaluate": _cmd_evaluate,
+        "report": _cmd_report,
         "baseline": _cmd_baseline,
     }
     try:
         return commands[args.command](args)
     except CliError as exc:
         print(f"error: {exc}", file=sys.stderr)
-        return 2
+        return EXIT_ERROR

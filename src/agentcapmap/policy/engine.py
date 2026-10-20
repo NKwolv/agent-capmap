@@ -17,6 +17,8 @@ from agentcapmap.findings import (
     Finding,
     FindingEvidence,
     NotAssessed,
+    RuleInfo,
+    ServerLocation,
     Severity,
     SkippedRule,
 )
@@ -74,6 +76,10 @@ def _finding(
         agent_id=view.agent.id,
         config_path=view.agent.config_path,
         location=ordered[0].server.location if ordered else None,
+        server_locations=[
+            ServerLocation(server=s.name, path=s.server.location.path, line=s.server.location.line)
+            for s in ordered
+        ],
         servers=names,
         tools=unique_tools,
         evidence=evidence,
@@ -204,6 +210,16 @@ def evaluate(inventory: Inventory, policy: Policy, baseline: Baseline | None = N
     summary["not_assessed"] = len(not_assessed)
     return Evaluation(
         policy=policy.info,
+        rules=[
+            RuleInfo(
+                id=r.id,
+                severity=r.severity,
+                message=r.message,
+                maps_to=list(r.maps_to),
+                enabled=r.enabled,
+            )
+            for r in policy.rules
+        ],
         baseline_used=baseline is not None,
         agents=[capabilities(v) for v in views],
         findings=findings,

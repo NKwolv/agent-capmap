@@ -1,0 +1,69 @@
+name: Action self-test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Read-only: the self-test runs the local action and checks its outputs; it uploads
+# nothing (code scanning upload is exercised by users' workflows, see docs/examples).
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  selftest:
+    name: Run the action on the scenario fixtures
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: capmap
+        # The self-test must run the action from this checkout (the commit under test).
+        # The $/ self-repository form is not documented for a root-level action.yml.
+        uses: ./ # zizmor: ignore[self-repository]
+        with:
+          path: fixtures
+          fail-on: none
+          sarif-file: selftest.sarif
+      - name: Check outputs and SARIF
+        shell: bash
+        env:
+          FINDINGS: ${{ steps.capmap.outputs.findings }}
+          SARIF: ${{ steps.capmap.outputs.sarif-file }}
+        run: |
+          set -euo pipefail
+          # Without enumeration only config-level rules can fire: CAP-007 on the
+          # unpinned server in fixtures/overscoped-token.
+          test "$FINDINGS" = "1"
+          python - "$SARIF" <<'EOF'
+          import json, sys
+          sarif = json.load(open(sys.argv[1], encoding="utf-8"))
+          assert sarif["version"] == "2.1.0"
+          (result,) = sarif["runs"][0]["results"]
+          assert result["ruleId"] == "CAP-007", result["ruleId"]
+          uri = result["locations"][0]["physicalLocation"]["artifactLocation"]["uri"]
+          assert uri == "fixtures/overscoped-token/mcp.json", uri
+          print("SARIF ok:", result["ruleId"], uri)
+          EOF
+      - name: Gate fails at medium
+        id: gate
+        continue-on-error: true
+        uses: ./ # zizmor: ignore[self-repository]
+        with:
+          path: fixtures
+          fail-on: medium
+          sarif-file: gate.sarif
+      - name: Check the gate failed
+        shell: bash
+        env:
+          OUTCOME: ${{ steps.gate.outcome }}
+        run: test "$OUTCOME" = "failure"

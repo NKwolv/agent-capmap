@@ -1,0 +1,89 @@
+# Example workflow: copy to .github/workflows/agentcapmap.yml in your repository.
+#
+# Two jobs, split by trust level:
+#   pr-check  runs on every pull request, reads config files only, holds no secrets.
+#   trusted   runs on pushes to main: starts the configured MCP servers, classifies their
+#             tools with an LLM and compares against a baseline. It executes the commands
+#             in your MCP configs, so it must only ever run on code you have reviewed.
+#
+# Replace <AGENT_CAPMAP_SHA> with the full commit SHA of the agent-capmap release you
+# have reviewed (pinning by SHA, not a tag, keeps the action immutable).
+name: agent-capmap
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Default to read-only; each job widens only what it needs.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr-check:
+    name: MCP config check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # check out the code
+      security-events: write # upload SARIF to code scanning
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: capmap
+        uses: NKwolv/agent-capmap@<AGENT_CAPMAP_SHA>
+        with:
+          path: .
+          fail-on: high
+      - name: Upload SARIF
+        if: always() && steps.capmap.outputs.sarif-file != ''
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          sarif_file: ${{ steps.capmap.outputs.sarif-file }}
+          category: agent-capmap
+
+  trusted:
+    name: MCP capability scan (trusted)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # Keep ANTHROPIC_API_KEY in this environment (Settings > Environments), restricted to
+    # the main branch, so no other job or branch can read it.
+    environment: agentcapmap-trusted
+    permissions:
+      contents: read # check out the code
+      security-events: write # upload SARIF to code scanning
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Reuse classifications across runs: unchanged tools are never re-sent to the LLM.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .agentcapmap-cache
+          key: agentcapmap-${{ github.run_id }}
+          restore-keys: agentcapmap-
+      - id: capmap
+        uses: NKwolv/agent-capmap@<AGENT_CAPMAP_SHA>
+        with:
+          path: .
+          enumerate: "true"
+          classify: "true"
+          cache-dir: .agentcapmap-cache
+          baseline: agentcapmap-baseline.json # create once with `agentcapmap baseline create`
+          fail-on: high
+        env:
+          # Visible to agent-capmap only; launched servers get a minimal environment.
+          # Note: a server process can still read its parent's environment on Linux, which
+          # is why this job must never enumerate configs you have not reviewed.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - name: Upload SARIF
+        if: always() && steps.capmap.outputs.sarif-file != ''
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          sarif_file: ${{ steps.capmap.outputs.sarif-file }}
+          category: agent-capmap

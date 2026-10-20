@@ -50,7 +50,7 @@ two can be used together.
 | Role of the LLM | Part of the analysis service | Classification only; it never makes risk decisions |
 | Where analysis runs | Snyk's Agent Scan API (needs a Snyk account and `SNYK_TOKEN`) | Locally, plus an LLM provider you choose (default: Anthropic API with your own key); `--offline` uses the local cache only |
 | What leaves your machine | Per its README: agent application details, server configurations and signatures, tool names and descriptions, skill content (secrets redacted) | With `--classify`: tool names, descriptions and input schemas. Config values are never sent |
-| Output for CI | JSON and a `--ci` exit code | JSON now; Markdown, **SARIF** for GitHub code scanning, `--fail-on <severity>` and a GitHub Action in Phase 4 |
+| Output for CI | JSON and a `--ci` exit code | JSON, Markdown and **SARIF** for GitHub code scanning; `--fail-on <severity>` exit codes; a composite GitHub Action |
 | Repo scanning | Machine and agent oriented | Walks a repository for checked-in configs (`.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json`) without starting anything |
 | Accuracy reporting | No published numbers we could find | A hand-labeled benchmark with per-axis precision/recall is part of the project plan (Phase 5); numbers will be published as measured |
 | License / contributions | Apache-2.0; README says external contributions are not accepted | MIT; contributions welcome |
@@ -65,7 +65,7 @@ two can be used together.
 
 ## Status note
 
-agent-capmap is early. Discovery, enumeration, classification, the policy engine and
-baseline pinning (rug-pull detection) are implemented. SARIF and Markdown output,
-`--fail-on` exit codes and the GitHub Action are planned (Phase 4), not yet shipped.
-Rows above marked with a phase number describe that plan.
+agent-capmap is early. Discovery, enumeration, classification, the policy engine,
+baseline pinning, JSON/Markdown/SARIF output, `--fail-on` exit codes and the GitHub
+Action are implemented. The accuracy benchmark is planned (Phase 5); rows above marked
+with a phase number describe that plan.

@@ -9,6 +9,13 @@
         "path": "mcp.json",
         "line": 3
       },
+      "server_locations": [
+        {
+          "server": "analytics",
+          "path": "mcp.json",
+          "line": 3
+        }
+      ],
       "servers": [
         "analytics"
       ],
@@ -53,6 +60,13 @@
         "path": "mcp.json",
         "line": 6
       },
+      "server_locations": [
+        {
+          "server": "crm",
+          "path": "mcp.json",
+          "line": 6
+        }
+      ],
       "servers": [
         "crm"
       ],

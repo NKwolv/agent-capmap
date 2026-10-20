@@ -9,6 +9,18 @@
         "path": "mcp.json",
         "line": 3
       },
+      "server_locations": [
+        {
+          "server": "fetch",
+          "path": "mcp.json",
+          "line": 3
+        },
+        {
+          "server": "shell",
+          "path": "mcp.json",
+          "line": 7
+        }
+      ],
       "servers": [
         "fetch",
         "shell"
@@ -53,6 +65,13 @@
         "path": "mcp.json",
         "line": 7
       },
+      "server_locations": [
+        {
+          "server": "shell",
+          "path": "mcp.json",
+          "line": 7
+        }
+      ],
       "servers": [
         "shell"
       ],
