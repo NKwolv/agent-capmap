@@ -57,6 +57,13 @@ Claude Code (`.mcp.json`) and generic `mcp.json`.
   does, however, **launch the stdio server commands** in the configs, so only enumerate
   configs you trust.
 
+## Documentation
+
+- [Capability taxonomy](docs/taxonomy.md): the six axes, edge-case rulings, versioning
+- [Threat model](docs/threat-model.md): attacks covered, OWASP / MITRE ATLAS mapping, policy rules
+- [Comparison with Snyk Agent Scan (mcp-scan)](docs/vs-mcp-scan.md)
+- [Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md) · [Changelog](CHANGELOG.md)
+
 ## Development
 
 ```sh
