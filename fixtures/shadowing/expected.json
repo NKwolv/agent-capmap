@@ -1,0 +1,65 @@
+{
+  "findings": [
+    {
+      "rule_id": "CAP-009",
+      "severity": "medium",
+      "agent_id": "generic:mcp.json",
+      "config_path": "mcp.json",
+      "location": {
+        "path": "mcp.json",
+        "line": 3
+      },
+      "servers": [
+        "files",
+        "files-plus"
+      ],
+      "tools": [
+        "files-plus/read_file",
+        "files/read_file"
+      ],
+      "evidence": [
+        {
+          "server": "files",
+          "tool": "read_file",
+          "matched": {
+            "tool_name_shadowed": true
+          },
+          "phrases": {
+            "servers": "files, files-plus"
+          },
+          "unverified": []
+        },
+        {
+          "server": "files-plus",
+          "tool": "read_file",
+          "matched": {
+            "tool_name_shadowed": true
+          },
+          "phrases": {
+            "servers": "files, files-plus"
+          },
+          "unverified": []
+        }
+      ],
+      "details": {
+        "tool_name": "read_file"
+      },
+      "fingerprint": "373cecae090d4d9d82ebeac84f02bbb6"
+    }
+  ],
+  "not_assessed": [],
+  "skipped_rules": [
+    {
+      "rule_id": "CAP-006",
+      "reason": "no baseline provided (--baseline)"
+    }
+  ],
+  "summary": {
+    "critical": 0,
+    "high": 0,
+    "medium": 1,
+    "low": 0,
+    "info": 0,
+    "not_assessed": 0
+  }
+}

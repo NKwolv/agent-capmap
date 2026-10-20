@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "files": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem@2025.8.21", "/workspace"],
+      "alwaysAllow": ["read_file", "delete_file"]
+    }
+  }
+}

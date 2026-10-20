@@ -8,6 +8,22 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- **Policy engine** (Phase 3):
+  - Per-agent capability graph with per-tool provenance (`agents[].capabilities`).
+  - YAML policy loader hardened for untrusted files (safe loader only; anchors,
+    aliases and duplicate keys rejected; flow-nesting depth and size capped; strict
+    schema in `schemas/policy.schema.json`).
+  - Deterministic rules with evidence: `when_agent_has_all`, `when_agent_has_any`,
+    `when_server`, `when_hash_changed`, `when_tool_name_shadowed`.
+  - Default policy `policies/default.yaml` with CAP-001 to CAP-009.
+  - Server attributes from config: version pinning (npm, PyPI, Docker digests, local
+    scripts), source trust (`trusted_sources`), per-tool approval gates
+    (`alwaysAllow`, `autoApprove`, `trust`).
+  - Baseline pinning: `agentcapmap baseline create`, `--baseline` (CAP-006).
+  - Tools that were not enumerated or classified are reported as `not_assessed`.
+  - CLI: `evaluate`, `baseline create`, `scan --evaluate --policy --baseline
+    --save-inventory`.
+  - Scenario fixtures for every section-7 case with golden-file tests.
 - **Classifier** (Phase 2): LLM classification of every enumerated tool into the six-axis
   taxonomy v1, with suspicious-description (tool poisoning) flags.
   - Output constrained by structured outputs and validated against

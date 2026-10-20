@@ -1,0 +1,52 @@
+{
+  "findings": [
+    {
+      "rule_id": "CAP-003",
+      "severity": "high",
+      "agent_id": "generic:mcp.json",
+      "config_path": "mcp.json",
+      "location": {
+        "path": "mcp.json",
+        "line": 3
+      },
+      "servers": [
+        "files"
+      ],
+      "tools": [
+        "files/delete_file"
+      ],
+      "evidence": [
+        {
+          "server": "files",
+          "tool": "delete_file",
+          "matched": {
+            "approval_gate": "none",
+            "mutation": "destructive"
+          },
+          "phrases": {
+            "approval_gate": "auto-approved via config key 'alwaysAllow'",
+            "mutation": "Permanently delete a file or directory"
+          },
+          "unverified": []
+        }
+      ],
+      "details": {},
+      "fingerprint": "ffe9a91198eaa6e57bc1b7786a683f57"
+    }
+  ],
+  "not_assessed": [],
+  "skipped_rules": [
+    {
+      "rule_id": "CAP-006",
+      "reason": "no baseline provided (--baseline)"
+    }
+  ],
+  "summary": {
+    "critical": 0,
+    "high": 1,
+    "medium": 0,
+    "low": 0,
+    "info": 0,
+    "not_assessed": 0
+  }
+}

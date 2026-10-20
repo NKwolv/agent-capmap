@@ -29,18 +29,18 @@ DEFAULTS: Final[dict[str, str | bool]] = {
 _SCHEMA_FILE = "tool-tags.schema.json"
 
 
-def _data_file(name: str) -> str:
-    """Read a bundled data file: from the wheel, else from the repo checkout."""
-    packaged = resources.files("agentcapmap").joinpath("schemas", name)
+def data_file(directory: str, name: str) -> str:
+    """Read a bundled data file (schemas/, policies/): from the wheel, else the checkout."""
+    packaged = resources.files("agentcapmap").joinpath(directory, name)
     if packaged.is_file():
         return packaged.read_text(encoding="utf-8")
-    repo_copy = Path(__file__).resolve().parents[2] / "schemas" / name
+    repo_copy = Path(__file__).resolve().parents[2] / directory / name
     return repo_copy.read_text(encoding="utf-8")
 
 
 @cache
 def tool_tags_schema() -> dict[str, Any]:
-    schema: dict[str, Any] = json.loads(_data_file(_SCHEMA_FILE))
+    schema: dict[str, Any] = json.loads(data_file("schemas", _SCHEMA_FILE))
     if schema.get("x-taxonomy-version") != TAXONOMY_VERSION:
         raise RuntimeError(
             f"{_SCHEMA_FILE} is taxonomy version {schema.get('x-taxonomy-version')!r}, "

@@ -89,8 +89,8 @@ deployment.
 | MITRE ATLAS | AML.T0109 AI Supply Chain Rug Pull; AML.T0010.005 AI Supply Chain Compromise: AI Agent Tool |
 | Rule | **CAP-006** (high): tool definition hash differs from the pinned baseline |
 
-The canonical definition hash is already computed during enumeration. Baseline
-creation and comparison arrive in Phase 3.
+Pin a baseline with `agentcapmap baseline create inventory.json -o baseline.json`;
+later runs with `--baseline baseline.json` report changed, added and removed tools.
 
 ### 6. Tool name shadowing
 
@@ -115,23 +115,34 @@ authentication widen the supply-chain and access surface.
 | MITRE ATLAS | AML.T0010.005 AI Supply Chain Compromise: AI Agent Tool; AML.T0083 Credentials from AI Agent Configuration |
 | Rules | **CAP-005** (high): `auth: none` on a server whose tools have any non-default capability. **CAP-007** (medium): server not version-pinned or from an unvetted source |
 
-> Open question for Phase 3: local stdio servers have no auth in the MCP sense; they
-> run as the user. Applying CAP-005 to them would flag nearly every local server.
-> The current proposal is to apply CAP-005 to remote servers only.
+> CAP-005 applies to remote servers only. A local stdio server has no authentication in
+> the MCP sense: it runs as the user, so flagging it would mark nearly every local server.
 
 ## Rule summary
 
-| ID | Severity | Condition | Status |
-|---|---|---|---|
-| CAP-001 | critical | `private_read` + `untrusted_input` + `egress: external` | Planned (Phase 3) |
-| CAP-002 | critical | `untrusted_input` + `execution: host` | Planned (Phase 3) |
-| CAP-003 | high | `destructive` or `execution: host` without `approval_gate` | Planned (Phase 3) |
-| CAP-004 | high | `secrets_read` + `egress: external` | Planned (Phase 3) |
-| CAP-005 | high | `auth: none` with any non-default capability | Planned (Phase 3), scope under discussion |
-| CAP-006 | high | Definition hash differs from baseline | Planned (Phase 3); hashing implemented |
-| CAP-007 | medium | Not version-pinned or unvetted source | Planned (Phase 3) |
-| CAP-008 | high | Suspicious description | Planned (Phase 3); detection implemented in the classifier |
-| CAP-009 | medium | Tool name shadowing on one agent | Planned (Phase 3) |
+| ID | Severity | Condition (default policy) |
+|---|---|---|
+| CAP-001 | critical | `data_access: private_read` or `secrets_read` + `untrusted_input` + `egress: external` |
+| CAP-002 | critical | `untrusted_input` + `execution: host` |
+| CAP-003 | high | `mutation: destructive` or `execution: host` on a tool whose `approval_gate` is `none` or `unknown` |
+| CAP-004 | high | `secrets_read` + `egress: external` |
+| CAP-005 | high | Remote server with `auth: none` exposing any non-default capability |
+| CAP-006 | high | Tool definitions differ from the `--baseline` file |
+| CAP-007 | medium | Server not pinned to an exact version or digest, or not in `trusted_sources` (when configured) |
+| CAP-008 | high | Tool description flagged suspicious by the classifier |
+| CAP-009 | medium | The same tool name on more than one server of one agent |
+
+All rules live in [`policies/default.yaml`](../policies/default.yaml) and can be changed
+without touching code. Notes on the defaults:
+
+- CAP-001 counts `secrets_read` as private data, since secrets are the most sensitive
+  private data there is.
+- CAP-003 treats an `unknown` approval gate as no gate (fail closed). Most configs do
+  not record approval settings; set `approval_gate: [none]` to flag only tools that are
+  explicitly auto-approved (`alwaysAllow`, `autoApprove`, `trust`).
+- CAP-007 flags unvetted sources only when the policy lists `trusted_sources`.
+- Tools that were not enumerated or not classified are listed under `not_assessed`
+  instead of being treated as safe or as worst-case.
 
 Rules are evaluated per agent over the union of its tools. Every finding will carry
 its evidence: the agent, server, tool names, triggering tags, and source phrases.

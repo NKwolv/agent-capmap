@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "notes": {
+      "command": "npx",
+      "args": ["-y", "@acme/mcp-notes@1.2.0"]
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "servers": {
+    "docs": {
+      "tools": [
+        {
+          "name": "read_doc",
+          "description": "Read a document from the docs folder.",
+          "tags": { "data_access": "private_read" },
+          "evidence": { "data_access": "Read a document from the docs folder" }
+        },
+        {
+          "name": "list_docs",
+          "description": "List documents in the docs folder.",
+          "tags": { "data_access": "private_read" },
+          "evidence": { "data_access": "List documents in the docs folder" }
+        }
+      ]
+    },
+    "clock": {
+      "tools": [
+        {
+          "name": "get_current_time",
+          "description": "Get the current time in a given IANA timezone.",
+          "tags": {}
+        },
+        {
+          "name": "convert_time",
+          "description": "Convert a time between timezones.",
+          "unclassified": "invalid classifier output after retry: not valid JSON (Expecting value)"
+        }
+      ]
+    }
+  }
+}

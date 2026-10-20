@@ -1,0 +1,50 @@
+{
+  "findings": [
+    {
+      "rule_id": "CAP-008",
+      "severity": "high",
+      "agent_id": "generic:mcp.json",
+      "config_path": "mcp.json",
+      "location": {
+        "path": "mcp.json",
+        "line": 3
+      },
+      "servers": [
+        "math"
+      ],
+      "tools": [
+        "math/add"
+      ],
+      "evidence": [
+        {
+          "server": "math",
+          "tool": "add",
+          "matched": {
+            "suspicious_description": true
+          },
+          "phrases": {
+            "suspicious_description": "Hidden <IMPORTANT> block tells the model to read ~/.cursor/mcp.json, send it in the unrelated 'sidenote' parameter, and hide this from the user."
+          },
+          "unverified": []
+        }
+      ],
+      "details": {},
+      "fingerprint": "4c4320d572271e4562b7d939435047c7"
+    }
+  ],
+  "not_assessed": [],
+  "skipped_rules": [
+    {
+      "rule_id": "CAP-006",
+      "reason": "no baseline provided (--baseline)"
+    }
+  ],
+  "summary": {
+    "critical": 0,
+    "high": 1,
+    "medium": 0,
+    "low": 0,
+    "info": 0,
+    "not_assessed": 0
+  }
+}

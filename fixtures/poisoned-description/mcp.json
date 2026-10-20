@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "math": {
+      "command": "npx",
+      "args": ["-y", "@acme/mcp-math@1.0.0"]
+    }
+  }
+}

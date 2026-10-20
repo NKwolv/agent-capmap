@@ -128,6 +128,19 @@ class EnumerationResult(BaseModel):
     definition_hash: str | None = None
 
 
+class ApprovalConfig(BaseModel):
+    """Auto-approval settings found in the client config (e.g. Cline `alwaysAllow`).
+
+    Absence of these keys does not prove a human approves each call; it only means the
+    config does not say. The policy engine treats that as "unknown".
+    """
+
+    auto_approve_all: bool = False
+    auto_approved_tools: list[str] = Field(default_factory=list)
+    # Config keys the settings came from, for evidence.
+    sources: list[str] = Field(default_factory=list)
+
+
 class Server(BaseModel):
     name: str
     transport: Transport
@@ -139,6 +152,7 @@ class Server(BaseModel):
     auth: AuthHint
     location: SourceLocation
     disabled: bool = False
+    approval: ApprovalConfig = Field(default_factory=ApprovalConfig)
     enumeration: EnumerationResult | None = None
     launch: LaunchSpec = Field(default_factory=LaunchSpec, exclude=True, repr=False)
 

@@ -1,0 +1,25 @@
+{
+  "findings": [],
+  "not_assessed": [
+    {
+      "agent_id": "generic:mcp.json",
+      "server": "clock",
+      "tool": "convert_time",
+      "reason": "unclassified: invalid classifier output after retry: not valid JSON (Expecting value)"
+    }
+  ],
+  "skipped_rules": [
+    {
+      "rule_id": "CAP-006",
+      "reason": "no baseline provided (--baseline)"
+    }
+  ],
+  "summary": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "info": 0,
+    "not_assessed": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "files": {
+      "command": "npx",
+      "args": ["-y", "@acme/mcp-files@1.0.0", "/workspace"]
+    },
+    "files-plus": {
+      "command": "npx",
+      "args": ["-y", "@unknown-vendor/mcp-files-plus@1.0.0"]
+    }
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "findings": [
+    {
+      "rule_id": "CAP-005",
+      "severity": "high",
+      "agent_id": "generic:mcp.json",
+      "config_path": "mcp.json",
+      "location": {
+        "path": "mcp.json",
+        "line": 3
+      },
+      "servers": [
+        "analytics"
+      ],
+      "tools": [
+        "analytics/query_events"
+      ],
+      "evidence": [
+        {
+          "server": "analytics",
+          "tool": "query_events",
+          "matched": {
+            "any_capability": true
+          },
+          "phrases": {
+            "any_capability": "data_access: Query raw event data for any customer account"
+          },
+          "unverified": []
+        },
+        {
+          "server": "analytics",
+          "tool": null,
+          "matched": {
+            "auth": "none",
+            "remote": true
+          },
+          "phrases": {
+            "auth": "auth=none (tools/list succeeded without credentials)",
+            "remote": "transport=http"
+          },
+          "unverified": []
+        }
+      ],
+      "details": {},
+      "fingerprint": "0b92bc19c23c9a70517a25013521e250"
+    },
+    {
+      "rule_id": "CAP-007",
+      "severity": "medium",
+      "agent_id": "generic:mcp.json",
+      "config_path": "mcp.json",
+      "location": {
+        "path": "mcp.json",
+        "line": 6
+      },
+      "servers": [
+        "crm"
+      ],
+      "tools": [],
+      "evidence": [
+        {
+          "server": "crm",
+          "tool": null,
+          "matched": {
+            "version_pinned": "unpinned"
+          },
+          "phrases": {
+            "version_pinned": "launch spec: @acme/mcp-crm@latest"
+          },
+          "unverified": []
+        }
+      ],
+      "details": {},
+      "fingerprint": "caeb5629ea932e8c7851ae61180e32f5"
+    }
+  ],
+  "not_assessed": [],
+  "skipped_rules": [
+    {
+      "rule_id": "CAP-006",
+      "reason": "no baseline provided (--baseline)"
+    }
+  ],
+  "summary": {
+    "critical": 0,
+    "high": 1,
+    "medium": 1,
+    "low": 0,
+    "info": 0,
+    "not_assessed": 0
+  }
+}

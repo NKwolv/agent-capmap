@@ -1,0 +1,33 @@
+{
+  "servers": {
+    "github": {
+      "tools": [
+        {
+          "name": "list_issues",
+          "description": "List issues in a GitHub repository, including issues opened by anyone.",
+          "tags": { "untrusted_input": true },
+          "evidence": { "untrusted_input": "including issues opened by anyone" }
+        },
+        {
+          "name": "get_file_contents",
+          "description": "Get the contents of a file from a private or public repository.",
+          "tags": { "data_access": "private_read" },
+          "evidence": { "data_access": "contents of a file from a private or public repository" }
+        }
+      ]
+    },
+    "mailer": {
+      "tools": [
+        {
+          "name": "send_email",
+          "description": "Send an email to any recipient address.",
+          "tags": { "egress": "external", "mutation": "reversible_write" },
+          "evidence": {
+            "egress": "Send an email to any recipient address",
+            "mutation": "Send an email"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,113 @@
+# agent-capmap default policy.
+#
+# Rules are evaluated per agent (one client config) over the union of the tools it can
+# reach. Copy this file and pass it with --policy to customize. Format reference:
+# schemas/policy.schema.json and docs/threat-model.md.
+#
+# Condition semantics:
+#   when_server            filters which servers count (a dict: all fields match; a list
+#                          of dicts: any one matches). Alone, it reports matching servers.
+#   when_agent_has_all     every predicate is satisfied by at least one tool
+#   when_agent_has_any     at least one predicate is satisfied by at least one tool
+#                          (fields inside one predicate must match on the same tool;
+#                          a list value means "any of these values")
+#   when_hash_changed      tool definitions differ from the --baseline file
+#   when_tool_name_shadowed  the same tool name is exposed by more than one server
+version: 1
+taxonomy_version: "1"
+
+# Uncomment and list your vetted sources to make CAP-007 also flag unvetted servers.
+# trusted_sources:
+#   - npm:@modelcontextprotocol/*
+#   - docker:ghcr.io/github/github-mcp-server
+#   - url:mcp.sentry.dev
+
+rules:
+  - id: CAP-001
+    severity: critical
+    when_agent_has_all:
+      - data_access: [private_read, secrets_read]
+      - untrusted_input: true
+      - egress: external
+    message: >-
+      Lethal trifecta: the agent can read private data, ingest attacker-controlled
+      content, and send data externally, so injected instructions can exfiltrate data.
+    maps_to: [OWASP-LLM01, OWASP-LLM02, OWASP-LLM06, MITRE-ATLAS-AML.T0051.001, MITRE-ATLAS-AML.T0086]
+
+  - id: CAP-002
+    severity: critical
+    when_agent_has_all:
+      - untrusted_input: true
+      - execution: host
+    message: >-
+      Untrusted content can reach host-level code execution: an injected instruction
+      can run commands on the machine.
+    maps_to: [OWASP-LLM01, OWASP-LLM06, MITRE-ATLAS-AML.T0051.001, MITRE-ATLAS-AML.T0053]
+
+  - id: CAP-003
+    severity: high
+    when_agent_has_any:
+      - mutation: destructive
+        approval_gate: [none, unknown]
+      - execution: host
+        approval_gate: [none, unknown]
+    message: >-
+      Destructive or host-execution tool without a detectable human approval gate.
+      ("unknown" means the config does not show one; set approval_gate to [none] to
+      flag only explicit auto-approval.)
+    maps_to: [OWASP-LLM06, MITRE-ATLAS-AML.T0101, MITRE-ATLAS-AML.T0053]
+
+  - id: CAP-004
+    severity: high
+    when_agent_has_all:
+      - data_access: secrets_read
+      - egress: external
+    message: The agent can read secrets and send data externally.
+    maps_to: [OWASP-LLM02, OWASP-LLM06, MITRE-ATLAS-AML.T0098, MITRE-ATLAS-AML.T0086]
+
+  - id: CAP-005
+    severity: high
+    # Remote servers only: a local stdio server runs as the user rather than being
+    # reachable without authentication.
+    when_server:
+      remote: true
+      auth: none
+    when_agent_has_any:
+      - any_capability: true
+    message: Remote MCP server answers without authentication and exposes capabilities.
+    maps_to: [OWASP-LLM06, MITRE-ATLAS-AML.T0053]
+
+  - id: CAP-006
+    severity: high
+    when_hash_changed: true
+    message: >-
+      Tool definitions changed since the pinned baseline (possible rug pull). Review
+      the change before trusting this server again.
+    maps_to: [OWASP-LLM03, MITRE-ATLAS-AML.T0109, MITRE-ATLAS-AML.T0010.005]
+
+  - id: CAP-007
+    severity: medium
+    when_server:
+      - version_pinned: unpinned
+      - source_trust: untrusted
+    message: >-
+      Server is not pinned to an exact version or digest, or does not come from a
+      vetted source, so its code can change without review.
+    maps_to: [OWASP-LLM03, MITRE-ATLAS-AML.T0010.005]
+
+  - id: CAP-008
+    severity: high
+    when_agent_has_any:
+      - suspicious_description: true
+    message: >-
+      Tool description contains instructions aimed at the model (possible tool
+      poisoning).
+    maps_to: [OWASP-LLM01, OWASP-LLM03, MITRE-ATLAS-AML.T0110]
+
+  - id: CAP-009
+    severity: medium
+    when_tool_name_shadowed: true
+    message: >-
+      The same tool name is exposed by more than one server on this agent; one can
+      shadow or intercept the other.
+    maps_to: [OWASP-LLM03, OWASP-LLM06, MITRE-ATLAS-AML.T0110]

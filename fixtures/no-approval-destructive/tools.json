@@ -1,0 +1,20 @@
+{
+  "servers": {
+    "files": {
+      "tools": [
+        {
+          "name": "read_file",
+          "description": "Read the complete contents of a file from the workspace.",
+          "tags": { "data_access": "private_read" },
+          "evidence": { "data_access": "Read the complete contents of a file" }
+        },
+        {
+          "name": "delete_file",
+          "description": "Permanently delete a file or directory from the workspace.",
+          "tags": { "mutation": "destructive" },
+          "evidence": { "mutation": "Permanently delete a file or directory" }
+        }
+      ]
+    }
+  }
+}

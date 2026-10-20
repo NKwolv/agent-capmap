@@ -1,0 +1,40 @@
+{
+  "servers": {
+    "fetch": {
+      "tools": [
+        {
+          "name": "fetch",
+          "description": "Fetches a URL from the internet and extracts its contents as markdown.",
+          "inputSchema": {
+            "type": "object",
+            "properties": { "url": { "type": "string", "description": "URL to fetch" } },
+            "required": ["url"]
+          },
+          "tags": { "untrusted_input": true, "egress": "external" },
+          "evidence": {
+            "untrusted_input": "Fetches a URL from the internet",
+            "egress": "Fetches a URL from the internet"
+          }
+        }
+      ]
+    },
+    "shell": {
+      "tools": [
+        {
+          "name": "run_command",
+          "description": "Execute a shell command on the host and return its output.",
+          "inputSchema": {
+            "type": "object",
+            "properties": { "command": { "type": "string" } },
+            "required": ["command"]
+          },
+          "tags": { "execution": "host", "mutation": "destructive" },
+          "evidence": {
+            "execution": "Execute a shell command on the host",
+            "mutation": "Execute a shell command on the host"
+          }
+        }
+      ]
+    }
+  }
+}

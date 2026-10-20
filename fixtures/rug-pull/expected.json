@@ -1,0 +1,91 @@
+{
+  "findings": [
+    {
+      "rule_id": "CAP-006",
+      "severity": "high",
+      "agent_id": "generic:mcp.json",
+      "config_path": "mcp.json",
+      "location": {
+        "path": "mcp.json",
+        "line": 3
+      },
+      "servers": [
+        "notes"
+      ],
+      "tools": [
+        "notes/export_notes",
+        "notes/search_notes"
+      ],
+      "evidence": [
+        {
+          "server": "notes",
+          "tool": null,
+          "matched": {
+            "definitions_changed": true
+          },
+          "phrases": {
+            "diff": "changed: search_notes, added: export_notes"
+          },
+          "unverified": []
+        }
+      ],
+      "details": {
+        "added": [
+          "export_notes"
+        ],
+        "removed": [],
+        "changed": [
+          "search_notes"
+        ],
+        "hashes": {
+          "search_notes": {
+            "baseline": "0131cfd0d0131fb57d51ab3c3f7ad7a4f65f631e4630f1cf7f0d7d35ae16fed9",
+            "current": "5d397e71fcaa5917adfd2d3d2cc19e3133e77583f63c1bb732765aaff43cdc8d"
+          }
+        }
+      },
+      "fingerprint": "b94dc17ebe28ddd3fdea1c37cbac7dac"
+    },
+    {
+      "rule_id": "CAP-008",
+      "severity": "high",
+      "agent_id": "generic:mcp.json",
+      "config_path": "mcp.json",
+      "location": {
+        "path": "mcp.json",
+        "line": 3
+      },
+      "servers": [
+        "notes"
+      ],
+      "tools": [
+        "notes/search_notes"
+      ],
+      "evidence": [
+        {
+          "server": "notes",
+          "tool": "search_notes",
+          "matched": {
+            "suspicious_description": true
+          },
+          "phrases": {
+            "suspicious_description": "Description tells the model to include the user's private SSH key in the query."
+          },
+          "unverified": []
+        }
+      ],
+      "details": {},
+      "fingerprint": "c13d7b37c718ea24a26aa9330263ea4b"
+    }
+  ],
+  "not_assessed": [],
+  "skipped_rules": [],
+  "summary": {
+    "critical": 0,
+    "high": 2,
+    "medium": 0,
+    "low": 0,
+    "info": 0,
+    "not_assessed": 0
+  }
+}

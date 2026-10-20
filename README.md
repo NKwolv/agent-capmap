@@ -3,8 +3,8 @@
 Inventory the MCP servers and tools reachable by each AI agent, classify their
 capabilities, and flag dangerous capability combinations with policy-as-code.
 
-> Status: early development. Discovery, enumeration and classification work; the
-> policy engine and reporting are in progress.
+> Status: early development. Discovery, enumeration, classification and the policy
+> engine work; SARIF/Markdown reporting and the GitHub Action are in progress.
 
 ## Quickstart
 
@@ -48,6 +48,51 @@ agentcapmap classify inventory.json --offline   # cache only, no API calls
 Supported config formats: Claude Desktop (`claude_desktop_config.json`), Cursor
 (`.cursor/mcp.json`), VS Code (`.vscode/mcp.json`, `mcp` block in `settings.json`),
 Claude Code (`.mcp.json`) and generic `mcp.json`.
+
+## Policy and findings
+
+Findings come from deterministic rules in a YAML policy, evaluated per agent over the
+union of its tools. The built-in [`policies/default.yaml`](policies/default.yaml)
+implements rules CAP-001 to CAP-009 (see the [threat model](docs/threat-model.md)).
+
+```sh
+# Evaluate a saved, classified inventory
+agentcapmap evaluate inventory.json
+
+# Or scan, enumerate, classify and evaluate in one go
+agentcapmap scan path/to/repo --enumerate --classify --evaluate -o findings.json
+
+# Use your own policy
+agentcapmap evaluate inventory.json --policy my-policy.yaml
+
+# Rug-pull detection: pin tool definitions once, compare later
+agentcapmap baseline create inventory.json -o baseline.json
+agentcapmap evaluate new-inventory.json --baseline baseline.json
+```
+
+A rule combines conditions on the tools an agent can reach:
+
+```yaml
+- id: CAP-001
+  severity: critical
+  when_agent_has_all:            # each predicate matched by some tool on the agent
+    - data_access: [private_read, secrets_read]
+    - untrusted_input: true
+    - egress: external
+  message: "Lethal trifecta: injection can exfiltrate private data"
+  maps_to: [OWASP-LLM01, OWASP-LLM06]
+```
+
+Other conditions: `when_agent_has_any`, `when_server` (auth, transport, remote,
+version_pinned, source_trust), `when_hash_changed` and `when_tool_name_shadowed`. The
+format is defined by [`schemas/policy.schema.json`](schemas/policy.schema.json); unknown
+fields are rejected.
+
+Every finding includes its evidence (agent, servers, tools, the matched tags and the
+phrases from the tool definitions behind them). Tools that could not be enumerated or
+classified are listed under `not_assessed` rather than guessed at.
+
+The [`fixtures/`](fixtures/) directory has one example agent per rule.
 
 ## Safety
 

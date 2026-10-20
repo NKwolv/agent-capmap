@@ -1,0 +1,75 @@
+{
+  "findings": [
+    {
+      "rule_id": "CAP-001",
+      "severity": "critical",
+      "agent_id": "generic:mcp.json",
+      "config_path": "mcp.json",
+      "location": {
+        "path": "mcp.json",
+        "line": 3
+      },
+      "servers": [
+        "github",
+        "mailer"
+      ],
+      "tools": [
+        "github/get_file_contents",
+        "github/list_issues",
+        "mailer/send_email"
+      ],
+      "evidence": [
+        {
+          "server": "github",
+          "tool": "get_file_contents",
+          "matched": {
+            "data_access": "private_read"
+          },
+          "phrases": {
+            "data_access": "contents of a file from a private or public repository"
+          },
+          "unverified": []
+        },
+        {
+          "server": "github",
+          "tool": "list_issues",
+          "matched": {
+            "untrusted_input": true
+          },
+          "phrases": {
+            "untrusted_input": "including issues opened by anyone"
+          },
+          "unverified": []
+        },
+        {
+          "server": "mailer",
+          "tool": "send_email",
+          "matched": {
+            "egress": "external"
+          },
+          "phrases": {
+            "egress": "Send an email to any recipient address"
+          },
+          "unverified": []
+        }
+      ],
+      "details": {},
+      "fingerprint": "30623d41e2bfc9e447bade1114817a1f"
+    }
+  ],
+  "not_assessed": [],
+  "skipped_rules": [
+    {
+      "rule_id": "CAP-006",
+      "reason": "no baseline provided (--baseline)"
+    }
+  ],
+  "summary": {
+    "critical": 1,
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "info": 0,
+    "not_assessed": 0
+  }
+}

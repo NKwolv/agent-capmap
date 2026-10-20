@@ -1,0 +1,109 @@
+{
+  "findings": [
+    {
+      "rule_id": "CAP-002",
+      "severity": "critical",
+      "agent_id": "generic:mcp.json",
+      "config_path": "mcp.json",
+      "location": {
+        "path": "mcp.json",
+        "line": 3
+      },
+      "servers": [
+        "fetch",
+        "shell"
+      ],
+      "tools": [
+        "fetch/fetch",
+        "shell/run_command"
+      ],
+      "evidence": [
+        {
+          "server": "fetch",
+          "tool": "fetch",
+          "matched": {
+            "untrusted_input": true
+          },
+          "phrases": {
+            "untrusted_input": "Fetches a URL from the internet"
+          },
+          "unverified": []
+        },
+        {
+          "server": "shell",
+          "tool": "run_command",
+          "matched": {
+            "execution": "host"
+          },
+          "phrases": {
+            "execution": "Execute a shell command on the host"
+          },
+          "unverified": []
+        }
+      ],
+      "details": {},
+      "fingerprint": "f756a3004ff1f6e118da3de8c0d25932"
+    },
+    {
+      "rule_id": "CAP-003",
+      "severity": "high",
+      "agent_id": "generic:mcp.json",
+      "config_path": "mcp.json",
+      "location": {
+        "path": "mcp.json",
+        "line": 7
+      },
+      "servers": [
+        "shell"
+      ],
+      "tools": [
+        "shell/run_command"
+      ],
+      "evidence": [
+        {
+          "server": "shell",
+          "tool": "run_command",
+          "matched": {
+            "approval_gate": "unknown",
+            "mutation": "destructive"
+          },
+          "phrases": {
+            "approval_gate": "no approval setting found in config",
+            "mutation": "Execute a shell command on the host"
+          },
+          "unverified": []
+        },
+        {
+          "server": "shell",
+          "tool": "run_command",
+          "matched": {
+            "approval_gate": "unknown",
+            "execution": "host"
+          },
+          "phrases": {
+            "approval_gate": "no approval setting found in config",
+            "execution": "Execute a shell command on the host"
+          },
+          "unverified": []
+        }
+      ],
+      "details": {},
+      "fingerprint": "5f21c6b50ece0178ad41ee6df33cbc49"
+    }
+  ],
+  "not_assessed": [],
+  "skipped_rules": [
+    {
+      "rule_id": "CAP-006",
+      "reason": "no baseline provided (--baseline)"
+    }
+  ],
+  "summary": {
+    "critical": 1,
+    "high": 1,
+    "medium": 0,
+    "low": 0,
+    "info": 0,
+    "not_assessed": 0
+  }
+}

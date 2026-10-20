@@ -124,10 +124,10 @@ These come from the config file and from enumeration, never from the model:
 |---|---|---|
 | `auth` (`none` / `static` / `oauth` / `unknown`) | Config (credential-looking env vars, headers, args, URLs) refined by enumeration (a 401 with a `Bearer` challenge means OAuth) | Implemented |
 | `definition_hash` | SHA-256 of each tool's canonical `{name, description, inputSchema}` plus a per-server hash | Implemented |
-| `approval_gate` | Client config | Planned (Phase 3) |
-| `version_pinned` | Package spec in the server command (e.g. `pkg@1.2.3` vs `pkg@latest`) | Planned (Phase 3) |
-| `source_trust` | Org allowlist | Planned (Phase 3) |
-| `scope_breadth` | Config | Planned (Phase 3) |
+| `approval_gate` (`required` / `none` / `unknown`), per tool | Client config: `alwaysAllow` / `autoApprove` lists, `trust: true`. No setting means `unknown` | Implemented |
+| `version_pinned` (`pinned` / `unpinned` / `local` / `not_applicable` / `unknown`) | The launch command: exact npm/PyPI versions and Docker digests are pinned; `@latest`, ranges and image tags are not | Implemented |
+| `source_trust` (`trusted` / `untrusted` / `unknown`) | `trusted_sources` glob patterns in the policy, matched against ids like `npm:@scope/pkg`, `pypi:pkg`, `docker:image`, `url:host` | Implemented |
+| `scope_breadth` | Token scopes are not visible in configs | Not implemented |
 
 ## Confidence and unverified evidence
 
@@ -137,8 +137,9 @@ These come from the config file and from enumeration, never from the model:
   definition text. The tag is kept, but the evidence may be paraphrased or invented,
   so treat findings that depend on it with more care.
 - A tool is `unclassified` when the model returned invalid output twice, declined, or
-  when `--offline` is used without a cached result. How the policy engine treats
-  unclassified tools is still an open decision for Phase 3.
+  when `--offline` is used without a cached result. The policy engine does not guess:
+  unclassified tools (and servers that could not be enumerated) are listed under
+  `not_assessed` in the evaluation, with a warning that findings may be incomplete.
 
 ## Known limitation
 

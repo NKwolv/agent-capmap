@@ -1,0 +1,11 @@
+{
+  "baseline_version": 1,
+  "servers": {
+    "ec460b326f41412e298c1171020613e88aa81346b0c49a11971435afb18240cf": {
+      "name": "notes",
+      "tools": {
+        "search_notes": "0131cfd0d0131fb57d51ab3c3f7ad7a4f65f631e4630f1cf7f0d7d35ae16fed9"
+      }
+    }
+  }
+}

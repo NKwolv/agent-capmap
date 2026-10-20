@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch==2025.4.7"]
+    },
+    "shell": {
+      "command": "npx",
+      "args": ["-y", "@acme/mcp-shell@0.3.1"]
+    }
+  }
+}

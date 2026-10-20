@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "analytics": {
+      "url": "https://mcp.analytics.example.com/mcp"
+    },
+    "crm": {
+      "command": "npx",
+      "args": ["-y", "@acme/mcp-crm@latest"],
+      "env": {
+        "CRM_API_TOKEN": "${CRM_ADMIN_TOKEN}"
+      }
+    }
+  }
+}

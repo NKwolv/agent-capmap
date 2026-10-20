@@ -46,7 +46,7 @@ two can be used together.
 |---|---|---|
 | Unit of analysis | Components (servers, tools, skills) on a machine | The **agent**: the union of every tool reachable from one client config |
 | Capability model | Risk categories from its backend | An explicit, versioned [six-axis taxonomy](taxonomy.md) per tool, with evidence phrases |
-| Who decides "dangerous" | The scanner's analysis | **Your policy file**: deterministic rules over tag combinations, with severities and mappings you control (Phase 3) |
+| Who decides "dangerous" | The scanner's analysis | **Your policy file**: deterministic rules over tag combinations, with severities and mappings you control |
 | Role of the LLM | Part of the analysis service | Classification only; it never makes risk decisions |
 | Where analysis runs | Snyk's Agent Scan API (needs a Snyk account and `SNYK_TOKEN`) | Locally, plus an LLM provider you choose (default: Anthropic API with your own key); `--offline` uses the local cache only |
 | What leaves your machine | Per its README: agent application details, server configurations and signatures, tool names and descriptions, skill content (secrets redacted) | With `--classify`: tool names, descriptions and input schemas. Config values are never sent |
@@ -65,6 +65,7 @@ two can be used together.
 
 ## Status note
 
-agent-capmap is early. Discovery, enumeration and classification are implemented. The
-policy engine, baseline pinning (rug-pull detection), SARIF output and the GitHub Action
-are planned, not yet shipped. Rows above marked with a phase number describe that plan.
+agent-capmap is early. Discovery, enumeration, classification, the policy engine and
+baseline pinning (rug-pull detection) are implemented. SARIF and Markdown output,
+`--fail-on` exit codes and the GitHub Action are planned (Phase 4), not yet shipped.
+Rows above marked with a phase number describe that plan.

@@ -9,7 +9,15 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from agentcapmap.models import AuthHint, AuthMethod, LaunchSpec, Server, SourceLocation, Transport
+from agentcapmap.models import (
+    ApprovalConfig,
+    AuthHint,
+    AuthMethod,
+    LaunchSpec,
+    Server,
+    SourceLocation,
+    Transport,
+)
 from agentcapmap.redact import (
     is_sensitive_name,
     known_secrets,
@@ -166,6 +174,35 @@ def infer_auth(
     return AuthHint(method=AuthMethod.UNKNOWN)
 
 
+# Keys clients use to skip per-call confirmation: Cline/Roo `alwaysAllow`, `autoApprove`
+# (list of tool names), and Gemini CLI `trust: true` (all tools).
+_AUTO_APPROVE_LIST_KEYS = ("alwaysAllow", "autoApprove")
+_MAX_APPROVAL_ENTRIES = 1000
+
+
+def parse_approval(name: str, entry: dict[str, Any]) -> ApprovalConfig:
+    tools: list[str] = []
+    sources: list[str] = []
+    for key in _AUTO_APPROVE_LIST_KEYS:
+        value = entry.get(key)
+        if value is None:
+            continue
+        if not isinstance(value, list) or not all(isinstance(t, str) for t in value):
+            raise ConfigError(f"server {name!r}: {key!r} must be an array of tool names")
+        if len(value) > _MAX_APPROVAL_ENTRIES:
+            raise ConfigError(f"server {name!r}: {key!r} has too many entries")
+        tools.extend(value)
+        sources.append(key)
+    trust = entry.get("trust")
+    if trust is not None and not isinstance(trust, bool):
+        raise ConfigError(f"server {name!r}: 'trust' must be true or false")
+    if trust:
+        sources.append("trust")
+    return ApprovalConfig(
+        auto_approve_all=bool(trust), auto_approved_tools=sorted(set(tools)), sources=sources
+    )
+
+
 def build_server(
     name: str,
     entry: Any,
@@ -211,6 +248,7 @@ def build_server(
         auth=infer_auth(transport, env, headers, args, url, env_file if env_file else None),
         location=SourceLocation(path=config_path, line=find_key_line(text, name, section_start)),
         disabled=bool(entry.get("disabled", False)),
+        approval=parse_approval(name, entry),
         launch=LaunchSpec(
             command=command,
             args=args,

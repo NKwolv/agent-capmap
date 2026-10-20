@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NKwolv/agent-capmap/schemas/policy.schema.json",
+  "title": "agent-capmap policy",
+  "description": "Deterministic rules evaluated per agent over the union of its tools. Policy format version 1, taxonomy version 1.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "taxonomy_version", "rules"],
+  "properties": {
+    "version": { "const": 1 },
+    "taxonomy_version": { "const": "1" },
+    "trusted_sources": {
+      "description": "Vetted server sources. Glob patterns over source ids: npm:<pkg>, pypi:<pkg>, docker:<image>, url:<host>, local:<path>. When set, servers matching none are 'untrusted'.",
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 256,
+        "pattern": "^(npm|pypi|docker|url|local):[^\\s]+$"
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": { "$ref": "#/$defs/rule" }
+    }
+  },
+  "$defs": {
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "severity", "message"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Z][A-Z0-9-]{1,31}$" },
+        "severity": { "enum": ["critical", "high", "medium", "low", "info"] },
+        "message": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "enabled": { "type": "boolean" },
+        "maps_to": {
+          "type": "array",
+          "maxItems": 20,
+          "items": { "type": "string", "pattern": "^[A-Za-z0-9.:_-]{1,64}$" }
+        },
+        "when_agent_has_all": { "$ref": "#/$defs/tool_predicates" },
+        "when_agent_has_any": { "$ref": "#/$defs/tool_predicates" },
+        "when_server": {
+          "oneOf": [
+            { "$ref": "#/$defs/server_predicate" },
+            {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 20,
+              "items": { "$ref": "#/$defs/server_predicate" }
+            }
+          ]
+        },
+        "when_hash_changed": { "const": true },
+        "when_tool_name_shadowed": { "const": true }
+      },
+      "anyOf": [
+        { "required": ["when_agent_has_all"] },
+        { "required": ["when_agent_has_any"] },
+        { "required": ["when_server"] },
+        { "required": ["when_hash_changed"] },
+        { "required": ["when_tool_name_shadowed"] }
+      ]
+    },
+    "tool_predicates": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": { "$ref": "#/$defs/tool_predicate" }
+    },
+    "tool_predicate": {
+      "description": "All fields must match on the same tool. A list means any of the values.",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "data_access": { "$ref": "#/$defs/data_access" },
+        "untrusted_input": { "$ref": "#/$defs/boolean_or_list" },
+        "egress": { "$ref": "#/$defs/egress" },
+        "mutation": { "$ref": "#/$defs/mutation" },
+        "execution": { "$ref": "#/$defs/execution" },
+        "privilege": { "$ref": "#/$defs/privilege" },
+        "suspicious_description": { "type": "boolean" },
+        "any_capability": { "type": "boolean" },
+        "approval_gate": { "$ref": "#/$defs/approval_gate" }
+      }
+    },
+    "server_predicate": {
+      "description": "All fields must match on the same server. A list means any of the values.",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "auth": { "$ref": "#/$defs/auth" },
+        "transport": { "$ref": "#/$defs/transport" },
+        "remote": { "type": "boolean" },
+        "version_pinned": { "$ref": "#/$defs/version_pinned" },
+        "source_trust": { "$ref": "#/$defs/source_trust" }
+      }
+    },
+    "boolean_or_list": {
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": { "type": "boolean" } }
+      ]
+    },
+    "data_access": {
+      "oneOf": [
+        { "enum": ["none", "private_read", "secrets_read"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["none", "private_read", "secrets_read"] } }
+      ]
+    },
+    "egress": {
+      "oneOf": [
+        { "enum": ["none", "internal", "external"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["none", "internal", "external"] } }
+      ]
+    },
+    "mutation": {
+      "oneOf": [
+        { "enum": ["none", "reversible_write", "destructive"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["none", "reversible_write", "destructive"] } }
+      ]
+    },
+    "execution": {
+      "oneOf": [
+        { "enum": ["none", "sandboxed", "host"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["none", "sandboxed", "host"] } }
+      ]
+    },
+    "privilege": {
+      "oneOf": [
+        { "enum": ["none", "identity_admin"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["none", "identity_admin"] } }
+      ]
+    },
+    "approval_gate": {
+      "oneOf": [
+        { "enum": ["required", "none", "unknown"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["required", "none", "unknown"] } }
+      ]
+    },
+    "auth": {
+      "oneOf": [
+        { "enum": ["none", "static", "oauth", "unknown"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["none", "static", "oauth", "unknown"] } }
+      ]
+    },
+    "transport": {
+      "oneOf": [
+        { "enum": ["stdio", "http", "sse"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["stdio", "http", "sse"] } }
+      ]
+    },
+    "version_pinned": {
+      "oneOf": [
+        { "enum": ["pinned", "unpinned", "local", "not_applicable", "unknown"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["pinned", "unpinned", "local", "not_applicable", "unknown"] } }
+      ]
+    },
+    "source_trust": {
+      "oneOf": [
+        { "enum": ["trusted", "untrusted", "unknown"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["trusted", "untrusted", "unknown"] } }
+      ]
+    }
+  }
+}

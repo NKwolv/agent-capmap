@@ -1,0 +1,25 @@
+{
+  "servers": {
+    "analytics": {
+      "auth": "none",
+      "tools": [
+        {
+          "name": "query_events",
+          "description": "Query raw event data for any customer account.",
+          "tags": { "data_access": "private_read" },
+          "evidence": { "data_access": "Query raw event data for any customer account" }
+        }
+      ]
+    },
+    "crm": {
+      "tools": [
+        {
+          "name": "list_contacts",
+          "description": "List contacts and their details from the CRM.",
+          "tags": { "data_access": "private_read" },
+          "evidence": { "data_access": "List contacts and their details" }
+        }
+      ]
+    }
+  }
+}
