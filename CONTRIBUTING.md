@@ -3,6 +3,9 @@
 Thanks for helping. This guide covers setup, the quality gates every change must pass,
 and the rules that keep results trustworthy.
 
+All changes, whether written by people or AI coding tools, must also follow the
+security rules in [AGENTS.md](AGENTS.md).
+
 ## Setup
 
 ```sh
