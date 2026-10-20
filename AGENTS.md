@@ -158,8 +158,12 @@ the sections above apply here:
   addition to this file.
 - **Required checks before any change is proposed for merge:** `ruff check .`,
   `ruff format --check .`, `mypy`, `pytest`, `bandit -c pyproject.toml -r src`,
-  `pip-audit --strict .`, and `zizmor --offline --persona auditor .github/workflows/`,
-  all with zero findings. CodeQL runs in CI.
+  `pip-audit --strict --require-hashes -r requirements/dev.lock`,
+  `zizmor --offline --persona auditor .github/workflows/`, and
+  `gitleaks git . --config .gitleaks.toml --redact`, all with zero findings. CodeQL and
+  SBOM generation run in CI. Details in [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Dependencies (section 8):** install from the hash-pinned lockfiles in
+  `requirements/`, and regenerate them with a 14-day `--exclude-newer` cutoff.
 
 ## References
 

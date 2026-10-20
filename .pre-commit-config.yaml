@@ -1,12 +1,18 @@
+# All hooks run the tool versions pinned in requirements/dev.lock (installed in your
+# venv), so pre-commit never fetches unpinned third-party hook code.
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
   - repo: local
     hooks:
+      - id: ruff
+        name: ruff (lint, incl. security rules)
+        entry: ruff check --fix
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format
+        language: system
+        types: [python]
       - id: mypy
         name: mypy
         entry: mypy

@@ -20,7 +20,7 @@
         "type": "http",
         "url": "https://mcp.example.com/mcp?api_key=FAKEQUERYKEY123456&region=eu",
         "headers": {
-          "X-API-Key": "plain-api-key-value-777"
+          "X-API-Key": "fake-plain-api-key-777"
         }
       }
     }

@@ -44,7 +44,14 @@ All notable changes to this project are documented here. The format follows
 - HTTP error messages no longer include raw exception text that could contain URL
   secrets.
 - Security gates: ruff `S` rules, bandit, pip-audit, zizmor and CodeQL in CI; GitHub
-  Actions pinned to commit SHAs; Dependabot for pip and Actions.
+  Actions pinned to commit SHAs; Dependabot for pip and Actions with a 14-day cooldown.
+- Hash-pinned lockfiles (`requirements/runtime.lock`, `requirements/dev.lock`),
+  resolved with a 14-day `--exclude-newer` cutoff; CI installs with `--require-hashes`
+  and builds without fetching an unpinned build backend.
+- Secret scanning of the full git history with gitleaks (image pinned by digest).
+- CycloneDX SBOM of the runtime dependencies generated in CI.
+- `AGENTS.md` security rules for people and AI coding tools; `.gitignore` covers key,
+  certificate, credential and state files; `.env.example` added.
 
 ### Notes
 

@@ -43,8 +43,8 @@ def _remote(tmp_path: Path, entry: dict[str, Any]) -> Server:
 def test_launched_server_does_not_inherit_our_secrets(
     mock_stdio_config: MakeConfig, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setenv("CAPMAP_PARENT_SECRET", "parent-only-value-123")
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-not-for-servers-000000")
+    monkeypatch.setenv("CAPMAP_PARENT_SECRET", "fake-parent-only-value-123")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-fake-not-for-servers-0000")
     config, _ = mock_stdio_config(
         {"report_env": ["CAPMAP_PARENT_SECRET", "ANTHROPIC_API_KEY", "EXPLICIT_VAR", "PATH"]},
         env={"EXPLICIT_VAR": "set-by-config"},

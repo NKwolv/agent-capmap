@@ -18,6 +18,15 @@ Especially relevant reports:
   the data delimiters;
 - a config file that crashes discovery or causes code to run without `--enumerate`.
 
+## Supply chain
+
+- Dependencies are installed from hash-pinned lockfiles (`requirements/`), resolved
+  only from releases at least 14 days old.
+- Every CI run scans for known-vulnerable dependencies (pip-audit), runs static analysis
+  (bandit, CodeQL), audits the CI workflows (zizmor), scans the full git history for
+  secrets (gitleaks), and publishes a CycloneDX SBOM of the runtime dependencies as a
+  build artifact.
+
 ## Supported versions
 
 agent-capmap is pre-1.0. Only the latest release on `main` receives fixes.

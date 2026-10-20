@@ -1,0 +1,4 @@
+# Build backend, pinned so CI can install with --no-build-isolation.
+hatchling>=1.24
+# Needed by hatchling for editable (pip install -e) builds.
+editables>=0.5

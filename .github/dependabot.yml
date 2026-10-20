@@ -1,9 +1,13 @@
 version: 2
 updates:
+  # pyproject.toml ranges and the hash-pinned lockfiles in requirements/.
   - package-ecosystem: pip
-    directory: /
+    directories: ["/", "/requirements"]
     schedule:
       interval: weekly
+    # Let new releases age before proposing them (supply-chain safety).
+    cooldown:
+      default-days: 14
     groups:
       python-dependencies:
         patterns: ["*"]
@@ -11,6 +15,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 14
     groups:
       github-actions:
         patterns: ["*"]

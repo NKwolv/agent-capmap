@@ -1,0 +1,15 @@
+title = "agent-capmap secret scanning"
+
+# Start from gitleaks' maintained default rule set.
+[extend]
+useDefault = true
+
+# Test fixtures deliberately contain credential-shaped values so redaction can be
+# tested, and every one of them contains "fake" (see tests/fake_secrets.py).
+#
+# This allowlist matches on the secret value only. Do NOT add `paths` here: in gitleaks
+# 8.30 a path entry skips matching files entirely, even with condition = "AND", which
+# would hide a real secret placed in tests/ (verified by a negative test).
+[[allowlists]]
+description = "Deliberately fake credentials (value contains 'fake')"
+regexes = ['''(?i)fake''']

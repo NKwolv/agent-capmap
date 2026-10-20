@@ -36,7 +36,7 @@ def test_non_sensitive_names(name: str) -> None:
         fake_secrets.ANTHROPIC_KEY,
         fake_secrets.SLACK_TOKEN,
         fake_secrets.AWS_ACCESS_KEY_ID,
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U",
+        "eyJhbGciOiJGQUtFIn0.eyJGQUtFIjoiRkFLRSJ9.FAKEsignatureFAKEsignature",
     ],
 )
 def test_token_patterns_in_free_text(secret: str) -> None:

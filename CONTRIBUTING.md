@@ -13,11 +13,30 @@ git clone https://github.com/NKwolv/agent-capmap
 cd agent-capmap
 python -m venv .venv
 # Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
-pip install -e ".[dev]"
-pre-commit install   # optional: runs ruff and mypy on commit
+# Install exactly the hash-pinned versions CI uses, then this package.
+pip install --require-hashes -r requirements/dev.lock
+pip install --no-deps --no-build-isolation -e .
+pre-commit install   # optional: runs ruff, mypy and bandit on commit
 ```
 
 Python 3.11 or newer is required.
+
+### Dependencies and lockfiles
+
+Version ranges live in `pyproject.toml`; exact versions with hashes live in
+`requirements/runtime.lock` (what users install) and `requirements/dev.lock` (tools,
+tests and the build backend). After changing dependencies, regenerate both locks with a
+cutoff date 14 days in the past, so a just-published (possibly compromised) release is
+never picked up:
+
+```sh
+CUTOFF=2026-10-06   # today minus 14 days
+uv pip compile pyproject.toml --universal --generate-hashes --python-version 3.11   --exclude-newer $CUTOFF -o requirements/runtime.lock
+uv pip compile pyproject.toml requirements/build.in --extra dev --universal   --generate-hashes --python-version 3.11 --exclude-newer $CUTOFF -o requirements/dev.lock
+```
+
+Before adding a dependency, confirm on PyPI that it exists under that exact name, is
+actively maintained and widely used (see [AGENTS.md](AGENTS.md) section 8).
 
 ## Quality gates
 
@@ -30,11 +49,17 @@ ruff format --check .
 mypy
 pytest
 bandit -c pyproject.toml -r src  # SAST
-pip-audit --strict .             # SCA: known-vulnerable dependencies
+pip-audit --strict --require-hashes -r requirements/dev.lock   # SCA
 zizmor --offline --persona auditor .github/workflows/   # GitHub Actions security
+gitleaks git . --config .gitleaks.toml --redact          # secrets, full history
 ```
 
-CodeQL (`security-extended` queries) also runs on every pull request.
+CI also runs CodeQL (`security-extended` queries) and builds a CycloneDX SBOM of the
+runtime dependencies (downloadable as the `sbom` artifact of each CI run).
+
+Every credential-shaped value in tests must contain `fake` (see
+`tests/fake_secrets.py`); that is what the secret-scanner allowlist keys on. Never add
+a path-based allowlist: it would hide real secrets placed in those paths.
 
 **Zero findings is the bar.** Fix a finding rather than suppressing it. A suppression
 is acceptable only for a verified false positive or an unavoidable, documented design

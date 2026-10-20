@@ -10,7 +10,22 @@ dist/
 .ruff_cache/
 .coverage
 htmlcov/
+
+# Secrets and credentials: never commit (AGENTS.md section 1)
 .env
 .env.*
-# local classifier cache and scan output
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+*.tfstate
+*.tfstate.*
+kubeconfig
+.secrets/
+
+# Local classifier cache and scan output (may contain tool descriptions)
 .agentcapmap/
+inventory*.json
+sbom*.json

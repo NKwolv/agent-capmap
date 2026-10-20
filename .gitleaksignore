@@ -1,0 +1,7 @@
+# Exact gitleaks findings reviewed and accepted. Each entry is one finding in one commit;
+# anything new is still reported.
+#
+# Phase 1 commit: deliberately fake test values that did not yet contain "fake".
+# Since replaced (tests/fake_secrets.py PATH_SECRET, tests/test_redact.py JWT sample).
+bc368719f073b650f42dd721394bfa5db74c4f75:tests/test_redact.py:jwt:39
+bc368719f073b650f42dd721394bfa5db74c4f75:tests/fake_secrets.py:generic-api-key:13

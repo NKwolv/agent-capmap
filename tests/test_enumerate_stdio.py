@@ -91,7 +91,7 @@ def test_crash_stderr_is_redacted(mock_stdio_config: MakeConfig) -> None:
 
 
 def test_crash_stderr_redacts_unshaped_known_secret(mock_stdio_config: MakeConfig) -> None:
-    secret = "correct-horse-battery-staple"
+    secret = "fake-correct-horse-battery"
     config, _ = mock_stdio_config({"stderr_env": "DB_PASSWORD"}, env={"DB_PASSWORD": secret})
     result = enumerate_server(_server(config), timeout=20)
     assert result.error is not None
