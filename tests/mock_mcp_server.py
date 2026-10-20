@@ -10,6 +10,12 @@ Spec keys (all optional):
   ping_first: send a ping request before answering initialize
   hang_on: method name to never answer no_tools_capability: omit "tools" capability
   stderr_env: env var to print to stderr, then exit 1 (simulates a leaky crash)
+  report_env: env var names; serverInfo.env reports which ones the server can see
+  junk_before_init: raw text written to stdout before the initialize response
+  tool_count: generate this many trivial tools
+
+HTTP mock extras (spec): redirect_to (POST answers 307 to this URL),
+  endpoint (legacy SSE endpoint event value), body_padding (extra bytes in JSON body)
 """
 
 from __future__ import annotations
@@ -61,11 +67,21 @@ def handle(spec: dict[str, Any], message: dict[str, Any]) -> dict[str, Any] | No
             "result": {
                 "protocolVersion": message.get("params", {}).get("protocolVersion"),
                 "capabilities": capabilities,
-                "serverInfo": {"name": "mock-mcp", "version": "1.0.0"},
+                "serverInfo": {
+                    "name": "mock-mcp",
+                    "version": "1.0.0",
+                    **(
+                        {"env": {n: n in os.environ for n in spec["report_env"]}}
+                        if spec.get("report_env")
+                        else {}
+                    ),
+                },
             },
         }
     if method == "tools/list":
         tools = spec.get("tools", DEFAULT_TOOLS)
+        if count := spec.get("tool_count"):
+            tools = [{"name": f"t{i}", "inputSchema": {}} for i in range(int(count))]
         page_size = int(spec.get("page_size") or len(tools) or 1)
         start = int(message.get("params", {}).get("cursor") or 0)
         result: dict[str, Any] = {"tools": tools[start : start + page_size]}
@@ -110,6 +126,9 @@ def run_stdio(spec: dict[str, Any]) -> None:
             pinged = True
             send({"jsonrpc": "2.0", "id": "ping-1", "method": "ping"})
             send({"jsonrpc": "2.0", "method": "notifications/message", "params": {"data": "hi"}})
+        if message["method"] == "initialize" and (junk := spec.get("junk_before_init")):
+            sys.stdout.write(junk)
+            sys.stdout.flush()
         response = handle(spec, message)
         if response is not None:
             send(response)
@@ -133,6 +152,8 @@ class MockHttpServer:
         self.require_token = require_token
         self.methods: list[str] = []
         self.session_headers: list[str | None] = []
+        # Every POST's headers, so tests can check credentials never reach a host.
+        self.received_headers: list[dict[str, str]] = []
         self.deleted = False
         self._legacy_queue: queue.Queue[dict[str, Any]] = queue.Queue()
         self._stop = threading.Event()
@@ -196,7 +217,8 @@ class MockHttpServer:
                 self.send_header("Cache-Control", "no-cache")
                 self.end_headers()
                 try:
-                    self.wfile.write(b"event: endpoint\ndata: /messages?session=abc\n\n")
+                    endpoint = server.spec.get("endpoint", "/messages?session=abc")
+                    self.wfile.write(f"event: endpoint\ndata: {endpoint}\n\n".encode())
                     self.wfile.flush()
                     while not server._stop.is_set():
                         try:
@@ -214,6 +236,13 @@ class MockHttpServer:
                 self._send(200)
 
             def do_POST(self) -> None:
+                server.received_headers.append(dict(self.headers.items()))
+                if redirect := server.spec.get("redirect_to"):
+                    self.send_response(307)
+                    self.send_header("Location", redirect)
+                    self.send_header("Content-Length", "0")
+                    self.end_headers()
+                    return
                 if not self._authorized():
                     return
                 length = int(self.headers.get("Content-Length", 0))
@@ -241,7 +270,8 @@ class MockHttpServer:
                     ).encode()
                     ctype = "text/event-stream"
                 else:
-                    body, ctype = json.dumps(response).encode(), "application/json"
+                    padding = " " * int(server.spec.get("body_padding", 0))
+                    body, ctype = (json.dumps(response) + padding).encode(), "application/json"
                 self.send_response(200)
                 self.send_header("Content-Type", ctype)
                 self.send_header("Content-Length", str(len(body)))

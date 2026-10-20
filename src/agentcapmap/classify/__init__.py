@@ -82,6 +82,8 @@ def parse_output(text: str, tool: ToolDefinition, *, model: str) -> ToolClassifi
         data = json.loads(text)
     except json.JSONDecodeError as exc:
         raise InvalidOutput(f"not valid JSON ({exc.msg})") from None
+    except RecursionError:
+        raise InvalidOutput("not valid JSON (nested too deeply)") from None
 
     error = best_match(_validator().iter_errors(data))
     if error is not None:

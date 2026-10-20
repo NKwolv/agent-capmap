@@ -29,6 +29,23 @@ All notable changes to this project are documented here. The format follows
 - Documentation: taxonomy, threat model, comparison with Snyk Agent Scan (formerly
   mcp-scan), contributing guide, security policy.
 
+### Security
+
+- Launched stdio servers inherit only an allowlisted environment, so the scanner's own
+  credentials (e.g. `ANTHROPIC_API_KEY`) are not exposed to them.
+- HTTP redirects are no longer followed and legacy-SSE endpoints must be same-origin, so
+  configured credentials cannot be forwarded to another host. Only `http`/`https` URLs
+  are accepted.
+- Size limits on all server and config input; tool count cap; deep-nesting and
+  non-UTF-8 input handled as clean errors.
+- Redaction regexes rewritten to avoid catastrophic backtracking (a 20 KB hostile
+  string previously took ~15 s).
+- Control characters escaped in log output.
+- HTTP error messages no longer include raw exception text that could contain URL
+  secrets.
+- Security gates: ruff `S` rules, bandit, pip-audit, zizmor and CodeQL in CI; GitHub
+  Actions pinned to commit SHAs; Dependabot for pip and Actions.
+
 ### Notes
 
 - Current Claude models do not accept `temperature`; it is set to 0 only for older

@@ -12,6 +12,7 @@ from pathlib import Path
 
 from agentcapmap.discovery import claude_desktop, cursor, mcp_json, vscode
 from agentcapmap.discovery._common import ConfigError, ConfigFormat, load_jsonc
+from agentcapmap.limits import MAX_CONFIG_BYTES
 from agentcapmap.models import Agent, DiscoveryError, Inventory
 from agentcapmap.redact import get_logger
 
@@ -93,9 +94,15 @@ def parse_config_file(
     """
     display = _display_path(path, root)
     try:
+        if path.stat().st_size > MAX_CONFIG_BYTES:
+            return None, DiscoveryError(
+                path=display, message=f"file larger than {MAX_CONFIG_BYTES} bytes; skipped"
+            )
         text = path.read_text(encoding="utf-8-sig")
-    except (OSError, UnicodeDecodeError) as exc:
-        return None, DiscoveryError(path=display, message=f"cannot read file: {exc}")
+    except OSError as exc:
+        return None, DiscoveryError(path=display, message=f"cannot read file: {exc.strerror}")
+    except UnicodeDecodeError:
+        return None, DiscoveryError(path=display, message="cannot read file: not UTF-8 text")
 
     fmt = detect_format(path, text)
     if fmt is None:

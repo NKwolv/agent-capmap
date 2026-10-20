@@ -30,6 +30,11 @@ agent-capmap is pre-1.0. Only the latest release on `main` receives fixes.
   their URLs. That executes whatever the config specifies. Only enumerate configs you
   trust, and prefer a disposable environment (container, CI runner) for unfamiliar
   ones.
+- **Launched servers get a minimal environment.** They inherit only a short allowlist
+  of variables (such as `PATH` and `HOME`), not your API keys or cloud credentials.
+  Anything else a server needs must be set in its config.
+- **Remote servers cannot redirect your credentials.** agent-capmap never follows HTTP
+  redirects and rejects cross-origin SSE endpoints.
 - **`--classify` sends tool names, descriptions and input schemas** to the configured
   LLM provider (Anthropic by default). Config values such as env vars, headers and
   arguments are never sent. Use `--offline` to classify from the local cache only.

@@ -9,6 +9,7 @@ from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from agentcapmap import __version__
 from agentcapmap.enumerate.hashing import server_definition_hash, tool_definition_hash
@@ -21,6 +22,7 @@ from agentcapmap.enumerate.transport import (
     Transport,
     TransportError,
 )
+from agentcapmap.limits import MAX_CONFIG_BYTES, MAX_TOOLS_PER_SERVER
 from agentcapmap.models import (
     AuthHint,
     AuthMethod,
@@ -48,6 +50,8 @@ class UnresolvedVariable(Exception):
 
 def _load_env_file(path: Path) -> dict[str, str]:
     values: dict[str, str] = {}
+    if path.stat().st_size > MAX_CONFIG_BYTES:
+        raise ValueError("envFile too large")
     for line in path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
@@ -99,6 +103,8 @@ def resolve_launch(spec: LaunchSpec) -> LaunchSpec:
             file_env = _load_env_file(env_path)
         except OSError as exc:
             raise UnresolvedVariable(f"cannot read envFile: {exc.strerror}") from None
+        except (UnicodeDecodeError, ValueError):
+            raise UnresolvedVariable("cannot read envFile: not a UTF-8 text file") from None
         for value in file_env.values():
             known_secrets.add(value)
     lookup_env.update(file_env)
@@ -121,10 +127,14 @@ def resolve_launch(spec: LaunchSpec) -> LaunchSpec:
 
 def open_transport(server: Server, spec: LaunchSpec, timeout: float) -> Transport:
     if server.transport is TransportKind.STDIO:
-        assert spec.command
+        if not spec.command:
+            raise TransportError("stdio server has no command")
         cwd = spec.cwd if spec.cwd and Path(spec.cwd).is_dir() else None
         return StdioTransport(spec.command, spec.args, spec.env, cwd)
-    assert spec.url
+    if not spec.url:
+        raise TransportError("remote server has no URL")
+    if urlsplit(spec.url).scheme.lower() not in ("http", "https"):
+        raise TransportError("remote server URL must use http or https")
     if server.transport is TransportKind.SSE:
         return LegacySseTransport(spec.url, spec.headers, timeout)
     return StreamableHttpTransport(spec.url, spec.headers, timeout)
@@ -187,6 +197,8 @@ def list_tools(transport: Transport, timeout: float) -> EnumerationResult:
             params: dict[str, Any] = {"cursor": cursor} if cursor else {}
             page = transport.request("tools/list", params, remaining())
             tools.extend(_parse_tools(page.get("tools")))
+            if len(tools) > MAX_TOOLS_PER_SERVER:
+                raise TransportError(f"server returned more than {MAX_TOOLS_PER_SERVER} tools")
             next_cursor = page.get("nextCursor")
             if not isinstance(next_cursor, str) or not next_cursor or next_cursor in seen_cursors:
                 break

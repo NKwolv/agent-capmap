@@ -22,11 +22,22 @@ Every pull request must pass, and CI runs the same checks on Linux and Windows f
 Python 3.11 to 3.13:
 
 ```sh
-ruff check .
+ruff check .                     # lint, including the security (S / bandit) rules
 ruff format --check .
 mypy
 pytest
+bandit -c pyproject.toml -r src  # SAST
+pip-audit --strict .             # SCA: known-vulnerable dependencies
+zizmor --offline --persona auditor .github/workflows/   # GitHub Actions security
 ```
+
+CodeQL (`security-extended` queries) also runs on every pull request.
+
+**Zero findings is the bar.** Fix a finding rather than suppressing it. A suppression
+is acceptable only for a verified false positive or an unavoidable, documented design
+property (today: launching the configured server command in `enumerate/stdio.py`), and
+it must name the specific rule (`# noqa: S603  # nosec B603`) with a comment explaining
+why.
 
 ## Ground rules
 
@@ -45,7 +56,11 @@ merged.
 4. **No network in tests.** `tests/conftest.py` blocks non-loopback connections. Use the
    mock MCP server (`tests/mock_mcp_server.py`) and the fake LLM provider
    (`tests/fake_llm.py`).
-5. **No secrets in the repo.** Fixture credentials must be obviously fake and listed in
+5. **Treat everything from a server or config as hostile.** Bound its size (see
+   `agentcapmap/limits.py`), parse JSON with `loads_untrusted`, never follow redirects
+   or cross-origin endpoints with credentials, never pass our own environment to a
+   launched server beyond the allowlist, and escape control characters before printing.
+6. **No secrets in the repo.** Fixture credentials must be obviously fake and listed in
    `tests/fake_secrets.py`, so the leak tests check them.
 
 ## Common changes

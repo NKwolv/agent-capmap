@@ -82,6 +82,8 @@ def load_jsonc(text: str) -> Any:
         return json.loads("".join(out))
     except json.JSONDecodeError as exc:
         raise ConfigError(f"invalid JSON: {exc.msg} at line {exc.lineno}") from None
+    except RecursionError:
+        raise ConfigError("invalid JSON: nested too deeply") from None
 
 
 def find_key_line(text: str, key: str, start: int = 0) -> int | None:

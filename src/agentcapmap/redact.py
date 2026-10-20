@@ -32,16 +32,27 @@ _TOKEN_PATTERNS: list[re.Pattern[str]] = [
         r"AIza[0-9A-Za-z_\-]{35}",
         r"npm_[A-Za-z0-9]{36}",
         r"eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}",  # JWT
-        r"-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----",
+        r"-----BEGIN [A-Z ]{0,40}PRIVATE KEY-----[\s\S]{0,16384}?"
+        r"-----END [A-Z ]{0,40}PRIVATE KEY-----",
     )
 ]
-_BEARER = re.compile(r"(?i)\b(bearer|basic|token)\s+[A-Za-z0-9._~+/=\-]{8,}")
-_URL_USERINFO = re.compile(r"(?i)\b([a-z][a-z0-9+.\-]*://[^/\s:@]+):[^@\s/]+@")
-_NAMED_VALUE = re.compile(
-    r"(?i)\b([A-Za-z0-9_.\-]*(?:token|secret|passw(?:or)?d|api[_\-]?key|apikey|"
-    r"authorization|credential|private[_\-]?key|access[_\-]?key)[A-Za-z0-9_.\-]*)"
-    r"(\s*[:=]\s*)(\"[^\"]*\"|'[^']*'|[^\s,;&\"']+)"
+# Every quantifier below is bounded, and matches may only start at an identifier
+# boundary, so hostile input (e.g. a malicious server's stderr) cannot trigger
+# catastrophic backtracking.
+_BEARER = re.compile(r"(?i)(?<![a-z])(bearer|basic|token)[ \t]{1,8}[A-Za-z0-9._~+/=\-]{8,4096}")
+_URL_USERINFO = re.compile(
+    r"(?i)(?<![a-z0-9+.\-])([a-z][a-z0-9+.\-]{0,30}://[^/\s:@]{1,256}):[^@\s/]{1,256}@"
 )
+_ASSIGNMENT_IN_TEXT = re.compile(
+    r"(?<![A-Za-z0-9_.\-])([A-Za-z0-9_.\-]{1,128})([ \t]{0,8}[:=][ \t]{0,8})"
+    r"(\"[^\"\n]{0,1024}\"|'[^'\n]{0,1024}'|[^\s,;&\"']{1,1024})"
+)
+_SECRET_KEYWORD = re.compile(
+    r"(?i)token|secret|passw(?:or)?d|api[_\-]?key|apikey|authorization|credential|"
+    r"private[_\-]?key|access[_\-]?key"
+)
+# C0/C1 control characters (except tab/newline): could drive a terminal via escape codes.
+_CONTROL_CHARS = re.compile(r"[\x00-\x08\x0b-\x1f\x7f-\x9f]")
 
 _SENSITIVE_SUBSTRINGS = (
     "token",
@@ -120,6 +131,13 @@ def looks_like_secret(value: str) -> bool:
     return any(c.isdigit() for c in value) and any(c.isalpha() for c in value)
 
 
+def _redact_assignment(m: re.Match[str]) -> str:
+    key, sep, _value = m.groups()
+    if _SECRET_KEYWORD.search(key):
+        return f"{key}{sep}{REDACTED}"
+    return m.group(0)
+
+
 def redact_text(text: str) -> str:
     """Scrub known secrets and secret-shaped substrings from free text."""
     if not text:
@@ -129,8 +147,13 @@ def redact_text(text: str) -> str:
         text = pattern.sub(REDACTED, text)
     text = _BEARER.sub(lambda m: f"{m.group(1)} {REDACTED}", text)
     text = _URL_USERINFO.sub(lambda m: f"{m.group(1)}:{REDACTED}@", text)
-    text = _NAMED_VALUE.sub(lambda m: f"{m.group(1)}{m.group(2)}{REDACTED}", text)
+    text = _ASSIGNMENT_IN_TEXT.sub(_redact_assignment, text)
     return text
+
+
+def escape_control_chars(text: str) -> str:
+    """Make control characters visible (`\\x1b`) so untrusted text cannot drive a terminal."""
+    return _CONTROL_CHARS.sub(lambda m: f"\\x{ord(m.group(0)):02x}", text)
 
 
 def redact_value(value: str) -> str:
@@ -228,10 +251,11 @@ class RedactingFilter(logging.Filter):
     """Logging filter that scrubs the fully formatted message before any handler sees it."""
 
     def filter(self, record: logging.LogRecord) -> bool:
-        record.msg = redact_text(record.getMessage())
+        record.msg = escape_control_chars(redact_text(record.getMessage()))
         record.args = None
         if record.exc_info and record.exc_info[1] is not None:
-            record.exc_text = redact_text(logging.Formatter().formatException(record.exc_info))
+            formatted = logging.Formatter().formatException(record.exc_info)
+            record.exc_text = escape_control_chars(redact_text(formatted))
             record.exc_info = None
         return True
 
