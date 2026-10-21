@@ -195,7 +195,7 @@ Reports render untrusted text inertly. See [SECURITY.md](SECURITY.md) and the
 - [Threat model](docs/threat-model.md): attacks covered, OWASP / MITRE ATLAS mapping
 - [GitHub Action](docs/github-action.md)
 - [Comparison with Snyk Agent Scan (mcp-scan)](docs/vs-mcp-scan.md)
-- [Examples](examples/README.md) · [Evaluation](eval/README.md)
+- [Examples](examples/README.md) · [Evaluation](eval/README.md) · [POC checklist](docs/poc-checklist.md)
 - [Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md) · [Changelog](CHANGELOG.md)
 
 ## License

@@ -28,7 +28,8 @@ two can be used together.
 
 - **Breadth of discovery.** Its README lists Windsurf, Cursor, VS Code, GitHub Copilot,
   Claude Desktop, Claude Code, Gemini CLI, Amp, Amazon Q, Codex, Kiro, OpenCode and
-  others. agent-capmap currently reads five config formats.
+  others. agent-capmap currently reads Claude Desktop, Cursor, VS Code, Claude Code
+  (project `.mcp.json` and user `~/.claude.json`) and generic `mcp.json` configs.
 - **More than MCP.** It also analyzes agent skills (prompt injection, suspicious
   downloads, malicious code, credential handling, secret detection). agent-capmap only
   covers MCP tools.

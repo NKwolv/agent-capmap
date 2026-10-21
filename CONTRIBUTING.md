@@ -24,16 +24,24 @@ Python 3.11 or newer is required.
 ### Dependencies and lockfiles
 
 Version ranges live in `pyproject.toml`; exact versions with hashes live in
-`requirements/runtime.lock` (what users install) and `requirements/dev.lock` (tools,
-tests and the build backend). After changing dependencies, regenerate both locks with a
+`requirements/runtime.lock` (what users install), `requirements/dev.lock` (tools,
+tests and the build backend) and `requirements/build.lock` (build backend only, used
+by the GitHub Action). After changing dependencies, regenerate the locks with a
 cutoff date 14 days in the past, so a just-published (possibly compromised) release is
 never picked up:
 
 ```sh
 CUTOFF=2026-10-06   # today minus 14 days
-uv pip compile pyproject.toml --universal --generate-hashes --python-version 3.11   --exclude-newer $CUTOFF -o requirements/runtime.lock
-uv pip compile pyproject.toml requirements/build.in --extra dev --universal   --generate-hashes --python-version 3.11 --exclude-newer $CUTOFF -o requirements/dev.lock
+# Security exemptions currently in force (see below); keep them until the cutoff
+# passes the fixed versions' release dates.
+EXEMPT="--exclude-newer-package uv=2026-10-21T00:00:00Z --exclude-newer-package certifi=2026-10-21T00:00:00Z"
+COMMON='--universal --generate-hashes --python-version 3.11'
+uv pip compile pyproject.toml $COMMON --exclude-newer $CUTOFF $EXEMPT -o requirements/runtime.lock
+uv pip compile pyproject.toml requirements/build.in --extra dev $COMMON --exclude-newer $CUTOFF $EXEMPT -o requirements/dev.lock
+uv pip compile requirements/build.in $COMMON --exclude-newer $CUTOFF -o requirements/build.lock
 ```
+
+Each lockfile's header records the exact command that produced it.
 
 **Security fixes override the cutoff.** If pip-audit reports a vulnerability whose fix
 is newer than the cutoff, exempt only that package, e.g.
@@ -104,7 +112,10 @@ merged.
    `FORMATS = [ConfigFormat(name, client, matches, parse)]`. Keep each format in its
    own module so format changes stay isolated.
 2. Reuse `parse_server_map` / `build_server` from `discovery/_common.py`; they handle
-   redaction, auth hints and line numbers.
+   redaction, auth hints and line numbers. A file that describes several agents (like
+   Claude Code's `~/.claude.json`) sets `parse_agents`; a format that needs a larger
+   size cap sets `max_bytes`. If the client records approval settings, fill in
+   `Server.approval` (see `discovery/claude_code.py`).
 3. Register it in `FORMATS` in `discovery/__init__.py` (order matters: the first match
    wins) and add the filename to `CANDIDATE_NAMES` if needed.
 4. Add a fixture under `tests/fixtures/configs/` containing fake credentials, and
@@ -116,7 +127,7 @@ merged.
   key, so stale classifications will not be reused.
 - If you change a definition or ruling, update `docs/taxonomy.md` to match.
 - Evaluation results are only valid for one prompt version. Re-run the eval and
-  update `eval/results.md` (once Phase 5 lands) rather than reusing old numbers.
+  regenerate `eval/results.md` rather than reusing old numbers.
 
 ### Changing the taxonomy
 

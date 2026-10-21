@@ -19,7 +19,7 @@ pip install --require-hashes -r requirements/dev.lock && pip install --no-deps -
 pytest
 ```
 
-- [ ] All tests pass (about 290).
+- [ ] All tests pass.
 
 ## 3. The demo gives the documented findings (1 min)
 
@@ -38,8 +38,12 @@ agentcapmap evaluate examples/demo/inventory.json --fail-on high; echo "exit $?"
 agentcapmap scan --user -o my-configs.json
 ```
 
-- [ ] Every MCP server you actually use (Claude Desktop, Cursor, VS Code, Claude Code
-      project files) is listed.
+- [ ] Every MCP server you actually use is listed: Claude Desktop, Cursor, VS Code, and
+      Claude Code (user scope plus one agent per project with its own servers, from
+      `~/.claude.json`). Servers from Claude Code plugins, claude.ai connectors and
+      IDE built-ins are not visible in config files and will not appear.
+- [ ] For Claude Code servers, `approval.default_gate` is `required` (default mode),
+      or `none` if you run in `bypassPermissions`/`auto` mode or allowed the tools.
 - [ ] Open `my-configs.json` and search it for any real token, password or key you know
       is in your configs: **none may appear**, only `<redacted>`.
 - [ ] Nothing was started (no new processes, no network traffic).

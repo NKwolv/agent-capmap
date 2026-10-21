@@ -35,6 +35,10 @@ agent-capmap is pre-1.0. Only the latest release on `main` receives fixes.
 
 - **`scan` without `--enumerate` only reads files.** It is safe to run on untrusted
   repositories.
+- **`scan --user` reads your clients' config files**, including Claude Code's
+  `~/.claude.json`. From that file only MCP server entries, per-project MCP toggles
+  and permission rules are used; account data and chat history are ignored, and a
+  stored `primaryApiKey` is treated as a secret that can never appear in output.
 - **`--enumerate` starts the stdio server commands found in configs** and connects to
   their URLs. That executes whatever the config specifies. Only enumerate configs you
   trust, and prefer a disposable environment (container, CI runner) for unfamiliar

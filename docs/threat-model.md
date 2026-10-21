@@ -137,9 +137,11 @@ without touching code. Notes on the defaults:
 
 - CAP-001 counts `secrets_read` as private data, since secrets are the most sensitive
   private data there is.
-- CAP-003 treats an `unknown` approval gate as no gate (fail closed). Most configs do
-  not record approval settings; set `approval_gate: [none]` to flag only tools that are
-  explicitly auto-approved (`alwaysAllow`, `autoApprove`, `trust`).
+- CAP-003 treats an `unknown` approval gate as no gate (fail closed). Claude Code's
+  permission settings are read, so its default "ask before each MCP call" counts as a
+  gate (`required`), while `bypassPermissions`/`auto` modes and allow rules count as
+  none. Most other clients do not record approval settings; set
+  `approval_gate: [none]` to flag only tools that are explicitly auto-approved.
 - CAP-007 flags unvetted sources only when the policy lists `trusted_sources`.
 - Tools that were not enumerated or not classified are listed under `not_assessed`
   instead of being treated as safe or as worst-case.

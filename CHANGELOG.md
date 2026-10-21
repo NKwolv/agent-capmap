@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+Everything below is unreleased work towards 0.1.0, newest first within each section.
+
 ### Added
 
 - **Claude Code user configuration**: `scan --user` reads `~/.claude.json` (or
@@ -19,34 +21,19 @@ All notable changes to this project are documented here. The format follows
   `auto` yield `none`; denied tools and `dontAsk`-blocked tools are removed from the
   agent. Project `.mcp.json` files use only that project's `.claude/settings*.json`.
 - WebSocket (`"type": "ws"`) servers are accepted and listed (not enumerated).
+- **Docs and examples** (Phase 6): rewritten README with a 5-minute no-key quickstart,
+  `examples/demo` (pre-classified inventory) and `examples/live-trifecta` (real
+  servers), `docs/poc-checklist.md`, updated blog outline.
 - **Evaluation harness** (Phase 5):
   - `eval/catalog.json` of real MCP servers pinned to vetted versions, `eval/capture.py`
     to record their tool definitions (local paths scrubbed), `eval/apply_labels.py`
     to write labels whose evidence phrases are verified against the definitions.
-  - Ground-truth label files in `eval/labeled_servers/` (AI-drafted, pending human
-    review), with integrity checks and freezing (`labels.lock`).
+  - Label files for 28 servers / 381 tools in `eval/labeled_servers/` (AI-drafted,
+    pending human review), with integrity checks and freezing (`labels.lock`).
   - `eval/run_eval.py`: per-axis precision/recall/F1, exact match, confusion matrices,
     suspicious-flag precision/recall, rule-level agreement and false-positive rate on
     realistic agents (`eval/agents.json`), planted-risk recall on `fixtures/`. Results
     are marked PROVISIONAL until every label file is reviewed.
-- **Docs and examples** (Phase 6): rewritten README with a 5-minute no-key quickstart,
-  `examples/demo` (pre-classified inventory) and `examples/live-trifecta` (real
-  servers), `docs/poc-checklist.md`, updated blog outline.
-
-### Security
-
-- `certifi` raised to 2026.10.19 (GHSA-6q48-6c7w-9gw2: older bundles trust emSign root
-  CAs whose intermediate keys are compromised); it is the CA bundle behind every HTTPS
-  connection agent-capmap makes.
-- Dev tool `uv` raised to 0.13.4 (GHSA-hq85-5cpj-mr62, same root cause).
-- Both fixes were newer than the 14-day lockfile cutoff, so each was exempted
-  individually; the procedure is documented in CONTRIBUTING.md.
-
-### Fixed
-
-- `${workspaceFolder}` and the server working directory were relative when the scan path
-  was relative, so the path was applied twice (found by the live example).
-- The package now ships a `py.typed` marker.
 - **Reporting and CI** (Phase 4):
   - `--format json|markdown|sarif` on `evaluate` and `scan --evaluate`; `report` command
     to re-render a saved evaluation.
@@ -93,13 +80,19 @@ All notable changes to this project are documented here. The format follows
   - Canonical SHA-256 tool definition hashes and a per-server hash.
   - Secret redaction across all output and logs.
 - Documentation: taxonomy, threat model, comparison with Snyk Agent Scan (formerly
-  mcp-scan), contributing guide, security policy.
+  mcp-scan), GitHub Action guide, contributing guide, security policy, `AGENTS.md`.
 
 ### Security
 
+- `certifi` raised to 2026.10.19 (GHSA-6q48-6c7w-9gw2: older bundles trust emSign root
+  CAs whose intermediate keys are compromised); it is the CA bundle behind every HTTPS
+  connection agent-capmap makes.
+- Dev tool `uv` raised to 0.13.4 (GHSA-hq85-5cpj-mr62, same root cause).
+- Both fixes were newer than the 14-day lockfile cutoff, so each was exempted
+  individually; the procedure is documented in CONTRIBUTING.md.
 - Launched stdio servers inherit only an allowlisted environment, so the scanner's own
   credentials (e.g. `ANTHROPIC_API_KEY`) are not exposed to them.
-- HTTP redirects are no longer followed and legacy-SSE endpoints must be same-origin, so
+- HTTP redirects are not followed and legacy-SSE endpoints must be same-origin, so
   configured credentials cannot be forwarded to another host. Only `http`/`https` URLs
   are accepted.
 - Size limits on all server and config input; tool count cap; deep-nesting and
@@ -107,17 +100,23 @@ All notable changes to this project are documented here. The format follows
 - Redaction regexes rewritten to avoid catastrophic backtracking (a 20 KB hostile
   string previously took ~15 s).
 - Control characters escaped in log output.
-- HTTP error messages no longer include raw exception text that could contain URL
-  secrets.
+- HTTP error messages do not include raw exception text that could contain URL secrets.
 - Security gates: ruff `S` rules, bandit, pip-audit, zizmor and CodeQL in CI; GitHub
   Actions pinned to commit SHAs; Dependabot for pip and Actions with a 14-day cooldown.
-- Hash-pinned lockfiles (`requirements/runtime.lock`, `requirements/dev.lock`),
+- Hash-pinned lockfiles (`requirements/runtime.lock`, `dev.lock`, `build.lock`),
   resolved with a 14-day `--exclude-newer` cutoff; CI installs with `--require-hashes`
   and builds without fetching an unpinned build backend.
 - Secret scanning of the full git history with gitleaks (image pinned by digest).
 - CycloneDX SBOM of the runtime dependencies generated in CI.
-- `AGENTS.md` security rules for people and AI coding tools; `.gitignore` covers key,
-  certificate, credential and state files; `.env.example` added.
+- `.gitignore` covers key, certificate, credential and state files; `.env.example`.
+
+### Fixed
+
+- `${workspaceFolder}` and the server working directory were relative when the scan path
+  was relative, so the path was applied twice (found by the live example).
+- A `.gitignore` pattern hid `examples/demo/inventory.json` (found by the fresh-clone
+  quickstart test).
+- The package now ships a `py.typed` marker.
 
 ### Notes
 
