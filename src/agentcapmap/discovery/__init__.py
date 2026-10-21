@@ -10,7 +10,7 @@ import sys
 from collections.abc import Iterable, Iterator
 from pathlib import Path
 
-from agentcapmap.discovery import claude_desktop, cursor, mcp_json, vscode
+from agentcapmap.discovery import claude_code, claude_desktop, cursor, mcp_json, vscode
 from agentcapmap.discovery._common import ConfigError, ConfigFormat, load_jsonc
 from agentcapmap.limits import MAX_CONFIG_BYTES
 from agentcapmap.models import Agent, DiscoveryError, Inventory
@@ -20,6 +20,7 @@ log = get_logger(__name__)
 
 # Order matters: the first format whose `matches` accepts a path wins.
 FORMATS: list[ConfigFormat] = [
+    *claude_code.FORMATS,
     *claude_desktop.FORMATS,
     *cursor.FORMATS,
     *vscode.FORMATS,
@@ -84,41 +85,57 @@ def _display_path(path: Path, root: Path | None) -> str:
     return path.as_posix()
 
 
-def parse_config_file(
+def parse_config_agents(
     path: Path, *, root: Path | None = None, explicit: bool = False
-) -> tuple[Agent | None, DiscoveryError | None]:
-    """Parse one config file into an agent.
+) -> tuple[list[Agent], DiscoveryError | None]:
+    """Parse one config file into its agents (most formats describe exactly one).
 
-    Discovered-by-walk files that turn out not to be MCP configs return (None, None);
+    Discovered-by-walk files that turn out not to be MCP configs return ([], None);
     `explicit` files the user named directly report an error instead.
     """
     display = _display_path(path, root)
+    by_name = detect_format(path)
+    limit = (by_name.max_bytes if by_name else None) or MAX_CONFIG_BYTES
     try:
-        if path.stat().st_size > MAX_CONFIG_BYTES:
-            return None, DiscoveryError(
-                path=display, message=f"file larger than {MAX_CONFIG_BYTES} bytes; skipped"
+        if path.stat().st_size > limit:
+            return [], DiscoveryError(
+                path=display, message=f"file larger than {limit} bytes; skipped"
             )
         text = path.read_text(encoding="utf-8-sig")
     except OSError as exc:
-        return None, DiscoveryError(path=display, message=f"cannot read file: {exc.strerror}")
+        return [], DiscoveryError(path=display, message=f"cannot read file: {exc.strerror}")
     except UnicodeDecodeError:
-        return None, DiscoveryError(path=display, message="cannot read file: not UTF-8 text")
+        return [], DiscoveryError(path=display, message="cannot read file: not UTF-8 text")
 
-    fmt = detect_format(path, text)
+    fmt = by_name or detect_format(path, text)
     if fmt is None:
         if explicit:
-            return None, DiscoveryError(path=display, message="not a recognized MCP config")
-        return None, None
+            return [], DiscoveryError(path=display, message="not a recognized MCP config")
+        return [], None
     try:
-        servers = fmt.parse(text, path, display)
+        if fmt.parse_agents is not None:
+            groups = fmt.parse_agents(text, path, display)
+        else:
+            groups = [("", fmt.parse(text, path, display))]
     except ConfigError as exc:
-        return None, DiscoveryError(path=display, message=str(exc))
-    if not servers and not explicit:
-        return None, None  # e.g. an unrelated settings.json
-    log.debug("parsed %s as %s: %d server(s)", display, fmt.name, len(servers))
-    return Agent(
-        id=f"{fmt.client}:{display}", client=fmt.client, config_path=display, servers=servers
-    ), None
+        return [], DiscoveryError(path=display, message=str(exc))
+
+    agents = []
+    for suffix, servers in groups:
+        if not servers and not explicit and fmt.parse_agents is None:
+            continue  # e.g. an unrelated settings.json
+        agent_id = f"{fmt.client}:{display}" + (f"#{suffix}" if suffix else "")
+        agents.append(Agent(id=agent_id, client=fmt.client, config_path=display, servers=servers))
+    log.debug("parsed %s as %s: %d agent(s)", display, fmt.name, len(agents))
+    return agents, None
+
+
+def parse_config_file(
+    path: Path, *, root: Path | None = None, explicit: bool = False
+) -> tuple[Agent | None, DiscoveryError | None]:
+    """Single-agent convenience wrapper around `parse_config_agents`."""
+    agents, error = parse_config_agents(path, root=root, explicit=explicit)
+    return (agents[0] if agents else None), error
 
 
 def iter_candidate_files(root: Path) -> Iterator[Path]:
@@ -144,7 +161,9 @@ def user_config_paths() -> list[Path]:
     else:
         config = Path(os.environ.get("XDG_CONFIG_HOME", home / ".config"))
         claude_dir, code_user = config / "Claude", config / "Code" / "User"
+    claude_code_home = Path(os.environ.get("CLAUDE_CONFIG_DIR") or home)
     return [
+        claude_code_home / ".claude.json",
         claude_dir / "claude_desktop_config.json",
         home / ".cursor" / "mcp.json",
         code_user / "mcp.json",
@@ -167,9 +186,8 @@ def discover(paths: Iterable[Path], *, user: bool = False, root: Path | None = N
         if resolved in seen:
             return
         seen.add(resolved)
-        agent, error = parse_config_file(path, root=root, explicit=explicit)
-        if agent is not None:
-            inventory.agents.append(agent)
+        agents, error = parse_config_agents(path, root=root, explicit=explicit)
+        inventory.agents.extend(agents)
         if error is not None:
             log.warning("%s: %s", error.path, error.message)
             inventory.errors.append(error)

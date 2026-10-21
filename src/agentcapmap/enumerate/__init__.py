@@ -218,6 +218,10 @@ def enumerate_server(server: Server, timeout: float = DEFAULT_TIMEOUT) -> Enumer
     """Enumerate one server's tools. Never raises; failures become a non-OK status."""
     if server.disabled:
         return EnumerationResult(status=EnumerationStatus.SKIPPED, error="disabled in config")
+    if server.transport is TransportKind.WS:
+        return EnumerationResult(
+            status=EnumerationStatus.SKIPPED, error="WebSocket servers are not enumerated yet"
+        )
     try:
         spec = resolve_launch(server.launch)
     except UnresolvedVariable as exc:

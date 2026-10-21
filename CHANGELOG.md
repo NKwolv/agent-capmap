@@ -8,6 +8,17 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- **Claude Code user configuration**: `scan --user` reads `~/.claude.json` (or
+  `$CLAUDE_CONFIG_DIR/.claude.json`): one agent for user scope plus one per project with
+  local servers or a `.mcp.json`, applying Claude Code's precedence (local > project >
+  user), `/mcp` toggles and `disabledMcpjsonServers`. Only MCP entries are read;
+  `primaryApiKey` is registered as a known secret and never output.
+- **Approval gates from Claude Code permissions**: `permissions.allow` / `deny` rules
+  (`mcp__<server>`, `mcp__<server>__*`, `mcp__<server>__<tool>`), `defaultMode` and legacy
+  `allowedTools`. Default mode yields `approval_gate: required`; `bypassPermissions` and
+  `auto` yield `none`; denied tools and `dontAsk`-blocked tools are removed from the
+  agent. Project `.mcp.json` files use only that project's `.claude/settings*.json`.
+- WebSocket (`"type": "ws"`) servers are accepted and listed (not enumerated).
 - **Evaluation harness** (Phase 5):
   - `eval/catalog.json` of real MCP servers pinned to vetted versions, `eval/capture.py`
     to record their tool definitions (local paths scrubbed), `eval/apply_labels.py`

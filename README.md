@@ -71,8 +71,9 @@ config files ──► discover ──► enumerate ──► classify ──►
 ```
 
 1. **Discover** MCP configs: Claude Desktop, Cursor, VS Code (`.vscode/mcp.json`,
-   `settings.json`), Claude Code (`.mcp.json`) and generic `mcp.json`, in a repository
-   or on your machine (`--user`). Secrets are redacted everywhere.
+   `settings.json`), Claude Code (`.mcp.json`, and with `--user` your `~/.claude.json`
+   user and per-project servers, including permission rules) and generic `mcp.json`.
+   Secrets are redacted everywhere.
 2. **Enumerate** (`--enumerate`): start each server and ask only for its tool list.
    Tools are never called.
 3. **Classify** (`--classify`): an LLM tags each tool on six axes and flags tool
@@ -168,12 +169,15 @@ of `python eval/run_eval.py`.
 - **Classifier errors.** Tags can be wrong, especially for vague descriptions. Every
   tag carries a confidence and an evidence phrase; phrases not found in the definition
   are marked unverified.
-- **Approval gates are mostly invisible.** Few configs record whether a person approves
-  each call, so CAP-003 treats "unknown" as "no gate" by default.
+- **Approval gates are mostly invisible.** Claude Code's permission settings are read
+  (so its default "ask before each MCP call" counts as a gate), but most other clients do
+  not record this, and CAP-003 treats "unknown" as "no gate" by default.
 - **Enumeration runs code.** Starting servers executes the configured commands. A
   started server can also read its parent's environment on Linux.
-- **Coverage.** Config formats evolve; Windsurf and Claude Code's user-level
-  `~/.claude.json` are not read yet. Token scopes are not visible.
+- **Coverage.** Config formats evolve; Windsurf is not read yet. MCP servers that do not
+  live in config files (Claude Code plugins, claude.ai connectors, IDE built-in servers,
+  managed settings) are not seen. WebSocket servers are listed but not enumerated.
+  Token scopes are not visible.
 - **Not assessed is not safe.** Servers that could not be enumerated and tools that
   could not be classified are listed under `not_assessed`, never assumed safe.
 

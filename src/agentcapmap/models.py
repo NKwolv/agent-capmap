@@ -20,6 +20,7 @@ class Transport(StrEnum):
     STDIO = "stdio"
     HTTP = "http"  # Streamable HTTP
     SSE = "sse"  # legacy HTTP+SSE
+    WS = "ws"  # WebSocket (Claude Code); listed, not enumerated
 
 
 class AuthMethod(StrEnum):
@@ -129,15 +130,24 @@ class EnumerationResult(BaseModel):
 
 
 class ApprovalConfig(BaseModel):
-    """Auto-approval settings found in the client config (e.g. Cline `alwaysAllow`).
+    """Whether a person must approve each tool call, as far as the client config shows.
 
-    Absence of these keys does not prove a human approves each call; it only means the
-    config does not say. The policy engine treats that as "unknown".
+    Most clients do not record this, so `default_gate` is "unknown" unless a format knows
+    better (Claude Code: "required" in its default permission mode).
     """
 
     auto_approve_all: bool = False
+    # Exact tool names that skip approval (e.g. Cline `alwaysAllow`).
     auto_approved_tools: list[str] = Field(default_factory=list)
-    # Config keys the settings came from, for evidence.
+    # Glob patterns over tool names that skip approval (e.g. Claude Code allow rules).
+    auto_approved_patterns: list[str] = Field(default_factory=list)
+    # Glob patterns over tool names the client removes from the agent (deny rules).
+    denied_patterns: list[str] = Field(default_factory=list)
+    # Gate for tools no rule matches: "required" | "none" | "unknown" | "blocked"
+    # ("blocked": the client refuses calls that would need approval, e.g. dontAsk mode).
+    default_gate: Literal["required", "none", "unknown", "blocked"] = "unknown"
+    default_reason: str = ""
+    # Config keys or rules the settings came from, for evidence.
     sources: list[str] = Field(default_factory=list)
 
 

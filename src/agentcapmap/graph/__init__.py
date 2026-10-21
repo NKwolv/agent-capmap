@@ -7,6 +7,7 @@ graph only if it was enumerated and classified; everything else is reported as
 
 from __future__ import annotations
 
+import fnmatch
 from dataclasses import dataclass, field
 from enum import StrEnum
 
@@ -116,8 +117,13 @@ class ToolView:
             ]
             return "; ".join(parts) or None
         if name == "approval_gate":
-            if self.approval_source:
-                return f"auto-approved via config key {self.approval_source!r}"
+            source = self.approval_source
+            if self.approval_gate is ApprovalGate.NONE:
+                if source in ("alwaysAllow", "autoApprove", "trust"):
+                    return f"auto-approved via config key {source!r}"
+                return f"auto-approved: {source}" if source else "auto-approved"
+            if self.approval_gate is ApprovalGate.REQUIRED:
+                return f"approval required: {source}" if source else "approval required"
             return "no approval setting found in config"
         raise KeyError(name)
 
@@ -136,13 +142,28 @@ class AgentView:
     not_assessed: list[NotAssessed] = field(default_factory=list)
 
 
-def _approval(server: Server, tool_name: str) -> tuple[ApprovalGate, str | None]:
+def _matches(patterns: list[str], tool_name: str) -> bool:
+    return any(fnmatch.fnmatchcase(tool_name, p) for p in patterns)
+
+
+def _approval(server: Server, tool_name: str) -> tuple[ApprovalGate, str | None] | None:
+    """The tool's approval gate and its evidence, or None if the client removes the tool."""
     approval = server.approval
+    if _matches(approval.denied_patterns, tool_name):
+        return None  # deny rule: the client never offers this tool to the model
     if approval.auto_approve_all:
-        return ApprovalGate.NONE, "trust"
+        return ApprovalGate.NONE, next(iter(approval.sources), "trust")
     if tool_name in approval.auto_approved_tools:
         key = next((s for s in approval.sources if s != "trust"), "alwaysAllow")
         return ApprovalGate.NONE, key
+    if _matches(approval.auto_approved_patterns, tool_name):
+        return ApprovalGate.NONE, "permissions.allow rule"
+    if approval.default_gate == "blocked":
+        return None  # calls that would need approval are refused outright
+    if approval.default_gate == "none":
+        return ApprovalGate.NONE, approval.default_reason or None
+    if approval.default_gate == "required":
+        return ApprovalGate.REQUIRED, approval.default_reason or None
     return ApprovalGate.UNKNOWN, None
 
 
@@ -179,8 +200,9 @@ def build_agent_view(agent: Agent, trusted_sources: list[str] | None = None) -> 
             )
             continue
 
-        view.tool_names[server.name] = [t.name for t in enumeration.tools]
-        for tool in enumeration.tools:
+        reachable = [t for t in enumeration.tools if _approval(server, t.name) is not None]
+        view.tool_names[server.name] = [t.name for t in reachable]
+        for tool in reachable:
             result = tool.classification
             if result is None or result.status is not ClassificationStatus.CLASSIFIED:
                 reason = (
@@ -196,7 +218,10 @@ def build_agent_view(agent: Agent, trusted_sources: list[str] | None = None) -> 
                 continue
             if result.tags is None:  # classified results always carry tags
                 continue
-            gate, gate_source = _approval(server, tool.name)
+            approval = _approval(server, tool.name)
+            if approval is None:
+                continue
+            gate, gate_source = approval
             view.tools.append(
                 ToolView(
                     server=sv,

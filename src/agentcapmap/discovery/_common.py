@@ -42,6 +42,10 @@ class ConfigFormat:
     matches: Callable[[Path], bool]
     # (file text, real path, path to show in output) -> servers
     parse: Callable[[str, Path, str], list[Server]]
+    # Formats describing several agents in one file return (id suffix, servers) pairs.
+    parse_agents: Callable[[str, Path, str], list[tuple[str, list[Server]]]] | None = None
+    # Size cap for this format; None means the default MAX_CONFIG_BYTES.
+    max_bytes: int | None = None
 
 
 def load_jsonc(text: str) -> Any:
@@ -114,6 +118,8 @@ _TRANSPORT_ALIASES = {
     "streamablehttp": Transport.HTTP,
     "streamable_http": Transport.HTTP,
     "sse": Transport.SSE,
+    "ws": Transport.WS,
+    "websocket": Transport.WS,
 }
 
 

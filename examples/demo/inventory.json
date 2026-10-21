@@ -31,6 +31,10 @@
           "approval": {
             "auto_approve_all": false,
             "auto_approved_tools": [],
+            "auto_approved_patterns": [],
+            "denied_patterns": [],
+            "default_gate": "unknown",
+            "default_reason": "",
             "sources": []
           },
           "enumeration": {
@@ -136,6 +140,10 @@
           "approval": {
             "auto_approve_all": false,
             "auto_approved_tools": [],
+            "auto_approved_patterns": [],
+            "denied_patterns": [],
+            "default_gate": "unknown",
+            "default_reason": "",
             "sources": []
           },
           "enumeration": {
@@ -243,6 +251,10 @@
           "approval": {
             "auto_approve_all": false,
             "auto_approved_tools": [],
+            "auto_approved_patterns": [],
+            "denied_patterns": [],
+            "default_gate": "unknown",
+            "default_reason": "",
             "sources": []
           },
           "enumeration": {
@@ -353,6 +365,10 @@
           "approval": {
             "auto_approve_all": false,
             "auto_approved_tools": [],
+            "auto_approved_patterns": [],
+            "denied_patterns": [],
+            "default_gate": "unknown",
+            "default_reason": "",
             "sources": []
           },
           "enumeration": {
@@ -432,6 +448,10 @@
           "approval": {
             "auto_approve_all": false,
             "auto_approved_tools": [],
+            "auto_approved_patterns": [],
+            "denied_patterns": [],
+            "default_gate": "unknown",
+            "default_reason": "",
             "sources": []
           },
           "enumeration": {
@@ -514,6 +534,10 @@
           "approval": {
             "auto_approve_all": false,
             "auto_approved_tools": [],
+            "auto_approved_patterns": [],
+            "denied_patterns": [],
+            "default_gate": "unknown",
+            "default_reason": "",
             "sources": []
           },
           "enumeration": {
@@ -602,6 +626,10 @@
           "approval": {
             "auto_approve_all": false,
             "auto_approved_tools": [],
+            "auto_approved_patterns": [],
+            "denied_patterns": [],
+            "default_gate": "unknown",
+            "default_reason": "",
             "sources": []
           },
           "enumeration": {
@@ -696,6 +724,10 @@
           "approval": {
             "auto_approve_all": false,
             "auto_approved_tools": [],
+            "auto_approved_patterns": [],
+            "denied_patterns": [],
+            "default_gate": "unknown",
+            "default_reason": "",
             "sources": []
           },
           "enumeration": {
@@ -768,6 +800,10 @@
           "approval": {
             "auto_approve_all": false,
             "auto_approved_tools": [],
+            "auto_approved_patterns": [],
+            "denied_patterns": [],
+            "default_gate": "unknown",
+            "default_reason": "",
             "sources": []
           },
           "enumeration": {

@@ -1,7 +1,7 @@
-"""Claude Code's project-scoped `.mcp.json` and generic `mcp.json` files.
+"""Generic `mcp.json` files.
 
-Both use the `mcpServers` map. A generic `mcp.json` that uses `servers` instead is
-treated as VS Code-shaped.
+Uses the `mcpServers` map. A generic `mcp.json` that uses `servers` instead is treated
+as VS Code-shaped. (Claude Code's `.mcp.json` lives in `claude_code.py`.)
 """
 
 from __future__ import annotations
@@ -26,7 +26,4 @@ def parse(text: str, path: Path, display_path: str) -> list[Server]:
     )
 
 
-FORMATS = [
-    ConfigFormat("claude_code", "claude-code", lambda p: p.name.lower() == ".mcp.json", parse),
-    ConfigFormat("mcp_json", "generic", lambda p: p.name.lower() == "mcp.json", parse),
-]
+FORMATS = [ConfigFormat("mcp_json", "generic", lambda p: p.name.lower() == "mcp.json", parse)]

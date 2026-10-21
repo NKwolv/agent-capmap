@@ -152,8 +152,8 @@
     },
     "transport": {
       "oneOf": [
-        { "enum": ["stdio", "http", "sse"] },
-        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["stdio", "http", "sse"] } }
+        { "enum": ["stdio", "http", "sse", "ws"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["stdio", "http", "sse", "ws"] } }
       ]
     },
     "version_pinned": {

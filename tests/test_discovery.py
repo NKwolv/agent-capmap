@@ -195,7 +195,7 @@ def test_missing_path_is_reported(tmp_path: Path) -> None:
     assert inventory.errors[0].message == "path does not exist"
 
 
-@pytest.mark.parametrize("transport", ["websocket", 42])
+@pytest.mark.parametrize("transport", ["carrier-pigeon", 42])
 def test_unknown_transport_is_an_error(tmp_path: Path, transport: object) -> None:
     cfg = tmp_path / "mcp.json"
     cfg.write_text(json.dumps({"mcpServers": {"x": {"type": transport, "command": "x"}}}))
