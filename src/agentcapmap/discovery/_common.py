@@ -257,7 +257,9 @@ def build_server(
             cwd=str(cwd) if cwd else None,
             url=url,
             headers=headers,
-            base_dir=str(base_dir),
+            # Absolute, so ${workspaceFolder} and the server cwd do not depend on how the
+            # scan path was written (never serialized, so it does not leak into output).
+            base_dir=str(base_dir.resolve()),
         ),
     )
 

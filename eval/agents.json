@@ -1,0 +1,103 @@
+{
+  "description": "Realistic agent setups built from the labeled servers. The default policy is run on each with ground-truth tags and with predicted tags; agents whose servers were not captured or labeled are skipped.",
+  "agents": {
+    "coding-assistant": [
+      "filesystem",
+      "git",
+      "github",
+      "fetch"
+    ],
+    "research-assistant": [
+      "brave-search",
+      "fetch",
+      "memory"
+    ],
+    "web-research": [
+      "exa",
+      "tavily",
+      "firecrawl"
+    ],
+    "browser-agent": [
+      "playwright",
+      "filesystem"
+    ],
+    "docs-helper": [
+      "context7",
+      "deepwiki",
+      "sequential-thinking",
+      "time"
+    ],
+    "notes": [
+      "obsidian",
+      "memory",
+      "time"
+    ],
+    "knowledge-worker": [
+      "notion",
+      "slack"
+    ],
+    "data-analyst": [
+      "postgres",
+      "qdrant"
+    ],
+    "ops-oncall": [
+      "aws-api",
+      "sentry",
+      "slack"
+    ],
+    "cloud-admin": [
+      "aws-iam",
+      "azure"
+    ],
+    "platform": [
+      "supabase",
+      "heroku"
+    ],
+    "devops": [
+      "gitlab",
+      "sentry",
+      "heroku"
+    ],
+    "power-user": [
+      "desktop-commander",
+      "exa"
+    ],
+    "shell-helper": [
+      "commands",
+      "time"
+    ],
+    "thinking-only": [
+      "sequential-thinking",
+      "time"
+    ],
+    "local-notes": [
+      "filesystem",
+      "obsidian"
+    ],
+    "local-git": [
+      "git",
+      "sequential-thinking"
+    ],
+    "readonly-db": [
+      "postgres",
+      "time"
+    ],
+    "docs-search": [
+      "context7",
+      "brave-search"
+    ],
+    "web-search-only": [
+      "brave-search",
+      "exa",
+      "tavily"
+    ],
+    "vector-memory": [
+      "qdrant",
+      "time"
+    ],
+    "repo-reader": [
+      "git",
+      "context7"
+    ]
+  }
+}

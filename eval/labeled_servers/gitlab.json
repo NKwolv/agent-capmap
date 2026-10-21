@@ -1,0 +1,239 @@
+{
+  "id": "gitlab",
+  "category": "git hosting",
+  "source": "npm:@modelcontextprotocol/server-gitlab",
+  "version": "2025.4.25",
+  "deprecated": true,
+  "captured": {
+    "at": "2026-10-20",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2024-11-05",
+    "server_info": {
+      "name": "gitlab-mcp-server",
+      "version": "0.5.1"
+    },
+    "definition_hash": "9f0e2df406e70589a603d60c94b41f61f149d6f245c552c506cdbb6a6a4f2d13"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-20",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "create_or_update_file",
+      "description": "Create or update a single file in a GitLab project",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "b4f4fca525cf8734e6db1a9f3eedb687257badc41d28e5930f4c2c30110daeb1",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "destructive",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create or update a single file",
+          "egress": "in a GitLab project"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "search_repositories",
+      "description": "Search for GitLab projects",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "e51b1dd61405c391f6f94e18e8658adae2846cfc1eeda6240795f73c5d4edc3b",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "Search for GitLab projects"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_repository",
+      "description": "Create a new GitLab project",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "22b6a04a6355c9549bc8e18bdbcb47045fce4eb6c49437f518b1ae6960a50ed3",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create a new GitLab project",
+          "egress": "Create a new GitLab project"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "get_file_contents",
+      "description": "Get the contents of a file or directory from a GitLab project",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "12699e4eb9ece9122b64d29860f52ff5a334f58b34cd2234ac055bdd2e562c6a",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get the contents of a file or directory from a GitLab project",
+          "untrusted_input": "Get the contents of a file or directory from a GitLab project"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "push_files",
+      "description": "Push multiple files to a GitLab project in a single commit",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "e885055f85077c72b26060a2704042152cb30b35ca9ddad8cd0749f06becb05a",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Push multiple files",
+          "egress": "Push multiple files to a GitLab project"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new issue in a GitLab project",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "828a7c7378faee60f24847864e342e67bfa08167096e1f1b7ab9f56752505f3f",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create a new issue",
+          "egress": "Create a new issue in a GitLab project"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_merge_request",
+      "description": "Create a new merge request in a GitLab project",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "b51749c2c6d6a0376efeaa755d14e86da6c416bf79462a909e28904df4378215",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create a new merge request",
+          "egress": "Create a new merge request in a GitLab project"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "fork_repository",
+      "description": "Fork a GitLab project to your account or specified namespace",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "5c0fe5870db63caca8998cb43546186223ec93b53fa3c6c1bee8650bf557f458",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Fork a GitLab project"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_branch",
+      "description": "Create a new branch in a GitLab project",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "aced46cfc14f427af83cde77313b5f30bab15426595351c48294031bb4d51b13",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create a new branch"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    }
+  ]
+}

@@ -52,7 +52,7 @@ two can be used together.
 | What leaves your machine | Per its README: agent application details, server configurations and signatures, tool names and descriptions, skill content (secrets redacted) | With `--classify`: tool names, descriptions and input schemas. Config values are never sent |
 | Output for CI | JSON and a `--ci` exit code | JSON, Markdown and **SARIF** for GitHub code scanning; `--fail-on <severity>` exit codes; a composite GitHub Action |
 | Repo scanning | Machine and agent oriented | Walks a repository for checked-in configs (`.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json`) without starting anything |
-| Accuracy reporting | No published numbers we could find | A hand-labeled benchmark with per-axis precision/recall is part of the project plan (Phase 5); numbers will be published as measured |
+| Accuracy reporting | No published numbers we could find | A benchmark of real servers with per-axis precision/recall ([eval/](../eval/README.md)); numbers are published only from a reviewed, frozen label set |
 | License / contributions | Apache-2.0; README says external contributions are not accepted | MIT; contributions welcome |
 
 ## What neither tool does
@@ -67,5 +67,6 @@ two can be used together.
 
 agent-capmap is early. Discovery, enumeration, classification, the policy engine,
 baseline pinning, JSON/Markdown/SARIF output, `--fail-on` exit codes and the GitHub
-Action are implemented. The accuracy benchmark is planned (Phase 5); rows above marked
-with a phase number describe that plan.
+Action are implemented. The accuracy benchmark harness exists; its numbers will be
+published once the labels have been reviewed. Rows above marked with a phase number
+describe that plan.

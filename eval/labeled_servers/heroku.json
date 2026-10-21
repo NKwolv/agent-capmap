@@ -1,0 +1,1411 @@
+{
+  "id": "heroku",
+  "category": "cloud",
+  "source": "npm:@heroku/mcp-server",
+  "version": "1.2.11",
+  "deprecated": false,
+  "captured": {
+    "at": "2026-10-20",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2025-06-18",
+    "server_info": {
+      "name": "Heroku MCP Server",
+      "version": "1.2.11"
+    },
+    "definition_hash": "bba6e412be4d4a7d03b3e6095ca1564982fac9b80860fd069b6903ba6e8476de"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-20",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "list_apps",
+      "description": "List Heroku apps: owned, collaborator access, team/space filtering",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "all": {
+            "type": "boolean",
+            "description": "Show owned apps and collaborator access. Default: owned only"
+          },
+          "personal": {
+            "type": "boolean",
+            "description": "List personal account apps only, ignoring default team"
+          },
+          "space": {
+            "type": "string",
+            "description": "Filter by private space name. Excludes team param"
+          },
+          "team": {
+            "type": "string",
+            "description": "Filter by team name. Excludes space param"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "d9847a5571f1bd8fff141d02529f8aea3c1d963b260108a8b738dd853c90e360",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "List Heroku apps"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "get_app_info",
+      "description": "Get app details: config, dynos, addons, access, domains",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app name. Requires access permissions"
+          },
+          "json": {
+            "type": "boolean",
+            "description": "JSON output with full metadata. Default: text format"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "f93ab9da1975280f5745346122ad14aa95b31256581d4cb811221ddb5d029fd0",
+      "label": {
+        "tags": {
+          "data_access": "secrets_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get app details: config"
+        },
+        "suspicious": false,
+        "notes": "App config vars typically hold credentials (DATABASE_URL, API keys)."
+      }
+    },
+    {
+      "name": "create_app",
+      "description": "Create app: custom name, region (US/EU), team, private space",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "App name. Auto-generated if omitted"
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "us",
+              "eu"
+            ],
+            "description": "Region: us/eu. Default: us. Excludes space param"
+          },
+          "space": {
+            "type": "string",
+            "description": "Private space name. Inherits region. Excludes region param"
+          },
+          "team": {
+            "type": "string",
+            "description": "Team name for ownership"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "1900773e10bac0a99c99dffeedfc9c3d333b67e130d05d72bab88cbcc9daaf04",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create app"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "rename_app",
+      "description": "Rename app: validate and update app name",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Current app name. Requires access"
+          },
+          "newName": {
+            "type": "string",
+            "description": "New unique app name"
+          }
+        },
+        "required": [
+          "app",
+          "newName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "d59454473f0c2fee22cc3ea20944024dfd568cd4a185b3fc66b4a5f61e52a357",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Rename app"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "maintenance_on",
+      "description": "Enable maintenance mode and redirect traffic for a Heroku app",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target Heroku app name"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "1c0e9faa8cbb9027dc0a540f5141236d126e39db9ebf76da7e8dd564b03e887e",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Enable maintenance mode"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "maintenance_off",
+      "description": "Disable maintenance mode and restore normal app operations",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target Heroku app name"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "311f5d8a3e7877f3b5f7a5ff73481de1b9667f13a177ce474384f342cec909bd",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Disable maintenance mode"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "get_app_logs",
+      "description": "App logs: monitor/debug/filter by dyno/process/source",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Heroku app name. Requires: permissions, Cedar-gen"
+          },
+          "dynoName": {
+            "type": "string",
+            "description": "Format: web.1/worker.2. Excludes processType"
+          },
+          "source": {
+            "type": "string",
+            "description": "app=application, heroku=platform. Default: all"
+          },
+          "processType": {
+            "type": "string",
+            "description": "web|worker. All instances. Excludes dynoName"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "14e28da62ec6836e7a6c2be82ac78d96921dfe314544d0ef6f52ace030995ff1",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "App logs",
+          "untrusted_input": "App logs"
+        },
+        "suspicious": false,
+        "notes": "Request logs carry attacker-controllable strings (paths, user agents). Reviewer: confirm untrusted_input."
+      }
+    },
+    {
+      "name": "list_private_spaces",
+      "description": "Lists Heroku Private Spaces with CIDR blocks, regions, compliance and capacity details. JSON output supported.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "json": {
+            "type": "boolean",
+            "description": "JSON output for detailed space metadata, text output if false/omitted"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "05c8023ea3965364e21c3f06d771caf5732a69ba9fe02294077d68856b1f1a28",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Lists Heroku Private Spaces with CIDR blocks"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "list_teams",
+      "description": "Lists accessible Heroku Teams. Use for: viewing teams, checking membership, getting team metadata, and verifying access. JSON output available.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "json": {
+            "type": "boolean",
+            "description": "Output format control - true for detailed JSON with team metadata, false/omitted for simplified text"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "ed11807eb6feaaa377396da8228c3fb0ae359bd6fcbd34def51e5a450701cd5e",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Lists accessible Heroku Teams"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "list_addons",
+      "description": "List add-ons: all apps or specific app, detailed metadata",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "all": {
+            "type": "boolean",
+            "description": "List all add-ons across accessible apps. Overrides app param, shows full status"
+          },
+          "app": {
+            "type": "string",
+            "description": "Filter by app name. Shows add-ons and attachments. Uses Git remote default if omitted"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "da766f048fc369658d205e6104beba0d0b9c2bf0149c852dae3bcdfc09c7b996",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "List add-ons: all apps or specific app"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "get_addon_info",
+      "description": "Get add-on details: plan, state, billing",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "addon": {
+            "type": "string",
+            "description": "Add-on identifier: UUID, name (postgresql-curved-12345), or attachment name (DATABASE)"
+          },
+          "app": {
+            "type": "string",
+            "description": "App context for add-on lookup. Required for attachment names. Uses Git remote default"
+          }
+        },
+        "required": [
+          "addon"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "11490233820ef5845415389eade32e2f402c3ee10e24f026d5a3948e62e89d2c",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get add-on details: plan, state, billing"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_addon",
+      "description": "Create add-on: specify service, plan, custom names",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app for add-on. Must have write access. Region/space affects availability"
+          },
+          "as": {
+            "type": "string",
+            "description": "Custom attachment name. Used for config vars prefix. Must be unique in app"
+          },
+          "name": {
+            "type": "string",
+            "description": "Global add-on identifier. Must be unique across all Heroku add-ons"
+          },
+          "serviceAndPlan": {
+            "type": "string",
+            "description": "Format: service_slug:plan_slug (e.g., heroku-postgresql:essential-0)"
+          }
+        },
+        "required": [
+          "app",
+          "serviceAndPlan"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "8ec092a1fccfabaff41d741a712bbb4add4309d0f3c6379cc2381ac6acdd3ada",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create add-on"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "list_addon_services",
+      "description": "List available add-on services and features",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "json": {
+            "type": "boolean",
+            "description": "JSON output with sharing options and app generation support. Default: basic text"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "1c15075fd7e4ca51ddd749adbb4d0c2a3c21bc03a70e5848fe260b8233b642fb",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {},
+        "suspicious": false,
+        "notes": "Public catalog."
+      }
+    },
+    {
+      "name": "list_addon_plans",
+      "description": "List service plans: features, pricing, availability",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "description": "Service slug (e.g., heroku-postgresql). Get from list_addon_services"
+          },
+          "json": {
+            "type": "boolean",
+            "description": "JSON output with pricing, features, space compatibility. Default: text format"
+          }
+        },
+        "required": [
+          "service"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "de859e5b115cb86d63fa9df5f220b3b6a55905c90356b7122d3ef6b42d472fd4",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {},
+        "suspicious": false,
+        "notes": "Public catalog."
+      }
+    },
+    {
+      "name": "pg_psql",
+      "description": "Execute SQL queries: analyze, debug, modify schema, manage data",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "SQL command. Single line. Ignored if file provided"
+          },
+          "file": {
+            "type": "string",
+            "description": "SQL file path. Ignored if command provided"
+          },
+          "credential": {
+            "type": "string",
+            "description": "credential to use"
+          },
+          "app": {
+            "type": "string",
+            "description": "app to run command against"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database identifier: config var, name, ID, alias. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "d2e1da5eebd9523ffa57702390e6d34cb60b9748302cbb5a7b9c55dc1542024c",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "destructive",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Execute SQL queries",
+          "mutation": "modify schema, manage data"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pg_info",
+      "description": "View database status: config, metrics, resources, health",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app name"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: all databases"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "e78ef12a727e9623db58ffa7d6f8629076db25f7edc0b20d03f17cfce85e10bd",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "View database status"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pg_ps",
+      "description": "Monitor active queries: progress, resources, performance",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app name"
+          },
+          "verbose": {
+            "type": "boolean",
+            "description": "Show query plan and memory usage"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "173af2329f8fc7f8c95cda33e6697eae6dce3d818d8d3ea229c377b85d1d8a80",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Monitor active queries"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pg_locks",
+      "description": "Analyze locks: blocked queries, deadlocks, concurrency",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app name"
+          },
+          "truncate": {
+            "type": "boolean",
+            "description": "Truncate queries to 40 chars"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "bf9f05335981f5d4ed48d524ce5290dfeac3c533e921d5c2fefa5ce08bc8a9cf",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Analyze locks"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pg_outliers",
+      "description": "Find resource-heavy queries: performance, patterns, optimization",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app name"
+          },
+          "num": {
+            "type": "number",
+            "description": "Number of queries to show. Default: 10"
+          },
+          "reset": {
+            "type": "boolean",
+            "description": "Reset pg_stat_statements stats"
+          },
+          "truncate": {
+            "type": "boolean",
+            "description": "Truncate queries to 40 chars"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "67e7f540c30dac1be95884b460ac2c8b504d95793b47f7f072ffcd3401fa0382",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Find resource-heavy queries"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pg_credentials",
+      "description": "Manage access: credentials, permissions, security, monitoring",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app name"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "dd2d252e22299c449a52a25ea24d5c958ec738ed0c196536083a7a4dc2811628",
+      "label": {
+        "tags": {
+          "data_access": "secrets_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "identity_admin"
+        },
+        "evidence": {
+          "data_access": "Manage access: credentials",
+          "privilege": "Manage access: credentials, permissions"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pg_kill",
+      "description": "Stop processes: stuck queries, blocking transactions, runaway operations",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app name"
+          },
+          "pid": {
+            "type": "number",
+            "description": "Process ID to terminate"
+          },
+          "force": {
+            "type": "boolean",
+            "description": "Force immediate termination"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+          }
+        },
+        "required": [
+          "app",
+          "pid"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "813b0b3380bf5bf149423752a69291ee0768eb26c958c24f1b73044774b7d8ca",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "destructive",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Stop processes: stuck queries, blocking transactions"
+        },
+        "suspicious": false,
+        "notes": "Terminating running transactions; treated like terminating instances."
+      }
+    },
+    {
+      "name": "pg_maintenance",
+      "description": "Track maintenance: windows, schedules, progress, planning",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app name"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "3c790d82e5567af2229baa9dc506ab83ac176578ba425b0bb3760c75e8b87c76",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Track maintenance"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pg_backups",
+      "description": "Manage backups: schedules, status, verification, recovery",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app name"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "1fcf34026363440c9621e4f513bb02411f3a16dc40d6b83fc9a2e0117b1f43bc",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "destructive",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Manage backups: schedules, status, verification, recovery"
+        },
+        "suspicious": false,
+        "notes": "Restoring a backup overwrites current data."
+      }
+    },
+    {
+      "name": "pg_upgrade",
+      "description": "Upgrade PostgreSQL: version migration, compatibility, safety",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Target app name"
+          },
+          "version": {
+            "type": "string",
+            "description": "PostgreSQL version target"
+          },
+          "confirm": {
+            "type": "string",
+            "description": "Confirmation for destructive operation"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "fe19bf769291ebb2c1e94eef37cdfe3a6303f27856dd19df7011b9175e9c93da",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "destructive",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Upgrade PostgreSQL"
+        },
+        "suspicious": false,
+        "notes": "Major version upgrades cannot be rolled back."
+      }
+    },
+    {
+      "name": "ps_list",
+      "description": "List and monitor Heroku app dynos. View running dynos, check status/health, monitor process states, verify configurations.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "App name to list processes for"
+          },
+          "json": {
+            "type": "boolean",
+            "description": "Output process info in JSON format"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "952fa201b8af58f2f9c6e4b48312bc3ef0f13515f187e14514bc47fe6c6e81a1",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "List and monitor Heroku app dynos"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "ps_scale",
+      "description": "Scale Heroku app dynos. Adjust quantities, change sizes, view formation details, manage resources.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "App name to scale"
+          },
+          "dyno": {
+            "type": "string",
+            "description": "Dyno type and quantity (e.g., web=3:Standard-2X, worker+1). Omit to show current formation"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "46c23850ac79a3a755482b7438b72bc10638b912c313ca7d9f99d1c19e1ba511",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Scale Heroku app dynos"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "ps_restart",
+      "description": "Restart Heroku app processes. Restart specific dynos, process types, or all dynos. Reset dyno states selectively.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "App name to restart processes for"
+          },
+          "dyno-name": {
+            "type": "string",
+            "description": "Specific dyno to restart (e.g., web.1). Omit both options to restart all"
+          },
+          "process-type": {
+            "type": "string",
+            "description": "Dyno type to restart (e.g., web). Omit both options to restart all"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "21c16cf00dace0e86ef8a632c9b872401de330145a7533429815690b67d0153a",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Restart Heroku app processes"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pipelines_create",
+      "description": "Creates new Heroku deployment pipeline with configurable stages, apps, and team settings",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Pipeline name"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "development",
+              "staging",
+              "production"
+            ],
+            "description": "Initial pipeline stage"
+          },
+          "app": {
+            "type": "string",
+            "description": "App to add to pipeline"
+          },
+          "team": {
+            "type": "string",
+            "description": "Team owning the pipeline"
+          }
+        },
+        "required": [
+          "name",
+          "stage"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "886834e6b934dd5fd28a1d1fd7be16fa434935f83548b2d3a77e9187b89c72cd",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Creates new Heroku deployment pipeline"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pipelines_promote",
+      "description": "Promotes apps between pipeline stages with configurable target applications",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "Source app for promotion"
+          },
+          "to": {
+            "type": "string",
+            "description": "Target apps for promotion (comma-separated)"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "71bb508778885b73528e0e37aa40d5d7398e857cb2cc7b1c64ce010ac05b49d9",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Promotes apps between pipeline stages"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pipelines_list",
+      "description": "Lists accessible Heroku pipelines with ownership and configuration details",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "json": {
+            "type": "boolean",
+            "description": "Enable JSON output"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "d0edc0af99efce418afbcc0e843302d598c1536ec008b9768a7bb0c387fd7379",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Lists accessible Heroku pipelines"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "pipelines_info",
+      "description": "Displays detailed pipeline configuration, stages, and connected applications",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "pipeline": {
+            "type": "string",
+            "description": "Target pipeline name"
+          },
+          "json": {
+            "type": "boolean",
+            "description": "Enable JSON output"
+          }
+        },
+        "required": [
+          "pipeline"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "fbc98daf7d1e2625d21a18ca72656f8b495aee2de287c5434566fa116239d1f2",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Displays detailed pipeline configuration"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "deploy_to_heroku",
+      "description": "Use for all deployments. Deploys new/existing apps, with or without teams/spaces, and env vars to Heroku. Ask for app name if missing. Requires valid app.json via appJson param.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 30,
+            "description": "App name for deployment. Creates new app if not exists."
+          },
+          "rootUri": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace root directory path."
+          },
+          "tarballUri": {
+            "type": "string",
+            "description": "URL of deployment tarball. Creates from rootUri if not provided."
+          },
+          "teamId": {
+            "type": "string",
+            "description": "Team ID for team deployments."
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "Private space ID for space deployments."
+          },
+          "internalRouting": {
+            "type": "boolean",
+            "description": "Enable internal routing in private spaces."
+          },
+          "env": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Environment variables overriding app.json values"
+          },
+          "appJson": {
+            "type": "string",
+            "description": "App.json config for deployment. Must follow schema: {\"default\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"title\":\"Heroku app.json Schema\",\"description\":\"app.json is a manifest format for describing web apps. It declares environment variables, add-ons, and other information required to run an app on Heroku. Used for dynamic configurations or converted projects\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"pattern\":\"^[a-zA-Z-_\\\\.]+\",\"maxLength\":300},\"description\":{\"type\":\"string\"},\"keywords\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"website\":{\"$ref\":\"#/definitions/uriString\"},\"repository\":{\"$ref\":\"#/definitions/uriString\"},\"logo\":{\"$ref\":\"#/definitions/uriString\"},\"success_url\":{\"type\":\"string\"},\"scripts\":{\"$ref\":\"#/definitions/scripts\"},\"env\":{\"$ref\":\"#/definitions/env\"},\"formation\":{\"$ref\":\"#/definitions/formation\"},\"addons\":{\"$ref\":\"#/definitions/addons\"},\"buildpacks\":{\"$ref\":\"#/definitions/buildpacks\"},\"environments\":{\"$ref\":\"#/definitions/environments\"},\"stack\":{\"$ref\":\"#/definitions/stack\"},\"image\":{\"type\":\"string\"}},\"additionalProperties\":false,\"definitions\":{\"uriString\":{\"type\":\"string\",\"format\":\"uri\"},\"scripts\":{\"type\":\"object\",\"properties\":{\"postdeploy\":{\"type\":\"string\"},\"pr-predestroy\":{\"type\":\"string\"}},\"additionalProperties\":false},\"env\":{\"type\":\"object\",\"patternProperties\":{\"^[A-Z][A-Z0-9_]*$\":{\"type\":\"object\",\"properties\":{\"description\":{\"type\":\"string\"},\"value\":{\"type\":\"string\"},\"required\":{\"type\":\"boolean\"},\"generator\":{\"type\":\"string\",\"enum\":[\"secret\"]}},\"additionalProperties\":false}}},\"dynoSize\":{\"type\":\"string\",\"enum\":[\"free\",\"eco\",\"hobby\",\"basic\",\"standard-1x\",\"standard-2x\",\"performance-m\",\"performance-l\",\"private-s\",\"private-m\",\"private-l\",\"shield-s\",\"shield-m\",\"shield-l\"]},\"formation\":{\"type\":\"object\",\"patternProperties\":{\"^[a-zA-Z0-9_-]+$\":{\"type\":\"object\",\"properties\":{\"quantity\":{\"type\":\"integer\",\"minimum\":0},\"size\":{\"$ref\":\"#/definitions/dynoSize\"}},\"required\":[\"quantity\"],\"additionalProperties\":false}}},\"addons\":{\"type\":\"array\",\"items\":{\"oneOf\":[{\"type\":\"string\"},{\"type\":\"object\",\"properties\":{\"plan\":{\"type\":\"string\"},\"as\":{\"type\":\"string\"},\"options\":{\"type\":\"object\"}},\"required\":[\"plan\"],\"additionalProperties\":false}]}},\"buildpacks\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\"}},\"required\":[\"url\"],\"additionalProperties\":false}},\"environmentConfig\":{\"type\":\"object\",\"properties\":{\"env\":{\"type\":\"object\"},\"formation\":{\"type\":\"object\"},\"addons\":{\"type\":\"array\"},\"buildpacks\":{\"type\":\"array\"}}},\"environments\":{\"type\":\"object\",\"properties\":{\"test\":{\"allOf\":[{\"$ref\":\"#/definitions/environmentConfig\"},{\"type\":\"object\",\"properties\":{\"scripts\":{\"type\":\"object\",\"properties\":{\"test\":{\"type\":\"string\"}},\"additionalProperties\":false}}}]},\"review\":{\"$ref\":\"#/definitions/environmentConfig\"},\"production\":{\"$ref\":\"#/definitions/environmentConfig\"}},\"additionalProperties\":false},\"stack\":{\"type\":\"string\",\"enum\":[\"heroku-18\",\"heroku-20\",\"heroku-22\",\"heroku-24\"]}}}}"
+          }
+        },
+        "required": [
+          "name",
+          "rootUri",
+          "appJson"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "5e1818dbc540499042b6d52f846b31e2e24d81acadf4593b008e181cd8ae3a16",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "sandboxed",
+          "privilege": "none"
+        },
+        "evidence": {
+          "execution": "Deploys new/existing apps",
+          "mutation": "Deploys new/existing apps"
+        },
+        "suspicious": false,
+        "notes": "Deployed code runs in Heroku dynos (containers)."
+      }
+    },
+    {
+      "name": "deploy_one_off_dyno",
+      "description": "\nRun code/commands in Heroku one-off dyno with network and filesystem access.\n\nRequirements:\n- Show command output\n- Use app_info for buildpack detection\n- Support shell setup commands\n- Use stdout/stderr\n\nFeatures:\n- Network/filesystem access\n- Environment variables\n- File operations\n- Temp directory handling\n\nUsage:\n1. Use Heroku runtime\n2. Proper syntax/imports\n3. Organized code structure\n4. Package management:\n   - Define dependencies\n   - Minimize external deps\n   - Prefer native modules\n\nExample package.json:\n```json\n{\n  \"type\": \"module\",\n  \"dependencies\": {\n    \"axios\": \"^1.6.0\"\n  }\n}\n```\n",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 30,
+            "description": "Target Heroku app name."
+          },
+          "command": {
+            "type": "string",
+            "description": "Command to run in dyno."
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "relativePath": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "description": "Relative virtual path for each staged source file (strict character set)."
+                },
+                "contents": {
+                  "type": "string",
+                  "description": "File contents."
+                }
+              },
+              "required": [
+                "relativePath",
+                "contents"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Source files to include in dyno."
+          },
+          "size": {
+            "type": "string",
+            "description": "Dyno size.",
+            "default": "standard-1x"
+          },
+          "timeToLive": {
+            "type": "number",
+            "description": "Dyno lifetime in seconds.",
+            "default": 3600
+          },
+          "env": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Dyno environment variables."
+          }
+        },
+        "required": [
+          "name",
+          "command"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "4f6c4b7f5cb74f08441cf751c11035cd94f2d2acab79523cbc21cb311efc98e2",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "destructive",
+          "execution": "sandboxed",
+          "privilege": "none"
+        },
+        "evidence": {
+          "execution": "Run code/commands in Heroku one-off dyno",
+          "egress": "with network and filesystem access",
+          "data_access": "filesystem access",
+          "mutation": "Run code/commands"
+        },
+        "suspicious": false,
+        "notes": "Arbitrary commands in an app container with network access and the app's environment."
+      }
+    }
+  ]
+}

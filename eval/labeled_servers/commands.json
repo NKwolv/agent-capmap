@@ -1,0 +1,77 @@
+{
+  "id": "commands",
+  "category": "shell",
+  "source": "npm:mcp-server-commands",
+  "version": "0.8.2",
+  "deprecated": false,
+  "captured": {
+    "at": "2026-10-20",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2024-11-05",
+    "server_info": {
+      "name": "mcp-server-commands",
+      "version": "0.8.2",
+      "description": "Run commands on this win32 machine"
+    },
+    "definition_hash": "4799a5797704aef8262b2af625810ad179acbe0b82e38dfe2e99cf23e8cad42f"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-21",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "run_process",
+      "description": "Run a process on this win32 machine",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "command_line": {
+            "type": "string",
+            "description": "Shell mode: a shell command line executed via the system's default shell. Supports pipes, redirects, globbing. Cannot be combined with 'argv'."
+          },
+          "argv": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Executable mode: directly spawn a process. argv[0] is the executable, followed by arguments passed verbatim (no shell interpretation). Cannot be combined with 'command_line'."
+          },
+          "cwd": {
+            "type": "string",
+            "description": "Optional to set working directory"
+          },
+          "stdin_text": {
+            "type": "string",
+            "description": "Optional text written to STDIN (written fully, then closed). Useful for heredoc-style input or file contents."
+          },
+          "timeout_ms": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds, defaults to 30,000ms"
+          }
+        }
+      },
+      "definition_hash": "bb720133ffb7c07d87474e95e871209f6cf772d91f9e88e98305f8ead8802284",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "destructive",
+          "execution": "host",
+          "privilege": "none"
+        },
+        "evidence": {
+          "execution": "Run a process on this win32 machine",
+          "mutation": "Run a process"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    }
+  ]
+}

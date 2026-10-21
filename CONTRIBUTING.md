@@ -35,6 +35,11 @@ uv pip compile pyproject.toml --universal --generate-hashes --python-version 3.1
 uv pip compile pyproject.toml requirements/build.in --extra dev --universal   --generate-hashes --python-version 3.11 --exclude-newer $CUTOFF -o requirements/dev.lock
 ```
 
+**Security fixes override the cutoff.** If pip-audit reports a vulnerability whose fix
+is newer than the cutoff, exempt only that package, e.g.
+`--exclude-newer-package uv=<date after the fix>`, and raise its floor in
+`pyproject.toml` with a comment naming the advisory.
+
 Before adding a dependency, confirm on PyPI that it exists under that exact name, is
 actively maintained and widely used (see [AGENTS.md](AGENTS.md) section 8).
 

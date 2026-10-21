@@ -1,0 +1,54 @@
+{
+  "id": "postgres",
+  "category": "database",
+  "source": "npm:@modelcontextprotocol/server-postgres",
+  "version": "0.6.2",
+  "deprecated": true,
+  "captured": {
+    "at": "2026-10-20",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2024-11-05",
+    "server_info": {
+      "name": "example-servers/postgres",
+      "version": "0.1.0"
+    },
+    "definition_hash": "fbfe539421b73c3b755bcc16d4053134303c2129358b8429feffe9823b6f6401"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-20",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "query",
+      "description": "Run a read-only SQL query",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "sql": {
+            "type": "string"
+          }
+        }
+      },
+      "definition_hash": "d30b6fe5f5d87fbd23f935f9edf5161fabd7a277164b83b010ac58d995dd5245",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Run a read-only SQL query"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    }
+  ]
+}

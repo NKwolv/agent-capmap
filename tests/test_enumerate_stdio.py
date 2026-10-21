@@ -166,3 +166,38 @@ def test_enumerate_inventory_fills_every_server(
     server = inventory.agents[0].servers[0]
     assert server.enumeration is not None
     assert server.enumeration.status is EnumerationStatus.OK
+
+
+def test_workspace_folder_resolves_to_an_absolute_path(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Regression: scanning a relative path made ${workspaceFolder} relative too, so the
+    server (started in that folder) saw a doubled path."""
+    project = tmp_path / "project"
+    (project / "sandbox").mkdir(parents=True)
+    spec = project / "spec.json"
+    spec.write_text(json.dumps({"report_env": ["DIR_EXISTS"]}))
+    config = project / "mcp.json"
+    config.write_text(
+        json.dumps(
+            {
+                "mcpServers": {
+                    "s": {
+                        "command": sys.executable,
+                        "args": [str(MOCK_SERVER), str(spec)],
+                        "env": {"SANDBOX": "${workspaceFolder}/sandbox"},
+                    }
+                }
+            }
+        )
+    )
+    monkeypatch.chdir(tmp_path)
+    inventory = discover([Path("project")])  # relative, as a user would type it
+    server = inventory.agents[0].servers[0]
+    resolved = Path(server.launch.base_dir or "")
+    assert resolved.is_absolute()
+    assert resolved == project.resolve()
+    from agentcapmap.enumerate import resolve_launch
+
+    sandbox = Path(resolve_launch(server.launch).env["SANDBOX"])
+    assert sandbox.is_absolute() and sandbox.is_dir()

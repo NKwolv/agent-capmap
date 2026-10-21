@@ -1,0 +1,137 @@
+{
+  "id": "deepwiki",
+  "category": "docs search (remote)",
+  "source": "url:mcp.deepwiki.com",
+  "version": "remote",
+  "deprecated": false,
+  "captured": {
+    "at": "2026-10-20",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2025-06-18",
+    "server_info": {
+      "name": "DeepWiki",
+      "version": "2.14.3"
+    },
+    "definition_hash": "e0b0314e440afe9d9d94476ece4b587e18a89cf4811588a4370ed4316cc6062f"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-20",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "ask_wiki_question",
+      "description": "Ask any question about a GitHub repository's codebase and get an AI-powered answer\ngrounded in its DeepWiki.",
+      "input_schema": {
+        "properties": {
+          "repoName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "description": "GitHub repository or list of repositories (max 10) in owner/repo format."
+          },
+          "question": {
+            "description": "The question to ask about the repository.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "repoName",
+          "question"
+        ],
+        "type": "object"
+      },
+      "definition_hash": "3afbdaf02826766eb5e7634b45974d38ea1e917875210ebae2201c8d42302eaf",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "Ask any question about a GitHub repository's codebase"
+        },
+        "suspicious": false,
+        "notes": "Answers are derived from public repository content."
+      }
+    },
+    {
+      "name": "read_wiki_contents",
+      "description": "View documentation about a GitHub repository.",
+      "input_schema": {
+        "properties": {
+          "repoName": {
+            "description": "GitHub repository in owner/repo format (e.g. \"facebook/react\").",
+            "type": "string"
+          }
+        },
+        "required": [
+          "repoName"
+        ],
+        "type": "object"
+      },
+      "definition_hash": "3df685b154976e930c59b90b0356e3d0c82824b55d7b25ff93df2de18549824b",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "View documentation about a GitHub repository"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "read_wiki_structure",
+      "description": "Get a list of documentation topics for a GitHub repository.",
+      "input_schema": {
+        "properties": {
+          "repoName": {
+            "description": "GitHub repository in owner/repo format (e.g. \"facebook/react\").",
+            "type": "string"
+          }
+        },
+        "required": [
+          "repoName"
+        ],
+        "type": "object"
+      },
+      "definition_hash": "8b2c61f30b7ccf6fd57e53acc0c4bceee11fa8192ec586631c9fe6cd702fdfd0",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "documentation topics for a GitHub repository"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    }
+  ]
+}

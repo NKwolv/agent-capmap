@@ -8,6 +8,34 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- **Evaluation harness** (Phase 5):
+  - `eval/catalog.json` of real MCP servers pinned to vetted versions, `eval/capture.py`
+    to record their tool definitions (local paths scrubbed), `eval/apply_labels.py`
+    to write labels whose evidence phrases are verified against the definitions.
+  - Ground-truth label files in `eval/labeled_servers/` (AI-drafted, pending human
+    review), with integrity checks and freezing (`labels.lock`).
+  - `eval/run_eval.py`: per-axis precision/recall/F1, exact match, confusion matrices,
+    suspicious-flag precision/recall, rule-level agreement and false-positive rate on
+    realistic agents (`eval/agents.json`), planted-risk recall on `fixtures/`. Results
+    are marked PROVISIONAL until every label file is reviewed.
+- **Docs and examples** (Phase 6): rewritten README with a 5-minute no-key quickstart,
+  `examples/demo` (pre-classified inventory) and `examples/live-trifecta` (real
+  servers), `docs/poc-checklist.md`, updated blog outline.
+
+### Security
+
+- `certifi` raised to 2026.10.19 (GHSA-6q48-6c7w-9gw2: older bundles trust emSign root
+  CAs whose intermediate keys are compromised); it is the CA bundle behind every HTTPS
+  connection agent-capmap makes.
+- Dev tool `uv` raised to 0.13.4 (GHSA-hq85-5cpj-mr62, same root cause).
+- Both fixes were newer than the 14-day lockfile cutoff, so each was exempted
+  individually; the procedure is documented in CONTRIBUTING.md.
+
+### Fixed
+
+- `${workspaceFolder}` and the server working directory were relative when the scan path
+  was relative, so the path was applied twice (found by the live example).
+- The package now ships a `py.typed` marker.
 - **Reporting and CI** (Phase 4):
   - `--format json|markdown|sarif` on `evaluate` and `scan --evaluate`; `report` command
     to re-render a saved evaluation.

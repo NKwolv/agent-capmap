@@ -1,0 +1,119 @@
+{
+  "id": "exa",
+  "category": "search",
+  "source": "npm:exa-mcp-server",
+  "version": "3.4.2",
+  "deprecated": false,
+  "captured": {
+    "at": "2026-10-20",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2025-06-18",
+    "server_info": {
+      "name": "exa-search-server",
+      "title": "Exa",
+      "version": "3.4.2",
+      "websiteUrl": "https://exa.ai",
+      "icons": [
+        {
+          "src": "https://exa.ai/images/favicon-32x32.png",
+          "mimeType": "image/png",
+          "sizes": [
+            "32x32"
+          ]
+        }
+      ]
+    },
+    "definition_hash": "dea78d15e5d850face30105b6e32ce323385129b404613828e4987cc28abb5df"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-20",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "web_search_exa",
+      "description": "Search the web for any topic and get clean, ready-to-use content.\n\n      Best for: Finding current information, news, facts, people, companies, or answering questions about any topic.\n      Returns: Clean text content from top search results.\n\n      Query tips:\n      describe the ideal page, not keywords. \"blog post comparing React and Vue performance\" not \"React vs Vue\".\n      Use category:people / category:company to search through Linkedin profiles / companies respectively.\n      If highlights are insufficient, follow up with web_fetch_exa on the best URLs.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Natural language search query. Should be a semantically rich description of the ideal page, not just keywords. Optionally include category:<type> (company, people) to focus results — e.g. 'category:people John Doe software engineer'."
+          },
+          "numResults": {
+            "type": "number",
+            "description": "Number of search results to return (default: 10)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "5a37fde7510afae5cb004921300cd8093805608cd5f5a720eb19e2524d2e2cf0",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "Search the web for any topic"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "web_fetch_exa",
+      "description": "Read a webpage's full content as clean markdown. Use after web_search_exa when highlights are insufficient or to read any URL.\n\nBest for: Extracting full content from known URLs. Batch multiple URLs in one call.\nReturns: Clean text content and metadata from the page(s).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "URLs to read. Batch multiple URLs in one call."
+          },
+          "maxCharacters": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Maximum characters to extract per page (default: 3000)"
+          }
+        },
+        "required": [
+          "urls"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "044d0b579cd0d70c3138d45698317e71d99bee01969caa5cdcb843afe44c5f22",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "external",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "Read a webpage's full content",
+          "egress": "read any URL"
+        },
+        "suspicious": false,
+        "notes": "Arbitrary URLs: per ruling, fetching an arbitrary URL is external egress."
+      }
+    }
+  ]
+}

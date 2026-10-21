@@ -1,0 +1,426 @@
+{
+  "id": "memory",
+  "category": "memory/notes",
+  "source": "npm:@modelcontextprotocol/server-memory",
+  "version": "2026.8.31",
+  "deprecated": false,
+  "captured": {
+    "at": "2026-10-21",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2025-06-18",
+    "server_info": {
+      "name": "memory-server",
+      "version": "0.6.3"
+    },
+    "definition_hash": "ddb02c61abd2d5628c82e4caa3c7bc56c7c5cc534b20a56b4e3ba8d9dd6e9e3a"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-21",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "create_entities",
+      "description": "Create multiple new entities in the knowledge graph",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "entities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the entity"
+                },
+                "entityType": {
+                  "type": "string",
+                  "description": "The type of the entity"
+                },
+                "observations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "An array of observation contents associated with the entity"
+                }
+              },
+              "required": [
+                "name",
+                "entityType",
+                "observations"
+              ]
+            }
+          }
+        },
+        "required": [
+          "entities"
+        ]
+      },
+      "definition_hash": "6ce7dc5b45d4e6c256bb20feed616343e011b6929d7d3d36439df4ce10a3231d",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create multiple new entities in the knowledge graph"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_relations",
+      "description": "Create multiple new relations between entities in the knowledge graph. Relations should be in active voice",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "relations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "from": {
+                  "type": "string",
+                  "description": "The name of the entity where the relation starts"
+                },
+                "to": {
+                  "type": "string",
+                  "description": "The name of the entity where the relation ends"
+                },
+                "relationType": {
+                  "type": "string",
+                  "description": "The type of the relation"
+                }
+              },
+              "required": [
+                "from",
+                "to",
+                "relationType"
+              ]
+            }
+          }
+        },
+        "required": [
+          "relations"
+        ]
+      },
+      "definition_hash": "9618aebf22f9736ab47a333971d03c827bbd63e86e11b3ca2d361d34d5dd1438",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create multiple new relations between entities"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "add_observations",
+      "description": "Add new observations to existing entities in the knowledge graph",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "observations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "entityName": {
+                  "type": "string",
+                  "description": "The name of the entity to add the observations to"
+                },
+                "contents": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "An array of observation contents to add"
+                }
+              },
+              "required": [
+                "entityName",
+                "contents"
+              ]
+            }
+          }
+        },
+        "required": [
+          "observations"
+        ]
+      },
+      "definition_hash": "20a69b24a5f88cdfc1cdb6f99f54e1862b86093559b4489f03bcf7de9a334ef8",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Add new observations to existing entities"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "delete_entities",
+      "description": "Delete multiple entities and their associated relations from the knowledge graph",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "entityNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An array of entity names to delete"
+          }
+        },
+        "required": [
+          "entityNames"
+        ]
+      },
+      "definition_hash": "8732851d4c21195d8897cd73fc21a2872d909f417dc5ce9ba4b1627d7aa41a46",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "destructive",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Delete multiple entities and their associated relations"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "delete_observations",
+      "description": "Delete specific observations from entities in the knowledge graph",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "deletions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "entityName": {
+                  "type": "string",
+                  "description": "The name of the entity containing the observations"
+                },
+                "observations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "An array of observations to delete"
+                }
+              },
+              "required": [
+                "entityName",
+                "observations"
+              ]
+            }
+          }
+        },
+        "required": [
+          "deletions"
+        ]
+      },
+      "definition_hash": "af8caf807674837f3f384863e76fe3af3cadceba068fa4564a19d147a2fdea95",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "destructive",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Delete specific observations from entities"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "delete_relations",
+      "description": "Delete multiple relations from the knowledge graph",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "relations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "from": {
+                  "type": "string",
+                  "description": "The name of the entity where the relation starts"
+                },
+                "to": {
+                  "type": "string",
+                  "description": "The name of the entity where the relation ends"
+                },
+                "relationType": {
+                  "type": "string",
+                  "description": "The type of the relation"
+                }
+              },
+              "required": [
+                "from",
+                "to",
+                "relationType"
+              ]
+            },
+            "description": "An array of relations to delete"
+          }
+        },
+        "required": [
+          "relations"
+        ]
+      },
+      "definition_hash": "b5df204cc87e52c33ec7e709e2c384f6a1bcdfc5e200847713b73784a1bb36d6",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "destructive",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Delete multiple relations from the knowledge graph"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "read_graph",
+      "description": "Read the entire knowledge graph",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      },
+      "definition_hash": "c0c21cc9552b694d4128f62a4e0e353ea15da9c690ddee4ae46485f280fd1a40",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Read the entire knowledge graph"
+        },
+        "suspicious": false,
+        "notes": "The graph holds what the user told the agent to remember."
+      }
+    },
+    {
+      "name": "search_nodes",
+      "description": "Search for nodes in the knowledge graph based on a query",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query to match against entity names, types, and observation content"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "definition_hash": "f931cc8a5ae4584a576b253acf24e2473dbb823cc6c9d253e65ad4ef7282aae0",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Search for nodes in the knowledge graph"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "open_nodes",
+      "description": "Open specific nodes in the knowledge graph by their names",
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An array of entity names to retrieve"
+          }
+        },
+        "required": [
+          "names"
+        ]
+      },
+      "definition_hash": "b7c053613513ee0d46a5db261c81377546df01e739ce1911e71dbdd86e191310",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Open specific nodes in the knowledge graph"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    }
+  ]
+}

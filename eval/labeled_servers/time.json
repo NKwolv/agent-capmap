@@ -1,0 +1,96 @@
+{
+  "id": "time",
+  "category": "utility",
+  "source": "pypi:mcp-server-time",
+  "version": "2026.8.18",
+  "deprecated": false,
+  "captured": {
+    "at": "2026-10-20",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2025-06-18",
+    "server_info": {
+      "name": "mcp-time",
+      "version": "1.30.0"
+    },
+    "definition_hash": "afcff2e7f89cba0f1b026199a33fea87ae2a3feb7480fc444903fdf0f6726f93"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-20",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "get_current_time",
+      "description": "Get current time in a specific timezone",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone name (e.g., 'America/New_York', 'Europe/London'). Use 'Asia/Calcutta' as local timezone if no timezone provided by the user."
+          }
+        },
+        "required": [
+          "timezone"
+        ]
+      },
+      "definition_hash": "3d0b8a91b3428ed08cb4331ddd97486e670a79fbf6071004cdc386fa5a58d3f5",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {},
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "convert_time",
+      "description": "Convert time between timezones",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "source_timezone": {
+            "type": "string",
+            "description": "Source IANA timezone name (e.g., 'America/New_York', 'Europe/London'). Use 'Asia/Calcutta' as local timezone if no source timezone provided by the user."
+          },
+          "time": {
+            "type": "string",
+            "description": "Time to convert in 24-hour format (HH:MM)"
+          },
+          "target_timezone": {
+            "type": "string",
+            "description": "Target IANA timezone name (e.g., 'Asia/Tokyo', 'America/San_Francisco'). Use 'Asia/Calcutta' as local timezone if no target timezone provided by the user."
+          }
+        },
+        "required": [
+          "source_timezone",
+          "time",
+          "target_timezone"
+        ]
+      },
+      "definition_hash": "7c1dfc139fc2704e3bfea219d85a8295183a06a0551bf5fea83b27abe281594b",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {},
+        "suspicious": false,
+        "notes": ""
+      }
+    }
+  ]
+}

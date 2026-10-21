@@ -1,0 +1,1502 @@
+{
+  "id": "github",
+  "category": "git hosting",
+  "source": "npm:@modelcontextprotocol/server-github",
+  "version": "2025.4.8",
+  "deprecated": true,
+  "captured": {
+    "at": "2026-10-20",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2024-11-05",
+    "server_info": {
+      "name": "github-mcp-server",
+      "version": "0.6.2"
+    },
+    "definition_hash": "acba0f4a54b7c0bc8c502d03f651cde105fc74c06b86a5d73789293366358198"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-20",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "create_or_update_file",
+      "description": "Create or update a single file in a GitHub repository",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path where to create/update the file"
+          },
+          "content": {
+            "type": "string",
+            "description": "Content of the file"
+          },
+          "message": {
+            "type": "string",
+            "description": "Commit message"
+          },
+          "branch": {
+            "type": "string",
+            "description": "Branch to create/update the file in"
+          },
+          "sha": {
+            "type": "string",
+            "description": "SHA of the file being replaced (required when updating existing files)"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "path",
+          "content",
+          "message",
+          "branch"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "f033311ca8c542fccd42df73b96ada74525cb2bef9196cfbc097ed2d64254f79",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "destructive",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create or update a single file",
+          "egress": "in a GitHub repository"
+        },
+        "suspicious": false,
+        "notes": "Updating replaces the file content (destructive per 'overwrite existing files'); content lands in a repository that may be public."
+      }
+    },
+    {
+      "name": "search_repositories",
+      "description": "Search for GitHub repositories",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query (see GitHub search syntax)"
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number for pagination (default: 1)"
+          },
+          "perPage": {
+            "type": "number",
+            "description": "Number of results per page (default: 30, max: 100)"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "6a8c050fd6115437100b363f0dc9cba81ca54a34198ef399b14950902ea2ffd1",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "Search for GitHub repositories"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_repository",
+      "description": "Create a new GitHub repository in your account",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Repository description"
+          },
+          "private": {
+            "type": "boolean",
+            "description": "Whether the repository should be private"
+          },
+          "autoInit": {
+            "type": "boolean",
+            "description": "Initialize with README.md"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "d1d018c8430121c2748c706bc95b1ae0c677b0a908eb4da13575a9b0306b9721",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create a new GitHub repository",
+          "egress": "Create a new GitHub repository"
+        },
+        "suspicious": false,
+        "notes": "Can be created public."
+      }
+    },
+    {
+      "name": "get_file_contents",
+      "description": "Get the contents of a file or directory from a GitHub repository",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path to the file or directory"
+          },
+          "branch": {
+            "type": "string",
+            "description": "Branch to get contents from"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "8c190725e0c744c1fd5f8a082b9948b7a1bbbe824373e4251a202104262e905a",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get the contents of a file or directory from a GitHub repository",
+          "untrusted_input": "Get the contents of a file or directory from a GitHub repository"
+        },
+        "suspicious": false,
+        "notes": "Private repos are private data; public repos are third-party content."
+      }
+    },
+    {
+      "name": "push_files",
+      "description": "Push multiple files to a GitHub repository in a single commit",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "branch": {
+            "type": "string",
+            "description": "Branch to push to (e.g., 'main' or 'master')"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Array of files to push"
+          },
+          "message": {
+            "type": "string",
+            "description": "Commit message"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "branch",
+          "files",
+          "message"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "e57af4eb0d1c35ea30ef8dbad0140a1dda115a3632ec96778389099516914c97",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Push multiple files",
+          "egress": "Push multiple files to a GitHub repository"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new issue in a GitHub repository",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "milestone": {
+            "type": "number"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "title"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "020db3ecf4bd7bae0ebdf1364ad8cb9341fbe8dc2397589ba8fccb526b37911a",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create a new issue",
+          "egress": "Create a new issue in a GitHub repository"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_pull_request",
+      "description": "Create a new pull request in a GitHub repository",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "title": {
+            "type": "string",
+            "description": "Pull request title"
+          },
+          "body": {
+            "type": "string",
+            "description": "Pull request body/description"
+          },
+          "head": {
+            "type": "string",
+            "description": "The name of the branch where your changes are implemented"
+          },
+          "base": {
+            "type": "string",
+            "description": "The name of the branch you want the changes pulled into"
+          },
+          "draft": {
+            "type": "boolean",
+            "description": "Whether to create the pull request as a draft"
+          },
+          "maintainer_can_modify": {
+            "type": "boolean",
+            "description": "Whether maintainers can modify the pull request"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "title",
+          "head",
+          "base"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "90b73c9094c3723d8f2bf86fe04cb7253529fdd20035fed020814304bf20dc1e",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create a new pull request",
+          "egress": "Create a new pull request in a GitHub repository"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "fork_repository",
+      "description": "Fork a GitHub repository to your account or specified organization",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "organization": {
+            "type": "string",
+            "description": "Optional: organization to fork to (defaults to your personal account)"
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "351aa863e36bcce768a8c8dd42131a21ae8fc6edda745cdce14d9b213c26b52c",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Fork a GitHub repository"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_branch",
+      "description": "Create a new branch in a GitHub repository",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "branch": {
+            "type": "string",
+            "description": "Name for the new branch"
+          },
+          "from_branch": {
+            "type": "string",
+            "description": "Optional: source branch to create from (defaults to the repository's default branch)"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "branch"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "67a187c1fe64e90e37120b2dc6470b0f8ab462566c43d5472a7b513216d4f3f6",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create a new branch"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "list_commits",
+      "description": "Get list of commits of a branch in a GitHub repository",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "sha": {
+            "type": "string"
+          },
+          "page": {
+            "type": "number"
+          },
+          "perPage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "fc449a6a26ccabba9a9ab74c955cbc92f151b5f70752957cde0fa12912f7a7ac",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get list of commits"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "list_issues",
+      "description": "List issues in a GitHub repository with filtering options",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "page": {
+            "type": "number"
+          },
+          "per_page": {
+            "type": "number"
+          },
+          "since": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "created",
+              "updated",
+              "comments"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed",
+              "all"
+            ]
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "dfe3ecf3b223b1ab9f151ee91ee2106183beafc2df61fc671b7235892ea0f8f2",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "List issues in a GitHub repository",
+          "untrusted_input": "List issues in a GitHub repository"
+        },
+        "suspicious": false,
+        "notes": "Issues can be written by anyone on public repos."
+      }
+    },
+    {
+      "name": "update_issue",
+      "description": "Update an existing issue in a GitHub repository",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "issue_number": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "milestone": {
+            "type": "number"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed"
+            ]
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "308e98cfbafcb84a3133f7d9f1d5b9badc2eda45c9f2ef6e5ae3e0ee2efe15fb",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Update an existing issue",
+          "egress": "Update an existing issue in a GitHub repository"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "add_issue_comment",
+      "description": "Add a comment to an existing issue",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "issue_number": {
+            "type": "number"
+          },
+          "body": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "72803cbc17f979c893c506d85c26784440f4c70144098a49e4c7f86e93642500",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Add a comment to an existing issue",
+          "egress": "Add a comment to an existing issue"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "search_code",
+      "description": "Search for code across GitHub repositories",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string"
+          },
+          "order": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1
+          },
+          "per_page": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "c38cbaddecc2125d17216030a412cc3a3b8dc3e280d313f4faad9d4c8f1c7e23",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "Search for code across GitHub repositories"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "search_issues",
+      "description": "Search for issues and pull requests across GitHub repositories",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string"
+          },
+          "order": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1
+          },
+          "per_page": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "comments",
+              "reactions",
+              "reactions-+1",
+              "reactions--1",
+              "reactions-smile",
+              "reactions-thinking_face",
+              "reactions-heart",
+              "reactions-tada",
+              "interactions",
+              "created",
+              "updated"
+            ]
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "b6f513e2c30536d0e3a5c1422ff2c6cba2961aa6afff9c347dec072166406c7f",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "Search for issues and pull requests across GitHub repositories"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "search_users",
+      "description": "Search for users on GitHub",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string"
+          },
+          "order": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1
+          },
+          "per_page": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "followers",
+              "repositories",
+              "joined"
+            ]
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "f3457309a8bba755bd068dc22fe652ffdb396452241acd42ef9d6e4331545dd1",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "Search for users on GitHub"
+        },
+        "suspicious": false,
+        "notes": "User profiles (bios) are third-party text."
+      }
+    },
+    {
+      "name": "get_issue",
+      "description": "Get details of a specific issue in a GitHub repository.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "issue_number": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "8f874f74996bb849f7e7cc16340d299a4c15a38707ecc7abf3a43b0c755cd4fe",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get details of a specific issue",
+          "untrusted_input": "Get details of a specific issue"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "get_pull_request",
+      "description": "Get details of a specific pull request",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "pull_number": {
+            "type": "number",
+            "description": "Pull request number"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "0304666f07338895a02951aab1924bb73dde2075a68fca85ede3462fe5274ce2",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get details of a specific pull request",
+          "untrusted_input": "Get details of a specific pull request"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "list_pull_requests",
+      "description": "List and filter repository pull requests",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed",
+              "all"
+            ],
+            "description": "State of the pull requests to return"
+          },
+          "head": {
+            "type": "string",
+            "description": "Filter by head user or head organization and branch name"
+          },
+          "base": {
+            "type": "string",
+            "description": "Filter by base branch name"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "created",
+              "updated",
+              "popularity",
+              "long-running"
+            ],
+            "description": "What to sort results by"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "description": "The direction of the sort"
+          },
+          "per_page": {
+            "type": "number",
+            "description": "Results per page (max 100)"
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number of the results"
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "553aaa44088f03b0e8fad87814168c17c5c544d0c13da2b0566b26adc3e193d7",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "List and filter repository pull requests",
+          "untrusted_input": "List and filter repository pull requests"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "create_pull_request_review",
+      "description": "Create a review on a pull request",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "pull_number": {
+            "type": "number",
+            "description": "Pull request number"
+          },
+          "commit_id": {
+            "type": "string",
+            "description": "The SHA of the commit that needs a review"
+          },
+          "body": {
+            "type": "string",
+            "description": "The body text of the review"
+          },
+          "event": {
+            "type": "string",
+            "enum": [
+              "APPROVE",
+              "REQUEST_CHANGES",
+              "COMMENT"
+            ],
+            "description": "The review action to perform"
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "description": "The relative path to the file being commented on"
+                    },
+                    "position": {
+                      "type": "number",
+                      "description": "The position in the diff where you want to add a review comment"
+                    },
+                    "body": {
+                      "type": "string",
+                      "description": "Text of the review comment"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "position",
+                    "body"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "description": "The relative path to the file being commented on"
+                    },
+                    "line": {
+                      "type": "number",
+                      "description": "The line number in the file where you want to add a review comment"
+                    },
+                    "body": {
+                      "type": "string",
+                      "description": "Text of the review comment"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "line",
+                    "body"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "description": "Comments to post as part of the review (specify either position or line, not both)"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number",
+          "body",
+          "event"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "0155fb1a8bf56db6ef99ef54bbc4eaeeb49a156bf4151ff964c5662923c69d74",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "external",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Create a review on a pull request",
+          "egress": "Create a review on a pull request"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "merge_pull_request",
+      "description": "Merge a pull request",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "pull_number": {
+            "type": "number",
+            "description": "Pull request number"
+          },
+          "commit_title": {
+            "type": "string",
+            "description": "Title for the automatic commit message"
+          },
+          "commit_message": {
+            "type": "string",
+            "description": "Extra detail to append to automatic commit message"
+          },
+          "merge_method": {
+            "type": "string",
+            "enum": [
+              "merge",
+              "squash",
+              "rebase"
+            ],
+            "description": "Merge method to use"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "5edda3bef0ace6f95036993ae01c6478ae8a1e244d7552f70755fd40a623d69d",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Merge a pull request"
+        },
+        "suspicious": false,
+        "notes": "A merge can be reverted."
+      }
+    },
+    {
+      "name": "get_pull_request_files",
+      "description": "Get the list of files changed in a pull request",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "pull_number": {
+            "type": "number",
+            "description": "Pull request number"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "efb39d49f7c685b88c1b7b940bafbb7d68bc81549a95c0903ae3698166968aab",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get the list of files changed in a pull request",
+          "untrusted_input": "files changed in a pull request"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "get_pull_request_status",
+      "description": "Get the combined status of all status checks for a pull request",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "pull_number": {
+            "type": "number",
+            "description": "Pull request number"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "9104b921fe81d6c340089e1d95fe17884dd849a36d2d0ef60311801ada6de782",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get the combined status of all status checks"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "update_pull_request_branch",
+      "description": "Update a pull request branch with the latest changes from the base branch",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "pull_number": {
+            "type": "number",
+            "description": "Pull request number"
+          },
+          "expected_head_sha": {
+            "type": "string",
+            "description": "The expected SHA of the pull request's HEAD ref"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "aac9049ac4101da4c507f2efb1b3653100d3156bad747eaea4dab3e044afc236",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Update a pull request branch"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "get_pull_request_comments",
+      "description": "Get the review comments on a pull request",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "pull_number": {
+            "type": "number",
+            "description": "Pull request number"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "45752f08f8ca9b0e86d6e38bca6555a4f93f72fbd51c5e579cad5510abc073d3",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get the review comments on a pull request",
+          "untrusted_input": "Get the review comments on a pull request"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "get_pull_request_reviews",
+      "description": "Get the reviews on a pull request",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Repository owner (username or organization)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "pull_number": {
+            "type": "number",
+            "description": "Pull request number"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "definition_hash": "a8452feff689dad5764948b418d574be7ebcdad6a525ece93098c835d48753bb",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get the reviews on a pull request",
+          "untrusted_input": "Get the reviews on a pull request"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    }
+  ]
+}

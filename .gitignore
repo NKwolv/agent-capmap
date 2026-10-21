@@ -27,5 +27,5 @@ kubeconfig
 
 # Local classifier cache and scan output (may contain tool descriptions)
 .agentcapmap/
-inventory*.json
-sbom*.json
+/inventory*.json
+/sbom*.json

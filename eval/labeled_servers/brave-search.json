@@ -1,0 +1,105 @@
+{
+  "id": "brave-search",
+  "category": "search",
+  "source": "npm:@modelcontextprotocol/server-brave-search",
+  "version": "0.6.2",
+  "deprecated": true,
+  "captured": {
+    "at": "2026-10-20",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2024-11-05",
+    "server_info": {
+      "name": "example-servers/brave-search",
+      "version": "0.1.0"
+    },
+    "definition_hash": "62618ca44a4278916d0c1390f28e9951c61a5bbc6390571bf5f3819b30af54b4"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-20",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "brave_web_search",
+      "description": "Performs a web search using the Brave Search API, ideal for general queries, news, articles, and online content. Use this for broad information gathering, recent events, or when you need diverse web sources. Supports pagination, content filtering, and freshness controls. Maximum 20 results per request, with offset for pagination. ",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query (max 400 chars, 50 words)"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of results (1-20, default 10)",
+            "default": 10
+          },
+          "offset": {
+            "type": "number",
+            "description": "Pagination offset (max 9, default 0)",
+            "default": 0
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "definition_hash": "ddc0232ef5e794473691444176985321d1b6f0de76c0bcbec607c3844c3e3aad",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "Performs a web search"
+        },
+        "suspicious": false,
+        "notes": "Query goes to the fixed Brave API: egress none per taxonomy ruling."
+      }
+    },
+    {
+      "name": "brave_local_search",
+      "description": "Searches for local businesses and places using Brave's Local Search API. Best for queries related to physical locations, businesses, restaurants, services, etc. Returns detailed information including:\n- Business names and addresses\n- Ratings and review counts\n- Phone numbers and opening hours\nUse this when the query implies 'near me' or mentions specific locations. Automatically falls back to web search if no local results are found.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Local search query (e.g. 'pizza near Central Park')"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of results (1-20, default 5)",
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "definition_hash": "6863d0afe176a49820e48e3e7769ccbd1038eb9be2f380969b22e0037c81f895",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": true,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "untrusted_input": "Ratings and review counts"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    }
+  ]
+}

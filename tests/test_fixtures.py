@@ -138,3 +138,45 @@ def test_rule_engine_never_imports_the_llm() -> None:
                 assert not module.startswith(("anthropic", "agentcapmap.classify")), (
                     f"{path.name} imports {module}"
                 )
+
+
+DEMO = Path(__file__).resolve().parents[1] / "examples" / "demo" / "inventory.json"
+DEMO_SCENARIOS = ["clean", "trifecta", "exec-injection", "poisoned-description", "shadowing"]
+
+
+def build_demo_inventory() -> str:
+    """Several scenario agents in one inventory, with repository-relative config paths."""
+    from agentcapmap.models import Inventory
+
+    agents = []
+    for name in DEMO_SCENARIOS:
+        (agent,) = load_scenario(name).agents
+        path = f"fixtures/{name}/mcp.json"
+        agent.id = f"{agent.client}:{path}"
+        agent.config_path = path
+        for server in agent.servers:
+            server.location.path = path
+        agents.append(agent)
+    return Inventory(agents=agents).model_dump_json(indent=2) + "\n"
+
+
+def test_demo_inventory_is_current() -> None:
+    expected = build_demo_inventory()
+    if UPDATE_GOLDEN:
+        DEMO.write_text(expected, encoding="utf-8")
+    assert DEMO.read_text(encoding="utf-8") == expected, "run with AGENTCAPMAP_UPDATE_GOLDEN=1"
+
+
+def test_demo_evaluates_offline() -> None:
+    from agentcapmap.models import Inventory
+
+    evaluation = evaluate(
+        Inventory.model_validate_json(DEMO.read_text(encoding="utf-8")), load_policy()
+    )
+    assert {f.rule_id for f in evaluation.findings} == {
+        "CAP-001",
+        "CAP-002",
+        "CAP-003",
+        "CAP-008",
+        "CAP-009",
+    }

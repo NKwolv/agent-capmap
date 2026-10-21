@@ -1,0 +1,106 @@
+{
+  "id": "qdrant",
+  "category": "vector database",
+  "source": "pypi:mcp-server-qdrant",
+  "version": "0.8.1",
+  "deprecated": false,
+  "captured": {
+    "at": "2026-10-20",
+    "agentcapmap_version": "0.1.0",
+    "protocol_version": "2025-06-18",
+    "server_info": {
+      "name": "mcp-server-qdrant",
+      "version": "1.30.0"
+    },
+    "definition_hash": "1f7dd8f0b5f8a7151b659b68c5961ca3045cbd109024f2a3d1fb28344cc6ae27"
+  },
+  "labeling": {
+    "status": "draft",
+    "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
+    "labeled_at": "2026-10-20",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "tools": [
+    {
+      "name": "qdrant-find",
+      "description": "Look up memories in Qdrant. Use this tool when you need to: \n - Find memories by their content \n - Access memories for further analysis \n - Get some personal information about the user",
+      "input_schema": {
+        "properties": {
+          "query": {
+            "description": "What to search for",
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "definition_hash": "161eeca4600bdec5674cfb1fde7bf26329a0b826188db4e86648a6ff5de7c5fe",
+      "label": {
+        "tags": {
+          "data_access": "private_read",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "none",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "data_access": "Get some personal information about the user"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    },
+    {
+      "name": "qdrant-store",
+      "description": "Keep the memory for later use, when you are asked to remember something.",
+      "input_schema": {
+        "properties": {
+          "information": {
+            "description": "Text to store",
+            "title": "Information",
+            "type": "string"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Extra metadata stored along with memorised information. Any json is accepted.",
+            "title": "Metadata"
+          }
+        },
+        "required": [
+          "information"
+        ],
+        "type": "object"
+      },
+      "definition_hash": "ac13db230bc00fae94fc37e4a074aab27e175d74f0e6d7bc3d3217a9f9204af4",
+      "label": {
+        "tags": {
+          "data_access": "none",
+          "untrusted_input": false,
+          "egress": "none",
+          "mutation": "reversible_write",
+          "execution": "none",
+          "privilege": "none"
+        },
+        "evidence": {
+          "mutation": "Keep the memory for later use"
+        },
+        "suspicious": false,
+        "notes": ""
+      }
+    }
+  ]
+}
