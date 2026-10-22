@@ -16,9 +16,19 @@ per agent. Findings come with evidence and can gate CI through SARIF and exit co
 > **Status: pre-release (0.1.0).** All features below work. The classifier's accuracy
 > has not been benchmarked yet; see [Accuracy](#accuracy).
 
-## Quickstart (5 minutes, no API key)
+## Install
 
-Requires Python 3.11+ and git.
+Requires Python 3.11+.
+
+```sh
+pipx install agent-capmap        # or: uv tool install agent-capmap
+```
+
+Releases are built and published by GitHub Actions with PyPI trusted publishing, so
+each file on PyPI carries an attestation linking it to the workflow run that built it.
+
+For a fully hash-pinned install, with the exact dependency versions CI tests, install
+from a clone instead:
 
 ```sh
 git clone https://github.com/NKwolv/agent-capmap
@@ -27,20 +37,28 @@ python -m venv .venv
 . .venv/bin/activate            # Windows PowerShell: .venv\Scripts\Activate.ps1
 pip install --require-hashes -r requirements/runtime.lock
 pip install --no-deps .
+```
 
+> **Windows:** if `pip install` fails with "No such file or directory" deep inside
+> `site-packages`, the path is too long for Windows' 260-character limit. Clone to a
+> short path (for example `C:\src\agent-capmap`) or enable long path support.
+
+## Quickstart (5 minutes, no API key)
+
+```sh
 # 1. See findings on a ready-made inventory of five example agents
-agentcapmap evaluate examples/demo/inventory.json --format markdown
+#    (from a clone, use examples/demo/inventory.json directly)
+curl -fsSLO https://raw.githubusercontent.com/NKwolv/agent-capmap/main/examples/demo/inventory.json
+agentcapmap evaluate inventory.json --format markdown
 
 # 2. List the MCP servers configured on your own machine (reads files only)
 agentcapmap scan --user
 ```
 
+On Windows PowerShell, use `curl.exe` instead of `curl`.
+
 Step 1 should report 2 critical, 2 high and 1 medium finding. Step 2 lists your
 servers with every secret redacted, without starting anything.
-
-> **Windows:** if `pip install` fails with "No such file or directory" deep inside
-> `site-packages`, the path is too long for Windows' 260-character limit. Clone to a
-> short path (for example `C:\src\agent-capmap`) or enable long path support.
 
 ## Example output
 
@@ -93,7 +111,7 @@ agentcapmap scan --user --enumerate --classify --evaluate --format markdown -o r
 
 `--enumerate` **runs the server commands in your configs**: only use it on configs you
 trust. To try the whole pipeline on two known servers first, see
-[`examples/live-trifecta`](examples/README.md).
+[`examples/live-trifecta`](https://github.com/NKwolv/agent-capmap/blob/main/examples/README.md).
 
 ## Capability taxonomy
 
@@ -106,11 +124,11 @@ trust. To try the whole pipeline on two known servers first, see
 | `execution` | none, sandboxed, host | Does it run code, and where? |
 | `privilege` | none, identity_admin | Does it manage users or permissions? |
 
-Definitions and edge-case rulings: [docs/taxonomy.md](docs/taxonomy.md).
+Definitions and edge-case rulings: [docs/taxonomy.md](https://github.com/NKwolv/agent-capmap/blob/main/docs/taxonomy.md).
 
 ## Policy
 
-The built-in [`policies/default.yaml`](policies/default.yaml) has nine rules:
+The built-in [`policies/default.yaml`](https://github.com/NKwolv/agent-capmap/blob/main/policies/default.yaml) has nine rules:
 
 | ID | Severity | Fires when an agent has |
 |---|---|---|
@@ -137,7 +155,7 @@ Write your own rules in the same format and pass `--policy my-policy.yaml`:
 
 Conditions: `when_agent_has_all`, `when_agent_has_any`, `when_server`,
 `when_hash_changed`, `when_tool_name_shadowed`. The format is defined by
-[`schemas/policy.schema.json`](schemas/policy.schema.json). Rug-pull detection:
+[`schemas/policy.schema.json`](https://github.com/NKwolv/agent-capmap/blob/main/schemas/policy.schema.json). Rug-pull detection:
 
 ```sh
 agentcapmap baseline create inventory.json -o baseline.json   # once, after review
@@ -151,14 +169,14 @@ agentcapmap evaluate inventory.json --format sarif -o agentcapmap.sarif --fail-o
 ```
 
 Exit codes: `0` passed, `1` findings at or above `--fail-on`, `2` usage or input error.
-The repository is also a GitHub Action: see [docs/github-action.md](docs/github-action.md)
-and the [example workflow](docs/examples/agentcapmap.yml). By default the Action reads
+The repository is also a GitHub Action: see [docs/github-action.md](https://github.com/NKwolv/agent-capmap/blob/main/docs/github-action.md)
+and the [example workflow](https://github.com/NKwolv/agent-capmap/blob/main/docs/examples/agentcapmap.yml). By default the Action reads
 configs only, which is safe for pull requests from forks.
 
 ## Accuracy
 
 The classifier is evaluated against hand-labeled tools from real MCP servers (see
-[`eval/`](eval/README.md)). **No accuracy numbers are published yet**: the label set is
+[`eval/`](https://github.com/NKwolv/agent-capmap/blob/main/eval/README.md)). **No accuracy numbers are published yet**: the label set is
 still being reviewed, and numbers will be quoted here only from a reviewed, frozen run
 of `python eval/run_eval.py`.
 
@@ -186,18 +204,18 @@ of `python eval/run_eval.py`.
 Secrets from configs are redacted in all output and logs. Enumeration sends only
 `initialize` and `tools/list`, with a minimal environment for launched servers, no
 credential-forwarding redirects, and size limits on everything a server returns.
-Reports render untrusted text inertly. See [SECURITY.md](SECURITY.md) and the
-[threat model](docs/threat-model.md).
+Reports render untrusted text inertly. See [SECURITY.md](https://github.com/NKwolv/agent-capmap/blob/main/SECURITY.md) and the
+[threat model](https://github.com/NKwolv/agent-capmap/blob/main/docs/threat-model.md).
 
 ## Documentation
 
-- [Capability taxonomy](docs/taxonomy.md)
-- [Threat model](docs/threat-model.md): attacks covered, OWASP / MITRE ATLAS mapping
-- [GitHub Action](docs/github-action.md)
-- [Comparison with Snyk Agent Scan (mcp-scan)](docs/vs-mcp-scan.md)
-- [Examples](examples/README.md) · [Evaluation](eval/README.md) · [POC checklist](docs/poc-checklist.md)
-- [Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md) · [Changelog](CHANGELOG.md)
+- [Capability taxonomy](https://github.com/NKwolv/agent-capmap/blob/main/docs/taxonomy.md)
+- [Threat model](https://github.com/NKwolv/agent-capmap/blob/main/docs/threat-model.md): attacks covered, OWASP / MITRE ATLAS mapping
+- [GitHub Action](https://github.com/NKwolv/agent-capmap/blob/main/docs/github-action.md)
+- [Comparison with Snyk Agent Scan (mcp-scan)](https://github.com/NKwolv/agent-capmap/blob/main/docs/vs-mcp-scan.md)
+- [Examples](https://github.com/NKwolv/agent-capmap/blob/main/examples/README.md) · [Evaluation](https://github.com/NKwolv/agent-capmap/blob/main/eval/README.md) · [POC checklist](https://github.com/NKwolv/agent-capmap/blob/main/docs/poc-checklist.md)
+- [Contributing](https://github.com/NKwolv/agent-capmap/blob/main/CONTRIBUTING.md) · [Security policy](https://github.com/NKwolv/agent-capmap/blob/main/SECURITY.md) · [Changelog](https://github.com/NKwolv/agent-capmap/blob/main/CHANGELOG.md)
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](https://github.com/NKwolv/agent-capmap/blob/main/LICENSE).

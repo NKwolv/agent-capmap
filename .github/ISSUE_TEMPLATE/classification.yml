@@ -1,0 +1,52 @@
+name: Wrong classification or finding
+description: A tool got the wrong capability tags, or a rule fired (or failed to fire) wrongly.
+labels: [classification]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        These reports improve the taxonomy, the classifier prompt and the evaluation set.
+        Tool definitions from public MCP servers are fine to paste; **remove secrets** and
+        anything internal from private servers. See
+        [docs/taxonomy.md](https://github.com/NKwolv/agent-capmap/blob/main/docs/taxonomy.md)
+        for what each tag means.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of problem
+      options:
+        - Wrong tag on a tool
+        - False positive (a finding that should not fire)
+        - False negative (a risk that was missed)
+        - Suspicious-description flag wrong
+    validations:
+      required: true
+  - type: input
+    id: server
+    attributes:
+      label: MCP server and version
+      placeholder: "@modelcontextprotocol/server-filesystem 2026.1.14"
+    validations:
+      required: true
+  - type: textarea
+    id: tool
+    attributes:
+      label: Tool definition
+      description: The tool's name, description and input schema, as returned by tools/list.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: got
+    attributes:
+      label: What agent-capmap reported
+      description: The tags (with evidence) or the finding, and the model used if you classified with an LLM.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and why
+    validations:
+      required: true

@@ -103,5 +103,9 @@ See [eval/README.md](../eval/README.md).
 ## 10. After going public
 
 - [ ] CodeQL runs green on `main`.
-- [ ] Publish to PyPI with trusted publishing (no stored token), then update the README
-      install instructions to `pip install agent-capmap`.
+- [ ] On PyPI, add a pending trusted publisher: project `agent-capmap`, owner
+      `NKwolv`, repository `agent-capmap`, workflow `release.yml`, environment `pypi`.
+- [ ] On GitHub, create the `pypi` environment (Settings > Environments) with
+      yourself as required reviewer and deployment limited to `v*` tags.
+- [ ] Push the `v0.1.0` tag, approve the deployment, then check
+      `pipx install agent-capmap` in a fresh environment and the GitHub release page.

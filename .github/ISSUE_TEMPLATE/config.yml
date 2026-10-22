@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/NKwolv/agent-capmap/security/advisories/new
+    about: Please report vulnerabilities privately, never in a public issue. See SECURITY.md.
+  - name: Ask a question
+    url: https://github.com/NKwolv/agent-capmap#readme
+    about: Check the README and docs/ first; if they do not answer it, open a bug report.

@@ -1,0 +1,34 @@
+name: Support another AI client or config format
+description: Ask agent-capmap to read the MCP configuration of a client it does not support yet.
+labels: [enhancement, discovery]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Supported today: Claude Desktop, Cursor, VS Code, Claude Code and generic `mcp.json`.
+        Adding a client is a good first contribution; see "Adding a client config format" in
+        [CONTRIBUTING.md](https://github.com/NKwolv/agent-capmap/blob/main/CONTRIBUTING.md).
+  - type: input
+    id: client
+    attributes:
+      label: Client name and version
+      placeholder: Windsurf 1.12
+    validations:
+      required: true
+  - type: textarea
+    id: locations
+    attributes:
+      label: Where it stores MCP configuration
+      description: File paths per OS, and a link to the client's documentation if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example config (secrets removed)
+      render: json
+  - type: textarea
+    id: approvals
+    attributes:
+      label: Approval / auto-approve settings (optional)
+      description: Does the client record which tools run without asking? Where?

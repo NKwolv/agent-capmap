@@ -10,6 +10,14 @@ Everything below is unreleased work towards 0.1.0, newest first within each sect
 
 ### Added
 
+- **Release pipeline**: tagging `vX.Y.Z` runs tests and pip-audit, builds from the
+  hash-pinned build lock and, after manual approval, publishes to PyPI with trusted
+  publishing (no stored token, PyPI attestations) and creates a GitHub release.
+  Install with `pipx install agent-capmap`.
+- Project URLs for the PyPI page; README links are absolute so they work there.
+- Code of Conduct (Contributor Covenant 2.1), issue forms (bug report, wrong
+  classification or finding, new client support) and a pull request template;
+  vulnerability reports are routed to private reporting.
 - **Claude Code user configuration**: `scan --user` reads `~/.claude.json` (or
   `$CLAUDE_CONFIG_DIR/.claude.json`): one agent for user scope plus one per project with
   local servers or a `.mcp.json`, applying Claude Code's precedence (local > project >
@@ -88,7 +96,10 @@ Everything below is unreleased work towards 0.1.0, newest first within each sect
   CAs whose intermediate keys are compromised); it is the CA bundle behind every HTTPS
   connection agent-capmap makes.
 - Dev tool `uv` raised to 0.13.4 (GHSA-hq85-5cpj-mr62, same root cause).
-- Both fixes were newer than the 14-day lockfile cutoff, so each was exempted
+- Dev dependency `virtualenv` (via pre-commit) raised to 21.14.9 or later
+  (CVE-2026-113722, CVE-2026-113725: shell injection in generated activation scripts
+  and console launchers). Not part of the runtime install.
+- These fixes were newer than the 14-day lockfile cutoff, so each was exempted
   individually; the procedure is documented in CONTRIBUTING.md.
 - Launched stdio servers inherit only an allowlisted environment, so the scanner's own
   credentials (e.g. `ANTHROPIC_API_KEY`) are not exposed to them.

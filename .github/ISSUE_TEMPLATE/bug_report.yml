@@ -1,0 +1,52 @@
+name: Bug report
+description: agent-capmap crashed, misread a config, or produced wrong output.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Before pasting anything, remove secrets.** agent-capmap redacts secrets in its own
+        output, but raw config files (`mcp.json`, `~/.claude.json`, `settings.json`) contain
+        API keys and tokens. Replace them with `<REDACTED>`. Security vulnerabilities go to
+        [private reporting](https://github.com/NKwolv/agent-capmap/security/advisories/new),
+        not here.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `agentcapmap --version`.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: OS and Python version
+      placeholder: Windows 11, Python 3.12
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command you ran
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      description: Error message or the relevant part of the output (secrets removed).
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Minimal config that reproduces it (optional, secrets removed)
+      render: json

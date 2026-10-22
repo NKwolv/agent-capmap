@@ -4,7 +4,8 @@ Thanks for helping. This guide covers setup, the quality gates every change must
 and the rules that keep results trustworthy.
 
 All changes, whether written by people or AI coding tools, must also follow the
-security rules in [AGENTS.md](AGENTS.md).
+security rules in [AGENTS.md](AGENTS.md). Everyone taking part is expected to follow the
+[Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Setup
 
@@ -34,7 +35,7 @@ never picked up:
 CUTOFF=2026-10-06   # today minus 14 days
 # Security exemptions currently in force (see below); keep them until the cutoff
 # passes the fixed versions' release dates.
-EXEMPT="--exclude-newer-package uv=2026-10-21T00:00:00Z --exclude-newer-package certifi=2026-10-21T00:00:00Z"
+EXEMPT="--exclude-newer-package uv=2026-10-21T00:00:00Z --exclude-newer-package certifi=2026-10-21T00:00:00Z --exclude-newer-package virtualenv=2026-10-18T00:00:00Z"
 COMMON='--universal --generate-hashes --python-version 3.11'
 uv pip compile pyproject.toml $COMMON --exclude-newer $CUTOFF $EXEMPT -o requirements/runtime.lock
 uv pip compile pyproject.toml requirements/build.in --extra dev $COMMON --exclude-newer $CUTOFF $EXEMPT -o requirements/dev.lock
@@ -144,6 +145,22 @@ Adding, removing or redefining an axis or value is a breaking change:
 - Keep each pull request focused, and describe *why* as well as *what*.
 - Include tests for new behavior and for bugs you fix.
 - Never include real credentials, tokens or private MCP configs, even in examples.
+
+## Releasing (maintainers)
+
+1. Set `version` in `pyproject.toml` and move the `[Unreleased]` entries in
+   `CHANGELOG.md` under a new `[X.Y.Z] - YYYY-MM-DD` heading. Merge that to `main`.
+2. Tag the merge commit and push the tag: `git tag vX.Y.Z && git push origin vX.Y.Z`.
+3. `.github/workflows/release.yml` checks that the tag matches the version, runs the
+   tests and pip-audit, builds the sdist and wheel from the hash-pinned build lock,
+   and waits for approval on the `pypi` environment. After approval it publishes to
+   PyPI with trusted publishing (no stored token; PyPI attestations are generated
+   automatically) and creates the GitHub release with the same files.
+4. Update the `uses: NKwolv/agent-capmap@<sha>` pin in
+   `docs/examples/agentcapmap.yml` to the tagged commit.
+
+A version on PyPI can never be re-uploaded. If a release is broken, yank it on PyPI
+and publish a new patch version.
 
 ## Reporting security issues
 
