@@ -51,11 +51,12 @@ def check_allowed(method: str, *, notification: bool = False) -> None:
 class Transport(Protocol):
     def request(self, method: str, params: dict[str, Any], timeout: float) -> dict[str, Any]:
         """Send a request and return its `result`; raise MCPError on a JSON-RPC error."""
-        ...
 
-    def notify(self, method: str, params: dict[str, Any] | None = None) -> None: ...
+    def notify(self, method: str, params: dict[str, Any] | None = None) -> None:
+        """Send a notification (no response expected)."""
 
-    def close(self) -> None: ...
+    def close(self) -> None:
+        """Release the connection or terminate the server process."""
 
 
 class IdCounter:

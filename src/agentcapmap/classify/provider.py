@@ -48,11 +48,11 @@ class LLMResponse:
 
 class LLMProvider(Protocol):
     @property
-    def model(self) -> str: ...
+    def model(self) -> str:
+        """Model identifier used for requests (part of the classification cache key)."""
 
     def complete_json(self, system: str, user: str, schema: dict[str, Any]) -> LLMResponse:
         """Return JSON text constrained to `schema`."""
-        ...
 
 
 def configured_model() -> str:

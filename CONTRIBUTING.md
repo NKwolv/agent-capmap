@@ -67,7 +67,7 @@ zizmor --offline --persona auditor action.yml .github/workflows/   # Actions sec
 gitleaks git . --config .gitleaks.toml --redact          # secrets, full history
 ```
 
-CI also runs CodeQL (`security-extended` queries) and builds a CycloneDX SBOM of the
+CI also runs CodeQL (`security-and-quality` queries) and builds a CycloneDX SBOM of the
 runtime dependencies (downloadable as the `sbom` artifact of each CI run).
 
 Every credential-shaped value in tests must contain `fake` (see

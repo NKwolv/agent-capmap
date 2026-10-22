@@ -228,7 +228,7 @@ class MockHttpServer:
                         self.wfile.write(f"event: message\ndata: {json.dumps(msg)}\n\n".encode())
                         self.wfile.flush()
                 except OSError:
-                    pass
+                    pass  # client disconnected: end the event stream
                 self.close_connection = True
 
             def do_DELETE(self) -> None:

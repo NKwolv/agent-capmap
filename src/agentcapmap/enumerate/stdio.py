@@ -175,7 +175,7 @@ class StdioTransport:
                     self._stderr_tail.append(line)
                     log.debug("server stderr: %s", line)
         except (OSError, ValueError):
-            pass
+            pass  # pipe closed underneath us; stderr is diagnostic only
 
     def _write(self, message: dict[str, Any]) -> None:
         data = (json.dumps(message, separators=(",", ":")) + "\n").encode("utf-8")
