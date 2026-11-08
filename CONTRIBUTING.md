@@ -32,10 +32,9 @@ cutoff date 14 days in the past, so a just-published (possibly compromised) rele
 never picked up:
 
 ```sh
-CUTOFF=2026-10-06   # today minus 14 days
-# Security exemptions currently in force (see below); keep them until the cutoff
-# passes the fixed versions' release dates.
-EXEMPT="--exclude-newer-package uv=2026-10-21T00:00:00Z --exclude-newer-package certifi=2026-10-21T00:00:00Z --exclude-newer-package virtualenv=2026-10-18T00:00:00Z"
+CUTOFF=2026-10-25   # today minus 14 days
+# Security exemptions currently in force (see below): none.
+EXEMPT=""
 COMMON='--universal --generate-hashes --python-version 3.11'
 uv pip compile pyproject.toml $COMMON --exclude-newer $CUTOFF $EXEMPT -o requirements/runtime.lock
 uv pip compile pyproject.toml requirements/build.in --extra dev $COMMON --exclude-newer $CUTOFF $EXEMPT -o requirements/dev.lock
