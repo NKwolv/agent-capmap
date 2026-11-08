@@ -28,6 +28,17 @@ files); `run_eval.py` always classifies with an empty reference table.
 
 ## Reviewing labels
 
+**Fast path.** `python eval/review.py list` ranks the label files by how much a review
+matters (high-impact tools, judgment calls, flags), so the first hour covers the tools that
+decide findings. `python eval/review.py sheet --top 3 -o sheet.md` writes a worksheet for the
+riskiest files, with hints such as "mentions delete but mutation is none". When you have been
+through **every tool in a file**, record it with
+`python eval/review.py mark github --by "Your Name"` (it refuses names starting with `AI:` and
+edits only the `labeling` block). Files you have not reviewed stay AI-reviewed. Then run
+`python scripts/build_reference_labels.py` and commit both changes.
+
+The manual steps below are what `mark` automates.
+
 For each file in `labeled_servers/`:
 
 1. Read each tool's `description` and `input_schema`.

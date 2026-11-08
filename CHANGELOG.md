@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `eval/review.py` helps a person review the eval labels: `list` ranks files by risk,
+  `sheet` writes a worksheet with hints about possibly-missed capabilities, and `mark`
+  records a finished human review (refuses `AI:` names; edits only the `labeling` block).
+- `.github/CODEOWNERS` for the security-sensitive paths (allowlist, policies, schemas,
+  waivers, shipped labels, CI and release workflows, dependencies).
+
 ## [0.3.0] - 2026-11-08
 
 ### Added

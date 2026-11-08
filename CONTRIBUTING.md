@@ -195,6 +195,13 @@ and publish a new patch version. If only the publish step failed (for example th
 trusted publisher was not set up yet), fix the cause and re-run the failed job; the tag
 does not need to change.
 
+## Code owners
+
+`.github/CODEOWNERS` lists the security-sensitive paths (the MCP method allowlist, policies
+and schemas, waivers, the shipped labels, CI and release workflows, dependencies). GitHub
+asks the owner to review pull requests touching them. To make that binding, turn on
+"Require review from Code Owners" in the branch protection rule for `main`.
+
 ## Reporting security issues
 
 Do not open a public issue for vulnerabilities. See [SECURITY.md](SECURITY.md).

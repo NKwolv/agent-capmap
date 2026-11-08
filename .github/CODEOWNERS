@@ -1,0 +1,34 @@
+# Code owners: GitHub asks these people to review a pull request that touches these paths.
+#
+# It only blocks a merge if branch protection for `main` has "Require review from Code
+# Owners" turned on (Settings > Branches). Only security-sensitive paths are listed, so
+# routine changes elsewhere are not held up.
+
+# The MCP method allowlist: widening it is a design decision (CONTRIBUTING, rule 2).
+/src/agentcapmap/enumerate/transport.py  @NKwolv
+
+# Accepted risks: a pull request must not be able to waive its own findings.
+waivers*.yaml  @NKwolv
+waivers*.yml   @NKwolv
+
+# Policy, schemas and the rules that decide what is dangerous.
+/policies/  @NKwolv
+/schemas/   @NKwolv
+
+# Labels shipped as trusted answers (a wrong label is returned with full confidence).
+/eval/labeled_servers/                          @NKwolv
+/src/agentcapmap/classify/reference_labels.json  @NKwolv
+/scripts/build_reference_labels.py              @NKwolv
+
+# CI, releases and the GitHub Action (they hold publishing rights and run in PRs).
+/.github/                @NKwolv
+/action.yml              @NKwolv
+/scripts/prepare_release.py  @NKwolv
+
+# Dependencies and packaging (supply chain).
+/pyproject.toml   @NKwolv
+/requirements/    @NKwolv
+
+# Project security rules and reporting.
+/AGENTS.md    @NKwolv
+/SECURITY.md  @NKwolv
