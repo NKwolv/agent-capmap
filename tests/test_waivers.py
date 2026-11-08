@@ -1,6 +1,7 @@
 """Waivers: loading, validation, applying, reporting, exit codes and diffs."""
 
 import json
+import re
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -22,7 +23,7 @@ from agentcapmap.policy.waivers import (
 from agentcapmap.report import Format, render, should_fail
 from agentcapmap.report.sarif import render as render_sarif
 from tests.scenarios import load_scenario
-from tests.test_report import SARIF_SCHEMA_PATH
+from tests.test_report import HOSTILE, SARIF_SCHEMA_PATH, _strip_code_spans
 
 TODAY = date(2026, 11, 8)
 FUTURE = (TODAY + timedelta(days=90)).isoformat()
@@ -53,7 +54,7 @@ def _entry(
 ) -> str:
     extra = f"    rule: {rule}\n" if rule else ""
     return (
-        f"  - fingerprint: {fingerprint}\n    owner: {owner}\n"
+        f"  - fingerprint: {fingerprint}\n    owner: {json.dumps(owner)}\n"
         f"    reason: {json.dumps(reason)}\n    expires: {expires}\n{extra}"
     )
 
@@ -85,7 +86,7 @@ def test_an_empty_waiver_list_is_fine() -> None:
         _yaml(_entry("*")),
         _yaml(_entry("A" * 32)),
         _yaml(_entry("a" * 31)),
-        _yaml(_entry("a" * 32, owner='""')),
+        _yaml(_entry("a" * 32, owner="")),
         _yaml(_entry("a" * 32, expires="next-week")),
         _yaml(_entry("a" * 32, expires="2026-13-45")),
         _yaml(_entry("a" * 32) + "    severity: low\n"),
@@ -200,13 +201,25 @@ def test_markdown_lists_waived_findings_with_their_reasons(evaluation: Evaluatio
 
 
 def test_markdown_renders_hostile_waiver_text_inertly(evaluation: Evaluation) -> None:
-    hostile = "[click](http://evil.example) <img src=x onerror=alert(1)> | table | break"
-    result = _apply(evaluation, _entry(_fp(evaluation), reason=hostile, owner="'<b>bob</b>'"))
-    text = render(result, Format.MARKDOWN)
-    assert "<img" not in text.replace("`", "") or "`" in text  # only inside code spans
-    line = next(row for row in text.splitlines() if "http://evil.example" in row)
-    assert "`[click](http://evil.example)" in line
-    assert "<b>" not in line.replace("`<b>", "")
+    """Waiver text comes from a file a pull request can edit: it must never become markup."""
+    result = _apply(evaluation, _entry(_fp(evaluation), reason=HOSTILE, owner=HOSTILE[:90]))
+    markdown = render(result, Format.MARKDOWN)
+    outside_code = _strip_code_spans(markdown)
+    for needle in ("<img", "](https://evil", "**bold**", "\x1b", "\u202e", "# heading"):
+        assert needle not in outside_code, needle
+    assert "\x1b" not in markdown and "\u202e" not in markdown
+    # The reader can still see what the waiver says, just inert.
+    assert "onerror=alert(1)" in markdown
+
+
+def test_waiver_table_keeps_its_shape_with_hostile_cells(evaluation: Evaluation) -> None:
+    result = _apply(evaluation, _entry(_fp(evaluation), reason=HOSTILE, owner=HOSTILE[:90]))
+    markdown = render(result, Format.MARKDOWN)
+    section = markdown.split("## Waived findings", 1)[1].split("\n## ", 1)[0]
+    rows = [r for r in section.splitlines() if r.startswith("| ") and "---" not in r]
+    assert len(rows) == 2  # the header and exactly one waiver: no cell broke out of its row
+    for row in rows:
+        assert len(re.findall(r"(?<!\\)" + r"\|", row)) - 1 == 5, row  # always five columns
 
 
 def test_expired_and_unused_waivers_show_up_as_issues(evaluation: Evaluation) -> None:
