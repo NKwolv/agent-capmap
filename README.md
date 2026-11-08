@@ -198,9 +198,13 @@ configs only, which is safe for pull requests from forks.
 ## Accuracy
 
 The classifier is evaluated against hand-labeled tools from real MCP servers (see
-[`eval/`](https://github.com/NKwolv/agent-capmap/blob/main/eval/README.md)). **No accuracy numbers are published yet**: the label set is
-still being reviewed, and numbers will be quoted here only from a reviewed, frozen run
-of `python eval/run_eval.py`.
+[`eval/`](https://github.com/NKwolv/agent-capmap/blob/main/eval/README.md)). **No accuracy numbers are published yet.** The 381 labels
+(28 servers) were drafted by one AI model and then reviewed by another AI model at the
+maintainer's request; no person has independently reviewed them yet. A model grading a
+model can overstate accuracy, so numbers will be quoted here only after a person has
+reviewed the labels and the run is frozen (`python eval/run_eval.py`). The same labels
+also power classification without an API key for these known tools; see
+[Limitations](#limitations).
 
 ## Limitations
 
@@ -218,6 +222,11 @@ of `python eval/run_eval.py`.
   live in config files (Claude Code plugins, claude.ai connectors, IDE built-in servers,
   managed settings) are not seen. WebSocket servers are listed but not enumerated.
   Token scopes are not visible.
+- **Reference labels are AI-reviewed.** For 381 tools from 28 well-known servers, the
+  classifier answers from bundled labels (matched by exact definition hash) instead of
+  calling a model, so no API key is needed. Those labels were reviewed by an AI model, not
+  yet by a person, and a wrong label is returned with full confidence; any change to a
+  tool's definition falls back to the cache or the LLM. Treat them as a convenience.
 - **Not assessed is not safe.** Servers that could not be enumerated and tools that
   could not be classified are listed under `not_assessed`, never assumed safe.
 

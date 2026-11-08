@@ -22,7 +22,7 @@ from agentcapmap.classify.reference import (
     parse_bundle,
 )
 from agentcapmap.enumerate.hashing import tool_definition_hash
-from agentcapmap.evaluation import LabeledServer, load_labeled_servers
+from agentcapmap.evaluation import LabeledServer, ai_reviewed, load_labeled_servers
 from agentcapmap.models import ClassificationStatus, ToolDefinition, ToolTags
 from agentcapmap.taxonomy import DEFAULTS, TAXONOMY_VERSION
 from tests.fake_llm import FakeProvider
@@ -146,6 +146,15 @@ def _server(status: str, reviewer: str | None, label_egress: str = "external") -
         ],
     }
     return LabeledServer.model_validate(data)
+
+
+def test_ai_reviewed_counts_only_ai_reviewers() -> None:
+    servers = [
+        _server("reviewed", "AI: some-model, at the request of a maintainer"),
+        _server("reviewed", "A. Reviewer"),
+        _server("draft", None),
+    ]
+    assert ai_reviewed(servers) == 1
 
 
 def test_build_includes_only_reviewed_servers() -> None:

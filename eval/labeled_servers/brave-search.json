@@ -15,11 +15,11 @@
     "definition_hash": "62618ca44a4278916d0c1390f28e9951c61a5bbc6390571bf5f3819b30af54b4"
   },
   "labeling": {
-    "status": "draft",
+    "status": "reviewed",
     "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
     "labeled_at": "2026-10-20",
-    "reviewed_by": null,
-    "reviewed_at": null
+    "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+    "reviewed_at": "2026-11-08"
   },
   "tools": [
     {

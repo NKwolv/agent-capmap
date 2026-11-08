@@ -285,6 +285,8 @@ def test_run_eval_end_to_end_offline(tmp_path: Path) -> None:
     data = json.loads((tmp_path / "results.json").read_text(encoding="utf-8"))
     # Empty cache: nothing classified, so the run is honest about it.
     assert data["classifier"]["unclassified"] == data["classifier"]["tools"]
-    assert data["provisional"] is True
-    assert "PROVISIONAL" in results
+    # Labels are reviewed, but by an AI model: the report must say so, not claim a person did.
+    assert data["provisional"] is False
+    assert data["ai_reviewed_files"] > 0
+    assert "AI-REVIEWED labels" in results
     assert "_To be written by a person" in results

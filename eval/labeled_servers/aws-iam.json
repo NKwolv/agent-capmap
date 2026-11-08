@@ -15,11 +15,11 @@
     "definition_hash": "9af4ecdcedf485f1b48393e98d8df804aacdbd697833dcf9fde57400442541f3"
   },
   "labeling": {
-    "status": "draft",
+    "status": "reviewed",
     "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
     "labeled_at": "2026-10-20",
-    "reviewed_by": null,
-    "reviewed_at": null
+    "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+    "reviewed_at": "2026-11-08"
   },
   "tools": [
     {
@@ -2856,16 +2856,16 @@
           "data_access": "none",
           "untrusted_input": false,
           "egress": "none",
-          "mutation": "reversible_write",
+          "mutation": "destructive",
           "execution": "none",
           "privilege": "identity_admin"
         },
         "evidence": {
-          "mutation": "Create or update an inline policy for an IAM user",
+          "mutation": "updates an existing one",
           "privilege": "Create or update an inline policy for an IAM user"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Review: was reversible_write. 'Create or update' replaces the whole inline policy document, which is an overwrite (taxonomy: creates-or-overwrites is destructive)."
       }
     },
     {
@@ -3004,16 +3004,16 @@
           "data_access": "none",
           "untrusted_input": false,
           "egress": "none",
-          "mutation": "reversible_write",
+          "mutation": "destructive",
           "execution": "none",
           "privilege": "identity_admin"
         },
         "evidence": {
-          "mutation": "Create or update an inline policy for an IAM role",
+          "mutation": "updates an existing one",
           "privilege": "Create or update an inline policy for an IAM role"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Review: was reversible_write. 'Create or update' replaces the whole inline policy document, which is an overwrite (taxonomy: creates-or-overwrites is destructive)."
       }
     },
     {

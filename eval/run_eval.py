@@ -23,11 +23,13 @@ from agentcapmap import __version__
 from agentcapmap.classify import Classifier
 from agentcapmap.classify.cache import ClassificationCache
 from agentcapmap.classify.prompt import PROMPT_VERSION
+from agentcapmap.classify.reference import ReferenceLabels
 from agentcapmap.evaluation import (
     AxisMetrics,
     ClassifierReport,
     PlantedRecall,
     RuleAgreement,
+    ai_reviewed,
     label_manifest,
     label_status,
     load_labeled_servers,
@@ -107,6 +109,13 @@ def write_results(
         if provisional
         else ""
     )
+    if not provisional and meta["ai_reviewed"]:
+        banner = (
+            "> [!NOTE]\n> **AI-REVIEWED labels.** "
+            f"{meta['ai_reviewed']} of {meta['servers']} label files were reviewed by an AI model "
+            "at the maintainer's request, not independently by a person. A model grading a "
+            "model can overstate accuracy: quote these numbers with that caveat.\n"
+        )
     lines = [
         "# Evaluation results",
         "",
@@ -207,6 +216,7 @@ def write_results(
                 },
                 "planted": {**asdict(planted), "recall": planted.recall},
                 "provisional": bool(provisional),
+                "ai_reviewed_files": meta["ai_reviewed"],
             },
             indent=2,
         )
@@ -239,12 +249,15 @@ def main() -> int:
         sys.exit("no labeled servers yet (see eval/README.md)")
 
     cache = ClassificationCache(args.cache_dir)
+    # The shipped reference labels come from these same label files, so the evaluation
+    # must never consult them: that would grade the labels against themselves.
+    no_reference = ReferenceLabels()
     if args.offline:
-        classifier = Classifier(cache, offline=True)
+        classifier = Classifier(cache, offline=True, reference=no_reference)
     else:
         from agentcapmap.classify.provider import AnthropicProvider
 
-        classifier = Classifier(cache, AnthropicProvider(model=args.model))
+        classifier = Classifier(cache, AnthropicProvider(model=args.model), reference=no_reference)
 
     def classify(tool: ToolDefinition) -> ToolClassification:
         return classifier.classify(tool)
@@ -269,6 +282,7 @@ def main() -> int:
         "taxonomy_version": TAXONOMY_VERSION,
         "servers": len(labeled),
         "label_status": label_status(labeled),
+        "ai_reviewed": ai_reviewed(labeled),
         "frozen": frozen,
         "label_digest": manifest_digest(manifest),
     }

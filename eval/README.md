@@ -14,10 +14,17 @@ reviewed) by a person.
 
 ## Status of the labels
 
-Labels were **drafted by an AI model** (`labeling.status: "draft"`) and must be reviewed
-by a person before any result is quoted. A Claude-drafted answer key grading a Claude
-classifier would overstate accuracy, so `run_eval.py` marks every result **PROVISIONAL**
-while any file is still a draft.
+Labels were **drafted by an AI model**, then **reviewed by a second AI model** (2026-11-08,
+at the maintainer's request): 6 tags were corrected (see the `notes` starting with
+"Review:") and every file is marked `reviewed` with `reviewed_by` beginning `AI:`. **No
+person has independently reviewed them yet.** A model grading a model can overstate
+accuracy, so `run_eval.py` adds an **AI-REVIEWED** banner to results while any reviewer
+is an AI, and marks results **PROVISIONAL** while any file is still a draft. When a
+person reviews a file, replace `reviewed_by` with their name (no `AI:` prefix) and
+re-run `scripts/build_reference_labels.py`.
+
+The evaluation never uses the shipped reference labels (they come from these same
+files); `run_eval.py` always classifies with an empty reference table.
 
 ## Reviewing labels
 
@@ -39,7 +46,7 @@ rejects files whose definitions no longer match their hash.
 
 ## Shipping reviewed labels (no-API-key classification)
 
-Files marked `reviewed` are also compiled into `src/agentcapmap/classify/reference_labels.json`,
+Files marked `reviewed` (including AI-reviewed ones, whose `reviewed_by` says so) are also compiled into `src/agentcapmap/classify/reference_labels.json`,
 which the classifier consults before the cache or the LLM. A tool whose exact definition
 matches a reviewed label is classified instantly, with no API key. Drafts never ship.
 

@@ -15,11 +15,11 @@
     "definition_hash": "d3f87faf6e85e9f24d7cfb77fc08bce7fbefecd9d5ab5705efbe49d500560671"
   },
   "labeling": {
-    "status": "draft",
+    "status": "reviewed",
     "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
     "labeled_at": "2026-10-21",
-    "reviewed_by": null,
-    "reviewed_at": null
+    "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+    "reviewed_at": "2026-11-08"
   },
   "tools": [
     {
@@ -2141,16 +2141,16 @@
           "data_access": "none",
           "untrusted_input": false,
           "egress": "internal",
-          "mutation": "reversible_write",
+          "mutation": "destructive",
           "execution": "none",
           "privilege": "none"
         },
         "evidence": {
-          "mutation": "Update a block",
+          "mutation": "archive (delete) a block",
           "egress": "Update a block"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Review: was reversible_write. The input schema lets the caller archive (delete) a block; Notion keeps it in trash, but the definition says delete, consistent with API-delete-a-block."
       }
     },
     {
@@ -2981,16 +2981,16 @@
           "data_access": "none",
           "untrusted_input": false,
           "egress": "internal",
-          "mutation": "reversible_write",
+          "mutation": "destructive",
           "execution": "none",
           "privilege": "none"
         },
         "evidence": {
-          "mutation": "Update page properties",
+          "mutation": "delete a block",
           "egress": "Update page properties"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Review: was reversible_write. The in_trash parameter is documented as 'delete a block', consistent with API-delete-a-block."
       }
     },
     {

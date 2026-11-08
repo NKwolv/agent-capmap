@@ -485,5 +485,14 @@ def planted_recall(fixtures: Path, classify: Classify, policy: Policy) -> Plante
     return PlantedRecall(planted, detected, per_fixture)
 
 
+def ai_reviewed(servers: Iterable[LabeledServer]) -> int:
+    """Reviewed files whose reviewer is an AI model (`reviewed_by` starts with "AI:")."""
+    return sum(
+        1
+        for s in servers
+        if s.labeling.status == "reviewed" and (s.labeling.reviewed_by or "").startswith("AI:")
+    )
+
+
 def label_status(servers: Iterable[LabeledServer]) -> Counter[str]:
     return Counter(s.labeling.status for s in servers)
