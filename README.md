@@ -162,6 +162,18 @@ agentcapmap baseline create inventory.json -o baseline.json   # once, after revi
 agentcapmap evaluate new-inventory.json --baseline baseline.json
 ```
 
+To see what changed between two runs (for example `main` versus a pull request), save
+each `evaluate` output and compare them:
+
+```sh
+agentcapmap diff before.json after.json --format markdown
+agentcapmap diff before.json after.json --fail-on high --fail-on-new-capability
+```
+
+`diff` lists new and resolved findings and capabilities an agent gained or lost.
+`--fail-on` looks at new findings only, so existing, already-accepted findings do not
+fail the build; `--fail-on-new-capability` fails when an agent gains any capability.
+
 ## CI and GitHub code scanning
 
 ```sh

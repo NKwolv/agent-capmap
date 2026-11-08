@@ -14,6 +14,7 @@ from urllib.parse import urlsplit
 from agentcapmap import __version__
 from agentcapmap.enumerate.hashing import server_definition_hash, tool_definition_hash
 from agentcapmap.enumerate.http import LegacySseTransport, StreamableHttpTransport
+from agentcapmap.enumerate.netguard import check_remote_url
 from agentcapmap.enumerate.stdio import StdioTransport
 from agentcapmap.enumerate.transport import (
     AuthRequired,
@@ -135,6 +136,7 @@ def open_transport(server: Server, spec: LaunchSpec, timeout: float) -> Transpor
         raise TransportError("remote server has no URL")
     if urlsplit(spec.url).scheme.lower() not in ("http", "https"):
         raise TransportError("remote server URL must use http or https")
+    check_remote_url(spec.url)
     if server.transport is TransportKind.SSE:
         return LegacySseTransport(spec.url, spec.headers, timeout)
     return StreamableHttpTransport(spec.url, spec.headers, timeout)

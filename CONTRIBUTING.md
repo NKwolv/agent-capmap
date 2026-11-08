@@ -67,6 +67,13 @@ zizmor --offline --persona auditor action.yml .github/workflows/   # Actions sec
 gitleaks git . --config .gitleaks.toml --redact          # secrets, full history
 ```
 
+To run all of them in one go, use `python scripts/check.py` (`--strict` also fails when
+a tool is missing). It runs Python tools as `python -m <tool>`, which matters on Windows
+machines where Application Control blocks the `.exe` launchers (for example
+`bandit.exe`); run the commands above the same way (`python -m bandit ...`) if you hit
+that. `gitleaks` is a separate binary: install it from your package manager or skip it
+locally, because CI always scans the full history with a pinned image.
+
 CI also runs CodeQL (`security-and-quality` queries) and builds a CycloneDX SBOM of the
 runtime dependencies (downloadable as the `sbom` artifact of each CI run).
 

@@ -15,6 +15,7 @@ from agentcapmap.baseline import Baseline, BaselineError, create_baseline, load_
 from agentcapmap.classify import Classifier, classify_inventory
 from agentcapmap.classify.cache import ClassificationCache
 from agentcapmap.classify.provider import AnthropicProvider
+from agentcapmap.diff import diff_evaluations, render_markdown, should_fail_diff
 from agentcapmap.discovery import discover
 from agentcapmap.enumerate import DEFAULT_TIMEOUT, enumerate_inventory
 from agentcapmap.findings import Evaluation, Severity
@@ -160,6 +161,27 @@ def _build_parser() -> argparse.ArgumentParser:
     _add_report_options(report)
     _add_common(report)
 
+    diff = sub.add_parser(
+        "diff", help="compare two evaluations: new and resolved findings, gained capabilities"
+    )
+    diff.add_argument("old", type=Path, help="earlier evaluation JSON")
+    diff.add_argument("new", type=Path, help="later evaluation JSON")
+    diff.add_argument(
+        "--format", choices=["json", "markdown"], default="json", help="output format"
+    )
+    diff.add_argument(
+        "--fail-on",
+        choices=[*(s.value for s in Severity), "none"],
+        default="none",
+        help="exit 1 if a NEW finding is at or above this severity (default none)",
+    )
+    diff.add_argument(
+        "--fail-on-new-capability",
+        action="store_true",
+        help="exit 1 if any agent gained a capability it did not have before",
+    )
+    _add_common(diff)
+
     baseline = sub.add_parser("baseline", help="manage tool-definition baselines")
     baseline_sub = baseline.add_subparsers(dest="baseline_command", required=True)
     create = baseline_sub.add_parser(
@@ -292,6 +314,23 @@ def _cmd_report(args: argparse.Namespace) -> int:
     return _report(_load_evaluation(args.evaluation), args)
 
 
+def _cmd_diff(args: argparse.Namespace) -> int:
+    diff = diff_evaluations(_load_evaluation(args.old), _load_evaluation(args.new))
+    if args.format == "markdown":
+        _write(render_markdown(diff), args.output)
+    else:
+        _emit(diff, args.output)
+    fail_on = None if args.fail_on == "none" else Severity(args.fail_on)
+    if should_fail_diff(diff, fail_on, args.fail_on_new_capability):
+        log.warning(
+            "failing: %d new finding(s), %d gained capabilit(ies)",
+            len(diff.new_findings),
+            len(diff.gained_capabilities),
+        )
+        return EXIT_FINDINGS
+    return 0
+
+
 def _cmd_baseline(args: argparse.Namespace) -> int:
     baseline = create_baseline(_load_inventory(args.inventory))
     if not baseline.servers:
@@ -308,6 +347,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "classify": _cmd_classify,
         "evaluate": _cmd_evaluate,
         "report": _cmd_report,
+        "diff": _cmd_diff,
         "baseline": _cmd_baseline,
     }
     try:

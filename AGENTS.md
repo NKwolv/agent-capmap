@@ -150,9 +150,12 @@ the sections above apply here:
   argument list with `shell=False`, and gives the child only an allowlisted environment.
 - **Connecting to servers (section 3, SSRF):** enumeration connects to URLs from configs
   the user chose to enumerate. Redirects are refused and only `http`/`https` are
-  accepted. Local MCP servers commonly listen on `localhost`, so loopback is not
-  blocked; any further restriction must be decided by the maintainer.
-  `SECURITY-REVIEW:` open item.
+  accepted. Local MCP servers commonly listen on `localhost`, so loopback and private
+  ranges stay allowed (maintainer decision). Link-local and cloud-metadata addresses
+  (169.254.0.0/16, fe80::/10, `fd00:ec2::254`, `metadata.google.internal`, ...) are
+  refused, including names that resolve to them (`enumerate/netguard.py`).
+  `SECURITY-REVIEW:` open item: the name is resolved once to check and again to connect,
+  so DNS rebinding could still slip through; closing it needs IP pinning.
 - **Project design rules** (the LLM only classifies; never call MCP tools; redact all
   secrets; no network in tests) are in [CONTRIBUTING.md](CONTRIBUTING.md) and apply in
   addition to this file.

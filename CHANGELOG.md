@@ -10,6 +10,14 @@ Everything below is unreleased work towards 0.1.0, newest first within each sect
 
 ### Added
 
+- **`agentcapmap diff OLD NEW`**: compares two evaluations and reports new and resolved
+  findings plus capabilities each agent gained or lost (`--format json|markdown`).
+  `--fail-on` applies to new findings only; `--fail-on-new-capability` fails when an
+  agent gains a capability.
+- `scripts/check.py` runs every required check locally in one command.
+- Remote enumeration refuses link-local and cloud-metadata addresses (169.254.0.0/16,
+  fe80::/10, `fd00:ec2::254`, `metadata.google.internal`, ...), including names that
+  resolve to them. Loopback and private ranges stay allowed for local servers.
 - **Release pipeline**: tagging `vX.Y.Z` runs tests and pip-audit, builds from the
   hash-pinned build lock and, after manual approval, publishes to PyPI with trusted
   publishing (no stored token, PyPI attestations) and creates a GitHub release.
