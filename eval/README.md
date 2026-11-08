@@ -37,6 +37,19 @@ For each file in `labeled_servers/`:
 Never edit `name`, `description`, `input_schema` or `definition_hash`: the loader
 rejects files whose definitions no longer match their hash.
 
+## Shipping reviewed labels (no-API-key classification)
+
+Files marked `reviewed` are also compiled into `src/agentcapmap/classify/reference_labels.json`,
+which the classifier consults before the cache or the LLM. A tool whose exact definition
+matches a reviewed label is classified instantly, with no API key. Drafts never ship.
+
+```sh
+python scripts/build_reference_labels.py          # after marking files reviewed
+python scripts/build_reference_labels.py --check  # also enforced by the test suite
+```
+
+Commit the regenerated file together with the label changes.
+
 ## Running
 
 ```sh

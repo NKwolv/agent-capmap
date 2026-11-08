@@ -229,8 +229,17 @@ def _classify(inventory: Inventory, args: argparse.Namespace) -> None:
         try:
             provider = AnthropicProvider(model=args.model)
         except Exception as exc:  # SDK raises various errors when credentials are missing
-            raise CliError(f"cannot create the LLM client: {redact_text(str(exc))}") from None
-        classifier = Classifier(cache, provider)
+            # Fail closed: tools without a reviewed reference label or a cached answer
+            # stay unclassified and are reported as not assessed, never as safe.
+            print(
+                f"warning: no usable LLM client ({type(exc).__name__}); set ANTHROPIC_API_KEY "
+                "to classify new tools. Using reviewed reference labels and cached "
+                "classifications only; other tools will be reported as not assessed.",
+                file=sys.stderr,
+            )
+            classifier = Classifier(cache, offline=True)
+        else:
+            classifier = Classifier(cache, provider)
     classify_inventory(inventory, classifier, concurrency=args.classify_concurrency)
 
 

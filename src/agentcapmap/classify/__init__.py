@@ -3,7 +3,8 @@
 The LLM only assigns taxonomy tags and flags suspicious descriptions (design rule 1).
 Every answer is validated against schemas/tool-tags.schema.json; an invalid answer is
 retried once, then the tool is marked unclassified (rule 2). Results are cached by tool
-definition hash, taxonomy version, prompt version and model (rule 3).
+definition hash, taxonomy version, prompt version and model (rule 3). Tools with a
+person-reviewed reference label (classify/reference.py) skip the LLM entirely.
 """
 
 from __future__ import annotations
@@ -21,6 +22,7 @@ from jsonschema.exceptions import best_match
 from agentcapmap.classify.cache import ClassificationCache, cache_key
 from agentcapmap.classify.prompt import PROMPT_VERSION, SYSTEM_PROMPT, user_message
 from agentcapmap.classify.provider import LLMProvider, ProviderError, configured_model
+from agentcapmap.classify.reference import ReferenceLabels, load_reference
 from agentcapmap.models import (
     ClassificationStatus,
     Inventory,
@@ -135,12 +137,14 @@ class Classifier:
         provider: LLMProvider | None = None,
         *,
         offline: bool = False,
+        reference: ReferenceLabels | None = None,
     ) -> None:
         if provider is None and not offline:
             raise ValueError("a provider is required unless offline=True")
         self._cache = cache
         self._provider = provider
         self._offline = offline
+        self._reference = reference if reference is not None else load_reference()
         self.model = provider.model if provider is not None else configured_model()
         self._schema = api_output_schema()
 
@@ -154,6 +158,9 @@ class Classifier:
         )
 
     def classify(self, tool: ToolDefinition) -> ToolClassification:
+        # A person-reviewed label for this exact definition beats any model answer.
+        if (reviewed := self._reference.lookup(tool.definition_hash)) is not None:
+            return reviewed
         key = cache_key(tool.definition_hash, TAXONOMY_VERSION, PROMPT_VERSION, self.model)
         cached = self._cache.get(key)
         if cached is not None:
