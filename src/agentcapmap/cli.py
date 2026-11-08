@@ -16,7 +16,7 @@ from agentcapmap.classify import Classifier, classify_inventory
 from agentcapmap.classify.cache import ClassificationCache
 from agentcapmap.classify.provider import AnthropicProvider
 from agentcapmap.diff import diff_evaluations, render_markdown, should_fail_diff
-from agentcapmap.discovery import discover
+from agentcapmap.discovery import discover, user_config_paths
 from agentcapmap.enumerate import DEFAULT_TIMEOUT, enumerate_inventory
 from agentcapmap.findings import Evaluation, Severity
 from agentcapmap.models import Inventory
@@ -100,7 +100,11 @@ def _build_parser() -> argparse.ArgumentParser:
         prog="agentcapmap",
         description="Inventory MCP servers reachable by AI agents and map their capabilities.",
     )
-    parser.add_argument("--version", action="version", version=f"agentcapmap {__version__}")
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"agentcapmap {__version__} (installed at {Path(__file__).resolve().parent})",
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     scan = sub.add_parser("scan", help="discover MCP configs and output a normalized inventory")
@@ -269,6 +273,27 @@ def _report(evaluation: Evaluation, args: argparse.Namespace) -> int:
     return 0
 
 
+def _print_scan_summary(inventory: Inventory, args: argparse.Namespace) -> None:
+    """One human-readable line on stderr, so an empty result is not a mystery."""
+    servers = sum(len(agent.servers) for agent in inventory.agents)
+    print(
+        f"scanned {len(inventory.agents)} agent config(s): {servers} MCP server(s) found, "
+        f"{len(inventory.errors)} error(s)",
+        file=sys.stderr,
+    )
+    if servers == 0:
+        places = [str(p) for p in user_config_paths()] if args.user else []
+        places += [str(a.config_path) for a in inventory.agents]
+        checked = "; ".join(dict.fromkeys(places)) or "no config files found"
+        print(redact_text(f"no MCP servers found. Looked at: {checked}"), file=sys.stderr)
+    elif not args.enumerate:
+        print(
+            "tools were not listed. Add --enumerate --classify --evaluate to assess what "
+            "each server can do (this starts the configured servers).",
+            file=sys.stderr,
+        )
+
+
 def _cmd_scan(args: argparse.Namespace) -> int:
     if args.classify and not args.enumerate:
         raise CliError(
@@ -292,6 +317,7 @@ def _cmd_scan(args: argparse.Namespace) -> int:
     if args.classify:
         _classify(inventory, args)
     if not args.evaluate:
+        _print_scan_summary(inventory, args)
         _emit(inventory, args.output)
         return 0
     if args.save_inventory:

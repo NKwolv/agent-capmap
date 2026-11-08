@@ -196,3 +196,36 @@ def test_policy_and_baseline_errors_are_clean(
     assert main(["evaluate", str(inventory), "--baseline", str(bad_baseline)]) == 2
     assert "expected format" in capsys.readouterr().err
     assert main(["scan", "--save-inventory", str(tmp_path / "x.json")]) == 2
+
+
+def test_scan_summary_goes_to_stderr_and_points_to_enumerate(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert main(["scan", str(CONFIG_FIXTURES / "generic" / "mcp.json")]) == 0
+    out, err = capsys.readouterr()
+    assert json.loads(out)["agents"]  # stdout stays pure JSON
+    assert "1 agent config(s): 2 MCP server(s) found" in err
+    assert "--enumerate --classify --evaluate" in err
+    fake_secrets.assert_no_secrets(err)
+
+
+def test_scan_summary_explains_an_empty_result(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    config = tmp_path / "mcp.json"
+    config.write_text('{"mcpServers": {}}', encoding="utf-8")
+    assert main(["scan", str(config)]) == 0
+    out, err = capsys.readouterr()
+    assert json.loads(out)["agents"][0]["servers"] == []
+    assert "0 MCP server(s) found" in err
+    assert "no MCP servers found. Looked at:" in err
+    assert str(config) in err or config.name in err
+
+
+def test_version_shows_where_it_runs_from(capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(SystemExit) as exc:
+        main(["--version"])
+    assert exc.value.code == 0
+    out = capsys.readouterr().out
+    assert out.startswith("agentcapmap ") and "installed at" in out
+    assert "agentcapmap" in out.split("installed at", 1)[1]

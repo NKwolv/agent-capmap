@@ -9,7 +9,7 @@ need no API key.
 In a fresh clone and a fresh virtual environment, follow the README quickstart exactly.
 
 - [ ] `pip install --require-hashes -r requirements/runtime.lock` and `pip install --no-deps .` succeed.
-- [ ] `agentcapmap --version` prints `agentcapmap 0.1.0`.
+- [ ] `agentcapmap --version` starts with `agentcapmap 0.1.0` and shows the install path.
 - [ ] The whole quickstart takes under 5 minutes.
 
 ## 2. The test suite passes (2 min)

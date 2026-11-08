@@ -190,8 +190,12 @@ def test_markdown_report_content() -> None:
     assert "`untrusted_input: including issues opened by anyone`" in markdown
     assert "## Capabilities by agent" in markdown
     clean = render(_evaluation("clean"), Format.MARKDOWN)
-    assert "No findings." in clean
+    assert "No findings, but this is **not an all-clear**" in clean
     assert "[!WARNING]" in clean and "not assessed" in clean
+    fully_assessed = evaluate(load_scenario("clean"), load_policy(), None).model_copy(
+        update={"not_assessed": []}
+    )
+    assert "\nNo findings.\n" in render(fully_assessed, Format.MARKDOWN)
 
 
 # --- exit codes ----------------------------------------------------------------------

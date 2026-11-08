@@ -96,7 +96,15 @@ def render(evaluation: Evaluation) -> str:
         lines += [f"Skipped rules: {skipped}", ""]
 
     lines += ["## Findings", ""]
-    if not evaluation.findings:
+    if not evaluation.findings and not_assessed:
+        lines += [
+            "No findings, but this is **not an all-clear**: some tools were not assessed. "
+            "To assess them, run `agentcapmap scan <path> --enumerate --classify --evaluate` "
+            "(this starts the configured servers and needs an API key), or use a saved "
+            "inventory whose tools are already classified.",
+            "",
+        ]
+    elif not evaluation.findings:
         lines += ["No findings.", ""]
     for index, finding in enumerate(evaluation.findings[:_MAX_FINDINGS], start=1):
         lines += _finding(index, finding)

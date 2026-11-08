@@ -10,6 +10,11 @@ Everything below is unreleased work towards 0.1.0, newest first within each sect
 
 ### Added
 
+- `scan` prints a one-line summary to stderr (agents, servers, errors), says where it
+  looked when it finds no servers, and points to `--enumerate --classify --evaluate`
+  when tools were not listed. Stdout stays pure JSON.
+- `--version` also shows where the package is installed, which exposes a stale install
+  shadowing a newer one.
 - **`agentcapmap diff OLD NEW`**: compares two evaluations and reports new and resolved
   findings plus capabilities each agent gained or lost (`--format json|markdown`).
   `--fail-on` applies to new findings only; `--fail-on-new-capability` fails when an
@@ -97,6 +102,11 @@ Everything below is unreleased work towards 0.1.0, newest first within each sect
   - Secret redaction across all output and logs.
 - Documentation: taxonomy, threat model, comparison with Snyk Agent Scan (formerly
   mcp-scan), GitHub Action guide, contributing guide, security policy, `AGENTS.md`.
+
+### Changed
+
+- The Markdown report no longer says a bare "No findings." when tools were not assessed;
+  it says this is not an all-clear and how to assess them.
 
 ### Security
 
