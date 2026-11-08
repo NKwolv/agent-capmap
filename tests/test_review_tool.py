@@ -33,6 +33,11 @@ def labels(tmp_path: Path) -> Path:
     directory.mkdir()
     for name in ("fetch", "commands", "time", "github"):
         shutil.copy(REAL_LABELS / f"{name}.json", directory / f"{name}.json")
+        # The real files change as people review them: start every copy as AI-reviewed.
+        path = directory / f"{name}.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        data["labeling"]["reviewed_by"] = "AI: test fixture (no independent human review)"
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return directory
 
 
@@ -131,5 +136,7 @@ def test_cli_list_sheet_and_mark(
 
 def test_the_real_labels_rank_without_error() -> None:
     rows = review.ranked(load_labeled_servers(REAL_LABELS))
-    assert sum(r.tools for r in rows) == 381
-    assert not any(r.human_reviewed for r in rows)  # as of now, no file has a human reviewer
+    assert sum(r.tools for r in rows) == 381 and len(rows) == 28
+    # Human-reviewed files always sort after every file that still needs a person.
+    flags = [r.human_reviewed for r in rows]
+    assert flags == sorted(flags)

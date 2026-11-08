@@ -1507,7 +1507,7 @@
     },
     "403e43f2b587d2bc11c554afc6f793386c98339981baefe9eee0990366eb7e1b": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-api",
       "suspicious": false,
       "tags": {
@@ -5877,7 +5877,7 @@
         "mutation": "Execute AWS CLI commands",
         "privilege": "Execute AWS CLI commands"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-api",
       "suspicious": false,
       "tags": {
@@ -6088,7 +6088,7 @@
         "egress": "Fetches a URL from the internet",
         "untrusted_input": "Fetches a URL from the internet"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "fetch",
       "suspicious": true,
       "tags": {

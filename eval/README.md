@@ -16,8 +16,9 @@ reviewed) by a person.
 
 Labels were **drafted by an AI model**, then **reviewed by a second AI model** (2026-11-08,
 at the maintainer's request): 6 tags were corrected (see the `notes` starting with
-"Review:") and every file is marked `reviewed` with `reviewed_by` beginning `AI:`. **No
-person has independently reviewed them yet.** A model grading a model can overstate
+"Review:") and every file was marked `reviewed` with `reviewed_by` beginning `AI:`. A person
+has since gone through some files and replaced that with their name (`python eval/review.py
+list` shows which); the rest are **still AI-reviewed**. A model grading a model can overstate
 accuracy, so `run_eval.py` adds an **AI-REVIEWED** banner to results while any reviewer
 is an AI, and marks results **PROVISIONAL** while any file is still a draft. When a
 person reviews a file, replace `reviewed_by` with their name (no `AI:` prefix) and

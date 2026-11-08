@@ -328,8 +328,9 @@ configs only, which is safe for pull requests from forks.
 The classifier is evaluated against hand-labeled tools from real MCP servers (see
 [`eval/`](https://github.com/NKwolv/agent-capmap/blob/main/eval/README.md)). **No accuracy numbers are published yet.** The 381 labels
 (28 servers) were drafted by one AI model and then reviewed by another AI model at the
-maintainer's request; no person has independently reviewed them yet. A model grading a
-model can overstate accuracy, so numbers will be quoted here only after a person has
+maintainer's request. A person has so far reviewed only some of the files
+(`python eval/review.py list` shows which); the rest are still AI-reviewed. A model grading
+a model can overstate accuracy, so numbers will be quoted here only after a person has
 reviewed the labels and the run is frozen (`python eval/run_eval.py`). The same labels
 also power classification without an API key for these known tools; see
 [Limitations](#limitations).
@@ -352,8 +353,8 @@ also power classification without an API key for these known tools; see
   Token scopes are not visible.
 - **Reference labels are AI-reviewed.** For 381 tools from 28 well-known servers, the
   classifier answers from bundled labels (matched by exact definition hash) instead of
-  calling a model, so no API key is needed. Those labels were reviewed by an AI model, not
-  yet by a person, and a wrong label is returned with full confidence; any change to a
+  calling a model, so no API key is needed. Those labels were reviewed by an AI model, and
+  only some files by a person so far, and a wrong label is returned with full confidence; any change to a
   tool's definition falls back to the cache or the LLM. Treat them as a convenience.
 - **Runtime discovery is heuristic.** `--running` recognizes servers by their command line
   and misses ones with unrelated names; a process can also be named to look like a

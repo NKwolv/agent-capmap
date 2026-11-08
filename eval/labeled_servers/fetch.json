@@ -18,7 +18,7 @@
     "status": "reviewed",
     "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
     "labeled_at": "2026-10-20",
-    "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+    "reviewed_by": "NKWolv",
     "reviewed_at": "2026-11-08"
   },
   "tools": [

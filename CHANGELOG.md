@@ -8,6 +8,9 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- First human review of the eval labels: the maintainer reviewed `fetch` and `aws-api`
+  (3 tools) and decided the 8 calls that had open "Reviewer:" notes, confirming every
+  label as it was. The rest stay AI-reviewed; the README and eval notes say so.
 - `eval/review.py` helps a person review the eval labels: `list` ranks files by risk,
   `sheet` writes a worksheet with hints about possibly-missed capabilities, and `mark`
   records a finished human review (refuses `AI:` names; edits only the `labeling` block).
