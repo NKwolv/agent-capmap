@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>agent-capmap social preview</title>
+<!-- Rendered to social-preview.png (1280x640) by headless Edge/Chrome. No external resources. -->
+<style>
+  :root {
+    --bg: #0b1220;
+    --bg2: #111b2e;
+    --text: #f3f6fb;
+    --muted: #9fb0c9;
+    --blue: #4c8dff;
+    --teal: #2dd4bf;
+    --amber: #fbbf24;
+    --red: #ff5d6c;
+    --card: #15233b;
+    --line: #26395a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1280px; height: 640px; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(900px 500px at 88% -10%, #1d3b73 0%, transparent 60%),
+      radial-gradient(700px 400px at -5% 110%, #0f4a4a 0%, transparent 55%),
+      linear-gradient(160deg, var(--bg), var(--bg2));
+    overflow: hidden;
+    position: relative;
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,.9), rgba(0,0,0,.15));
+  }
+  .wrap { position: absolute; inset: 0; padding: 62px 76px; }
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .logo {
+    width: 58px; height: 58px; border-radius: 15px;
+    background: linear-gradient(135deg, var(--blue), var(--teal));
+    display: grid; place-items: center;
+    box-shadow: 0 8px 30px rgba(76,141,255,.35);
+  }
+  .logo svg { width: 34px; height: 34px; }
+  .name { font-size: 54px; font-weight: 800; letter-spacing: -1.2px; }
+  .name span { color: var(--teal); }
+  .tag {
+    margin-top: 26px; font-size: 33px; line-height: 1.28; font-weight: 600;
+    max-width: 1010px; color: #e6edf8;
+  }
+  .tag em { font-style: normal; color: var(--amber); }
+  .flow {
+    position: absolute; left: 76px; right: 76px; top: 318px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .node {
+    width: 292px; padding: 20px 22px; border-radius: 18px;
+    background: var(--card); border: 1px solid var(--line);
+    box-shadow: 0 10px 30px rgba(0,0,0,.28);
+  }
+  .node .k { font-size: 14px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .node .t { margin-top: 8px; font-size: 25px; font-weight: 700; }
+  .node .d { margin-top: 6px; font-size: 17px; color: var(--muted); }
+  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 9px; }
+  .op { font-size: 40px; color: var(--muted); font-weight: 300; }
+  .result {
+    width: 100%; margin-top: 0;
+  }
+  .alert {
+    position: absolute; left: 76px; right: 76px; top: 488px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .verdict {
+    display: flex; align-items: center; gap: 16px;
+    padding: 15px 24px; border-radius: 14px;
+    background: rgba(255,93,108,.12); border: 1px solid rgba(255,93,108,.55);
+    font-size: 24px; font-weight: 700; color: #ffd5d9;
+  }
+  .verdict b { color: var(--red); }
+  .verdict svg { width: 28px; height: 28px; flex: none; }
+  .chips { display: flex; gap: 12px; }
+  .chip {
+    padding: 9px 16px; border-radius: 999px; font-size: 18px; font-weight: 600;
+    background: rgba(255,255,255,.07); border: 1px solid var(--line); color: #cfdbef;
+  }
+  .foot {
+    position: absolute; left: 76px; bottom: 34px;
+    font-size: 17px; color: var(--muted); letter-spacing: .3px;
+  }
+  .foot code { color: #cfe3ff; font-family: Consolas, "Cascadia Mono", monospace; }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/>
+          <circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/>
+          <path d="M6.6 7.3 10 10M17.4 7.3 14 10M6.6 16.7 10 14M17.4 16.7 14 14"/>
+        </svg>
+      </div>
+      <div class="name">agent<span>-</span>capmap</div>
+    </div>
+
+    <div class="tag">
+      See what your AI agents can <em>actually</em> do, and which combinations of their
+      MCP tools an attacker could abuse.
+    </div>
+
+    <div class="flow">
+      <div class="node">
+        <div class="k">1 &middot; Read</div>
+        <div class="t"><span class="dot" style="background:var(--blue)"></span>Private data</div>
+        <div class="d">files, repos, email, databases</div>
+      </div>
+      <div class="op">+</div>
+      <div class="node">
+        <div class="k">2 &middot; Ingest</div>
+        <div class="t"><span class="dot" style="background:var(--amber)"></span>Untrusted content</div>
+        <div class="d">web pages, issues, inboxes</div>
+      </div>
+      <div class="op">+</div>
+      <div class="node">
+        <div class="k">3 &middot; Send</div>
+        <div class="t"><span class="dot" style="background:var(--teal)"></span>Data out</div>
+        <div class="d">email, HTTP, git push</div>
+      </div>
+    </div>
+
+    <div class="alert">
+      <div class="verdict">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ff5d6c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3 2.5 20h19L12 3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.3" r=".6" fill="#ff5d6c"/>
+        </svg>
+        <span>= the <b>lethal trifecta</b>: injected text can leak your data</span>
+      </div>
+      <div class="chips">
+        <div class="chip">MCP</div>
+        <div class="chip">policy as code</div>
+        <div class="chip">SARIF</div>
+      </div>
+    </div>
+
+    <div class="foot"><code>pipx install agent-capmap</code> &nbsp;&middot;&nbsp; github.com/NKwolv/agent-capmap</div>
+  </div>
+</body>
+</html>
