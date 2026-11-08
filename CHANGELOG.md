@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Pull request comment** (`comment: "true"` in the GitHub Action): scans the base commit
+  too and posts one updating comment with new findings, newly unassessed servers, gained
+  capabilities and resolved findings. Config-only (never starts servers), never combined
+  with `enumerate`, skipped gracefully on forks. `agentcapmap diff` now also reports
+  `new_not_assessed` and starts its Markdown with a summary line.
+- `scripts/prepare_release.py` bumps the version everywhere and dates the changelog;
+  a test keeps `pyproject.toml` and `__version__` equal. The releasing steps in
+  CONTRIBUTING.md now cover patch releases and the PyPI/GitHub setup.
+
 ## [0.1.0] - 2026-11-08
 
 First release, newest first within each section. Accuracy is not benchmarked yet and the

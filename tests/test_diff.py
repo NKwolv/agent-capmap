@@ -92,3 +92,29 @@ def test_markdown_renders_hostile_text_inertly(risky: Evaluation) -> None:
     text = render_markdown(diff)
     assert "`[click](http://evil) <b>x</b>`" in text
     assert text.startswith("# agent-capmap diff")
+
+
+def test_newly_not_assessed_servers_are_reported(risky: Evaluation) -> None:
+    from agentcapmap.findings import NotAssessed
+
+    base = risky.model_copy(update={"not_assessed": []})
+    added = NotAssessed(
+        agent_id="a", server="new-server", reason="tools not enumerated (run scan with --enumerate)"
+    )
+    head = risky.model_copy(update={"not_assessed": [added]})
+    diff = diff_evaluations(base, head)
+    assert diff.new_not_assessed == [added]
+    # Already-unassessed items are not "new".
+    assert diff_evaluations(head, head).new_not_assessed == []
+    assert "`new-server`" in render_markdown(diff)
+    assert not should_fail_diff(diff, Severity.INFO, True)  # informational only
+
+
+def test_changed_flag_and_summary_line(risky: Evaluation) -> None:
+    same = diff_evaluations(risky, risky)
+    assert same.changed is False
+    assert "No changes compared with the base." in render_markdown(same)
+    different = diff_evaluations(_emptied(risky), risky)
+    assert different.changed is True
+    summary = render_markdown(different).splitlines()[2]
+    assert summary.startswith(f"{len(different.new_findings)} new finding(s), ")

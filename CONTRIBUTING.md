@@ -154,19 +154,39 @@ Adding, removing or redefining an axis or value is a breaking change:
 
 ## Releasing (maintainers)
 
-1. Set `version` in `pyproject.toml` and move the `[Unreleased]` entries in
-   `CHANGELOG.md` under a new `[X.Y.Z] - YYYY-MM-DD` heading. Merge that to `main`.
-2. Tag the merge commit and push the tag: `git tag vX.Y.Z && git push origin vX.Y.Z`.
-3. `.github/workflows/release.yml` checks that the tag matches the version, runs the
-   tests and pip-audit, builds the sdist and wheel from the hash-pinned build lock,
-   and waits for approval on the `pypi` environment. After approval it publishes to
-   PyPI with trusted publishing (no stored token; PyPI attestations are generated
-   automatically) and creates the GitHub release with the same files.
-4. Update the `uses: NKwolv/agent-capmap@<sha>` pin in
-   `docs/examples/agentcapmap.yml` to the tagged commit.
+One-time setup (already done for the 0.1.0 release):
+
+- On PyPI, a trusted publisher for this repository: workflow `release.yml`,
+  environment `pypi`.
+- On GitHub, a `pypi` environment with a **required reviewer**, so every release needs
+  an explicit approval before it is published.
+
+For every release, including patch releases:
+
+1. Put the changes under `## [Unreleased]` in `CHANGELOG.md`. If you reviewed or changed
+   eval labels, run `python scripts/build_reference_labels.py` and commit the result:
+   the labels ship in the package, so a label change needs a new release.
+2. `python scripts/prepare_release.py X.Y.Z` bumps the version in `pyproject.toml` and
+   `src/agentcapmap/__init__.py` (a test keeps them equal) and dates the changelog. It
+   refuses on a dirty tree, a version that is not higher, an empty `[Unreleased]`, or
+   stale reference labels, and it never commits or pushes (add `--dry-run` to preview).
+3. `python scripts/check.py`, then commit, push, and wait for CI on that commit.
+4. Tag that exact commit and push the tag:
+   `git tag -a vX.Y.Z -m "agent-capmap X.Y.Z" && git push origin vX.Y.Z`.
+5. `.github/workflows/release.yml` checks that the tag matches the version, runs the
+   tests and pip-audit, builds the sdist and wheel from the hash-pinned build lock, and
+   waits for approval on the `pypi` environment. After approval it publishes to PyPI
+   with trusted publishing (no stored token; attestations are automatic) and creates
+   the GitHub release with the same files.
+6. Check the result: the version is on PyPI, and `pip install agent-capmap==X.Y.Z` in a
+   fresh virtual environment runs `python -m agentcapmap --version`.
+7. Update the `uses: NKwolv/agent-capmap@<sha>` pin in `docs/examples/agentcapmap.yml`
+   to the tagged commit.
 
 A version on PyPI can never be re-uploaded. If a release is broken, yank it on PyPI
-and publish a new patch version.
+and publish a new patch version. If only the publish step failed (for example the
+trusted publisher was not set up yet), fix the cause and re-run the failed job; the tag
+does not need to change.
 
 ## Reporting security issues
 

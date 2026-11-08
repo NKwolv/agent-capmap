@@ -20,6 +20,8 @@ A complete example is in [`examples/agentcapmap.yml`](examples/agentcapmap.yml).
 | `classify` | `false` | Classify tools with the LLM. Needs `enumerate: true` and `ANTHROPIC_API_KEY` (unless `offline`). |
 | `offline` | `false` | Classify from the cache only. |
 | `cache-dir` | none | Classification cache directory; restore it with `actions/cache`. |
+| `comment` | `false` | On `pull_request`, post what changed against the base branch as one comment (see below). Config-only; cannot be combined with `enumerate`. |
+| `github-token` | `github.token` | Token used to post the comment. |
 | `sarif-file` | `agentcapmap.sarif` | Where to write SARIF (relative path inside the workspace). |
 | `python-version` | `3.12` | Python used to run agent-capmap. |
 
@@ -28,6 +30,30 @@ Outputs: `sarif-file`, `findings` (count), `not-assessed` (count).
 Exit status: the action fails when a finding is at or above `fail-on` (or, with
 `fail-on-not-assessed`, when anything was not assessed). The SARIF file and summary
 are written first, so upload them in a step with `if: always()`.
+
+## Pull request comment
+
+With `comment: "true"`, the action scans the base commit as well, compares the two with
+`agentcapmap diff`, and posts a single comment that lists **new findings**, **newly
+unassessed servers** (in config-only mode this is how an added MCP server shows up),
+gained capabilities and resolved findings. The comment is updated on every push instead
+of adding new ones, and nothing is posted when nothing changed and there is no earlier
+comment. The same text goes to the job summary.
+
+Requirements:
+
+- `permissions: pull-requests: write` on the job (plus `contents: read`).
+- `actions/checkout` with `fetch-depth: 0`, so the base commit is available. Without it
+  the comparison is skipped with a warning.
+- The `pull_request` event. Do not use `pull_request_target` to get write access on
+  forks: that runs with secrets against untrusted code. On a fork the token is read-only,
+  so the comment cannot be posted and the diff appears in the job summary only.
+- Not with `enumerate: "true"`: the comment mode never starts servers, so it is safe on
+  pull requests.
+
+The head's policy and baseline are used for both sides, so only the pull request's own
+changes appear. A bot comment is only ever updated if the `github-actions[bot]` user
+wrote it and it carries the action's hidden marker.
 
 ## Choosing a mode
 

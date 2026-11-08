@@ -191,6 +191,8 @@ agentcapmap evaluate inventory.json --format sarif -o agentcapmap.sarif --fail-o
 ```
 
 Exit codes: `0` passed, `1` findings at or above `--fail-on`, `2` usage or input error.
+On pull requests the action can also post one comment that shows only what the PR
+changed (`comment: "true"`; see the action docs).
 The repository is also a GitHub Action: see [docs/github-action.md](https://github.com/NKwolv/agent-capmap/blob/main/docs/github-action.md)
 and the [example workflow](https://github.com/NKwolv/agent-capmap/blob/main/docs/examples/agentcapmap.yml). By default the Action reads
 configs only, which is safe for pull requests from forks.

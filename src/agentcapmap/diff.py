@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
-from agentcapmap.findings import Evaluation, Finding, Severity
+from agentcapmap.findings import Evaluation, Finding, NotAssessed, Severity
 from agentcapmap.report._text import md_code
 
 _MAX_ROWS = 100
@@ -25,6 +25,19 @@ class EvaluationDiff(BaseModel):
     resolved_findings: list[Finding] = Field(default_factory=list)
     gained_capabilities: list[CapabilityChange] = Field(default_factory=list)
     lost_capabilities: list[CapabilityChange] = Field(default_factory=list)
+    # Servers or tools that could not be assessed now but were not before: in config-only
+    # mode this is how a newly added MCP server shows up.
+    new_not_assessed: list[NotAssessed] = Field(default_factory=list)
+
+    @property
+    def changed(self) -> bool:
+        return bool(
+            self.new_findings
+            or self.resolved_findings
+            or self.gained_capabilities
+            or self.lost_capabilities
+            or self.new_not_assessed
+        )
 
 
 def _capabilities(evaluation: Evaluation) -> dict[tuple[str, str], list[str]]:
@@ -49,11 +62,15 @@ def diff_evaluations(old: Evaluation, new: Evaluation) -> EvaluationDiff:
     old_prints = {f.fingerprint for f in old.findings}
     new_prints = {f.fingerprint for f in new.findings}
     old_caps, new_caps = _capabilities(old), _capabilities(new)
+    seen = {(n.agent_id, n.server, n.tool) for n in old.not_assessed}
     return EvaluationDiff(
         new_findings=[f for f in new.findings if f.fingerprint not in old_prints],
         resolved_findings=[f for f in old.findings if f.fingerprint not in new_prints],
         gained_capabilities=_changes(new_caps, old_caps),
         lost_capabilities=_changes(old_caps, new_caps),
+        new_not_assessed=[
+            n for n in new.not_assessed if (n.agent_id, n.server, n.tool) not in seen
+        ],
     )
 
 
@@ -94,10 +111,33 @@ def _finding_lines(title: str, findings: list[Finding]) -> list[str]:
     return [*lines, ""]
 
 
+def _not_assessed_lines(items: list[NotAssessed]) -> list[str]:
+    lines = [f"## Newly not assessed ({len(items)})", ""]
+    if not items:
+        return [*lines, "None.", ""]
+    for item in items[:_MAX_ROWS]:
+        where = f"{item.server}/{item.tool}" if item.tool else item.server
+        lines.append(f"- {md_code(where, 160)}: {md_code(item.reason, 200)}")
+    if len(items) > _MAX_ROWS:
+        lines.append(f"- ... and {len(items) - _MAX_ROWS} more")
+    return [*lines, ""]
+
+
 def render_markdown(diff: EvaluationDiff) -> str:
     lines = ["# agent-capmap diff", ""]
+    if diff.changed:
+        lines += [
+            f"{len(diff.new_findings)} new finding(s), "
+            f"{len(diff.gained_capabilities)} gained capability(ies), "
+            f"{len(diff.new_not_assessed)} newly not assessed, "
+            f"{len(diff.resolved_findings)} resolved.",
+            "",
+        ]
+    else:
+        lines += ["No changes compared with the base.", ""]
     lines += _finding_lines("New findings", diff.new_findings)
     lines += _capability_lines("Gained capabilities", diff.gained_capabilities)
+    lines += _not_assessed_lines(diff.new_not_assessed)
     lines += _finding_lines("Resolved findings", diff.resolved_findings)
     lines += _capability_lines("Lost capabilities", diff.lost_capabilities)
     return "\n".join(lines)

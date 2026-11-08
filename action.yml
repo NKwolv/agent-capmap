@@ -40,6 +40,17 @@ inputs:
   cache-dir:
     description: Classification cache directory (restore it with actions/cache).
     default: ""
+  comment:
+    description: >-
+      On pull_request events, compare with the base branch and post what changed (new
+      findings, newly unassessed servers, gained capabilities) as one comment that is
+      updated on later pushes (true/false). Config-only: it cannot be combined with
+      enumerate. Needs `pull-requests: write` and a checkout with `fetch-depth: 0`.
+      Forks get a read-only token, so there the diff goes to the job summary only.
+    default: "false"
+  github-token:
+    description: Token used to post the comment (only needs pull-requests write).
+    default: ${{ github.token }}
   sarif-file:
     description: Where to write the SARIF report, relative to the workspace.
     default: agentcapmap.sarif
@@ -135,3 +146,84 @@ runs:
         gate=(report "$evaluation" --fail-on "$INPUT_FAIL_ON" -o "${RUNNER_TEMP}/agentcapmap-gate.json")
         [[ "$INPUT_FAIL_ON_NOT_ASSESSED" == "true" ]] && gate+=(--fail-on-not-assessed)
         "$PY" -m agentcapmap "${gate[@]}"
+
+    - name: Compare with the base branch and comment
+      if: ${{ always() && inputs.comment == 'true' && github.event_name == 'pull_request' }}
+      shell: bash
+      env:
+        PY: ${{ steps.install.outputs.python }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        WORKSPACE: ${{ github.workspace }}
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_POLICY: ${{ inputs.policy }}
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_ENUMERATE: ${{ inputs.enumerate }}
+      run: |
+        set -uo pipefail
+        fail() { echo "::error title=agent-capmap::$1"; exit 2; }
+        soft() { echo "::warning title=agent-capmap::$1"; exit 0; }
+        [[ "$INPUT_ENUMERATE" == "false" ]] || fail "comment is for config-only pull request checks: enumerate runs the commands in the configs"
+        [[ "$BASE_SHA" =~ ^[0-9a-f]{40}$ ]] || fail "unexpected base commit"
+        [[ "$PR_NUMBER" =~ ^[0-9]+$ ]] || fail "unexpected pull request number"
+        [[ "$REPO" =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]] || fail "unexpected repository name"
+
+        head_eval="${RUNNER_TEMP}/agentcapmap-evaluation.json"
+        base_dir="${RUNNER_TEMP}/agentcapmap-base"
+        empty_dir="${RUNNER_TEMP}/agentcapmap-empty"
+        base_eval="${RUNNER_TEMP}/agentcapmap-base-evaluation.json"
+        diff_json="${RUNNER_TEMP}/agentcapmap-diff.json"
+        diff_md="${RUNNER_TEMP}/agentcapmap-diff.md"
+        body="${RUNNER_TEMP}/agentcapmap-comment.md"
+        abs() { if [[ "$1" == /* ]]; then printf '%s' "$1"; else printf '%s/%s' "$WORKSPACE" "$1"; fi; }
+
+        [[ -f "$head_eval" ]] || soft "no evaluation to compare (the scan step did not finish)"
+        git -C "$WORKSPACE" cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null           || soft "base commit not available: use actions/checkout with fetch-depth: 0 to enable the comparison"
+        git -C "$WORKSPACE" worktree add --detach "$base_dir" "$BASE_SHA" >/dev/null 2>&1           || soft "could not check out the base commit"
+        trap 'git -C "$WORKSPACE" worktree remove --force "$base_dir" >/dev/null 2>&1 || true' EXIT
+
+        # The head's policy and baseline are used for both sides, so only the pull
+        # request's own changes show up. A path that does not exist on the base yet
+        # (the PR adds the first MCP config there) is compared against nothing.
+        scan_target="$INPUT_PATH"
+        if [[ ! -e "$base_dir/$INPUT_PATH" ]]; then mkdir -p "$empty_dir"; scan_target="$empty_dir"; fi
+        args=(scan "$scan_target" --evaluate -o "$base_eval")
+        [[ -n "$INPUT_POLICY" ]] && args+=(--policy "$(abs "$INPUT_POLICY")")
+        [[ -n "$INPUT_BASELINE" ]] && args+=(--baseline "$(abs "$INPUT_BASELINE")")
+        (cd "$base_dir" && "$PY" -m agentcapmap "${args[@]}") || soft "could not scan the base commit"
+
+        "$PY" -m agentcapmap diff "$base_eval" "$head_eval" --format json -o "$diff_json" || fail "diff failed"
+        "$PY" -m agentcapmap diff "$base_eval" "$head_eval" --format markdown -o "$diff_md" || fail "diff failed"
+        cat "$diff_md" >> "$GITHUB_STEP_SUMMARY"
+
+        # Build the comment body (marker first, trimmed to GitHub's size limit) and say
+        # whether anything changed.
+        changed=$("$PY" - "$diff_json" "$diff_md" "$body" <<'EOF'
+        import json, sys
+        data = json.load(open(sys.argv[1], encoding="utf-8"))
+        text = open(sys.argv[2], encoding="utf-8").read()
+        if len(text) > 60000:
+            text = text[:60000] + "\n\n_Truncated; see the job summary._\n"
+        marker = "<!-- agent-capmap-diff -->"
+        open(sys.argv[3], "w", encoding="utf-8").write(marker + "\n" + text)
+        keys = ("new_findings", "resolved_findings", "gained_capabilities",
+                "lost_capabilities", "new_not_assessed")
+        print(1 if any(data[k] for k in keys) else 0)
+        EOF
+        )
+
+        command -v gh >/dev/null 2>&1 || soft "gh is not installed on this runner; the diff is in the job summary"
+        # Only update a comment this action's own bot wrote, never one that merely
+        # contains the marker.
+        existing=$(gh api "repos/${REPO}/issues/${PR_NUMBER}/comments?per_page=100" --paginate           --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | contains("<!-- agent-capmap-diff -->"))) | .id'           2>/dev/null | head -n1 || true)
+        if [[ "$changed" != "1" && -z "$existing" ]]; then
+          echo "No changes compared with the base; not commenting."
+          exit 0
+        fi
+        if [[ -n "$existing" && "$existing" =~ ^[0-9]+$ ]]; then
+          gh api --method PATCH "repos/${REPO}/issues/comments/${existing}" -F body=@"$body" >/dev/null             || soft "could not update the comment (forks get a read-only token); the diff is in the job summary"
+        else
+          gh api --method POST "repos/${REPO}/issues/${PR_NUMBER}/comments" -F body=@"$body" >/dev/null             || soft "could not post the comment (forks get a read-only token); the diff is in the job summary"
+        fi
