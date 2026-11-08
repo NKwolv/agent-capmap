@@ -41,9 +41,11 @@ pip install --no-deps .
 
 > **Locked-down Windows machines:** if your organization's policy (Device Guard,
 > AppLocker, Smart App Control) blocks `agentcapmap.exe` or `pipx.exe`, run the tool
-> through Python instead, which is the same program:
-> `python -m agentcapmap scan --user`. With pipx, use the interpreter in its virtual
-> environment (`pipx environment --value PIPX_LOCAL_VENVS` shows where it is):
+> through Python instead, which is the same program. If you installed with
+> `pip install agent-capmap`, run `python -m agentcapmap scan --user`. If you installed
+> with pipx, the package lives in pipx's own environment, so plain `python` will not
+> find it: use that environment's interpreter (`python -m pipx environment --value
+> PIPX_LOCAL_VENVS` shows the folder):
 > `<venvs>\agent-capmap\Scripts\python.exe -m agentcapmap scan --user`. Do not try to
 > bypass the policy; ask your administrator to allow the launcher if you want it.
 
