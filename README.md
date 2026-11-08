@@ -123,6 +123,27 @@ agentcapmap scan --user --enumerate --classify --evaluate --format markdown -o r
 trust. To try the whole pipeline on two known servers first, see
 [`examples/live-trifecta`](https://github.com/NKwolv/agent-capmap/blob/main/examples/README.md).
 
+### Find servers that are running right now
+
+Config files only show what is *declared*. `--running` also reads the process table and
+reports MCP servers that are actually running, including ones that are in no config file:
+
+```sh
+pip install "agent-capmap[runtime]"     # adds psutil, needed only for this
+agentcapmap scan --user --running --evaluate --format markdown
+```
+
+A running server that matches a configured one is marked with its process id. One that
+matches no scanned config is added under a `runtime:<client>` agent and reported by
+**CAP-010**; one listening on a non-loopback address is reported by **CAP-011**. Use
+`--user` so your per-user client configs count as "declared".
+
+It only reads the current user's process list and listening sockets. It never starts,
+connects to or probes anything, and servers found this way are never enumerated (that
+would re-run a command taken from the process table). Detection is heuristic: it
+recognizes common launch styles (`npx`, `uvx`, `python -m`, `docker run`, MCP-named
+programs), so a custom server with an unrelated name can be missed.
+
 ## Capability taxonomy
 
 | Axis | Values | Question |
@@ -138,7 +159,7 @@ Definitions and edge-case rulings: [docs/taxonomy.md](https://github.com/NKwolv/
 
 ## Policy
 
-The built-in [`policies/default.yaml`](https://github.com/NKwolv/agent-capmap/blob/main/policies/default.yaml) has nine rules:
+The built-in [`policies/default.yaml`](https://github.com/NKwolv/agent-capmap/blob/main/policies/default.yaml) has eleven rules:
 
 | ID | Severity | Fires when an agent has |
 |---|---|---|
@@ -151,6 +172,8 @@ The built-in [`policies/default.yaml`](https://github.com/NKwolv/agent-capmap/bl
 | CAP-007 | medium | a server not pinned to an exact version, or from an unvetted source |
 | CAP-008 | high | a tool description that tries to instruct the model (tool poisoning) |
 | CAP-009 | medium | the same tool name on two servers (shadowing) |
+| CAP-010 | medium | an MCP server is running but is in no scanned config (`scan --running`) |
+| CAP-011 | high | an MCP server is listening on a non-loopback address (`scan --running`) |
 
 Write your own rules in the same format and pass `--policy my-policy.yaml`:
 
@@ -229,6 +252,9 @@ also power classification without an API key for these known tools; see
   calling a model, so no API key is needed. Those labels were reviewed by an AI model, not
   yet by a person, and a wrong label is returned with full confidence; any change to a
   tool's definition falls back to the cache or the LLM. Treat them as a convenience.
+- **Runtime discovery is heuristic.** `--running` recognizes servers by their command line
+  and misses ones with unrelated names; a process can also be named to look like a
+  declared server. It lists what it sees and is not proof of absence.
 - **Not assessed is not safe.** Servers that could not be enumerated and tools that
   could not be classified are listed under `not_assessed`, never assumed safe.
 

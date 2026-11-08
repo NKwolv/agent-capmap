@@ -17,6 +17,10 @@ MAX_CONFIG_BYTES: Final = 4 * 1024 * 1024
 MAX_TOOLS_PER_SERVER: Final = 5000
 # Unanswered server-to-client messages buffered while waiting for a response.
 MAX_QUEUED_MESSAGES: Final = 1000
+# Process table: processes read, MCP servers reported, and characters kept per argument.
+MAX_PROCESSES: Final = 20000
+MAX_RUNTIME_SERVERS: Final = 200
+MAX_CMDLINE_CHARS: Final = 2000
 # Longest stderr line kept for diagnostics.
 MAX_STDERR_LINE_CHARS: Final = 2000
 

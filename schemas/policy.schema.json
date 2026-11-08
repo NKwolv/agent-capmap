@@ -99,7 +99,9 @@
         "transport": { "$ref": "#/$defs/transport" },
         "remote": { "type": "boolean" },
         "version_pinned": { "$ref": "#/$defs/version_pinned" },
-        "source_trust": { "$ref": "#/$defs/source_trust" }
+        "source_trust": { "$ref": "#/$defs/source_trust" },
+        "provenance": { "$ref": "#/$defs/provenance" },
+        "exposure": { "$ref": "#/$defs/exposure" }
       }
     },
     "boolean_or_list": {
@@ -160,6 +162,18 @@
       "oneOf": [
         { "enum": ["pinned", "unpinned", "local", "not_applicable", "unknown"] },
         { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["pinned", "unpinned", "local", "not_applicable", "unknown"] } }
+      ]
+    },
+    "provenance": {
+      "oneOf": [
+        { "enum": ["config", "runtime_declared", "runtime_undeclared"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["config", "runtime_declared", "runtime_undeclared"] } }
+      ]
+    },
+    "exposure": {
+      "oneOf": [
+        { "enum": ["none", "loopback", "network"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["none", "loopback", "network"] } }
       ]
     },
     "source_trust": {

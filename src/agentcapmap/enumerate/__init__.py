@@ -220,6 +220,12 @@ def enumerate_server(server: Server, timeout: float = DEFAULT_TIMEOUT) -> Enumer
     """Enumerate one server's tools. Never raises; failures become a non-OK status."""
     if server.disabled:
         return EnumerationResult(status=EnumerationStatus.SKIPPED, error="disabled in config")
+    if server.runtime is not None and not server.runtime.declared:
+        # Found in the process table, not in a config: never run a command taken from there.
+        return EnumerationResult(
+            status=EnumerationStatus.SKIPPED,
+            error="found running, not in a config; agent-capmap never starts these",
+        )
     if server.transport is TransportKind.WS:
         return EnumerationResult(
             status=EnumerationStatus.SKIPPED, error="WebSocket servers are not enumerated yet"

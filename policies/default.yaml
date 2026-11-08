@@ -111,3 +111,21 @@ rules:
       The same tool name is exposed by more than one server on this agent; one can
       shadow or intercept the other.
     maps_to: [OWASP-LLM03, OWASP-LLM06, MITRE-ATLAS-AML.T0110]
+
+  - id: CAP-010
+    severity: medium
+    when_server:
+      - provenance: runtime_undeclared
+    message: >-
+      An MCP server is running on this machine but is not declared in any scanned
+      config, so it has not been reviewed and may not be covered by your policies.
+    maps_to: [OWASP-LLM03, MITRE-ATLAS-AML.T0010.005]
+
+  - id: CAP-011
+    severity: high
+    when_server:
+      - exposure: network
+    message: >-
+      An MCP server is listening on a non-loopback address, so other machines on the
+      network may be able to reach its tools.
+    maps_to: [OWASP-LLM06]

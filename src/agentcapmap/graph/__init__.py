@@ -59,7 +59,27 @@ class ServerView:
             return self.launch.pin.value
         if name == "source_trust":
             return self.trust.value
+        if name == "provenance":
+            return self.provenance
+        if name == "exposure":
+            return self.exposure
         raise KeyError(name)
+
+    @property
+    def provenance(self) -> str:
+        """config: only in a config. runtime_declared: also seen running. runtime_undeclared:
+        seen running but in no scanned config."""
+        runtime = self.server.runtime
+        if runtime is None:
+            return "config"
+        return "runtime_declared" if runtime.declared else "runtime_undeclared"
+
+    @property
+    def exposure(self) -> str:
+        runtime = self.server.runtime
+        if runtime is None or not runtime.listening:
+            return "none"
+        return "network" if runtime.exposed else "loopback"
 
     def phrase(self, name: str) -> str:
         if name == "auth":
@@ -69,6 +89,12 @@ class ServerView:
             return f"launch spec: {self.launch.spec}" if self.launch.spec else "no package spec"
         if name == "source_trust":
             return f"source: {self.launch.source_id or 'unidentified'}"
+        if name == "provenance":
+            pid = self.server.runtime.pid if self.server.runtime else None
+            return f"provenance={self.provenance}" + (f" (pid {pid})" if pid else "")
+        if name == "exposure":
+            listening = ", ".join(self.server.runtime.listening) if self.server.runtime else ""
+            return f"exposure={self.exposure}" + (f" ({listening})" if listening else "")
         if name in ("remote", "transport"):
             return f"transport={self.server.transport.value}"
         raise KeyError(name)

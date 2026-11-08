@@ -31,10 +31,10 @@ def _policy(rules: str, extra: str = "") -> str:
 # --- loading: hostile input ------------------------------------------------------------
 
 
-def test_default_policy_loads_and_defines_the_nine_rules() -> None:
+def test_default_policy_loads_and_defines_the_eleven_rules() -> None:
     policy = load_policy()
     assert policy.info.source == DEFAULT_POLICY_NAME
-    assert [r.id for r in policy.rules] == [f"CAP-00{i}" for i in range(1, 10)]
+    assert [r.id for r in policy.rules] == [f"CAP-{i:03d}" for i in range(1, 12)]
     assert {r.id: r.severity for r in policy.rules}["CAP-001"] is Severity.CRITICAL
     assert len(policy.info.sha256) == 64
 

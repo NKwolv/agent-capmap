@@ -151,6 +151,20 @@ class ApprovalConfig(BaseModel):
     sources: list[str] = Field(default_factory=list)
 
 
+class RuntimeInfo(BaseModel):
+    """What was seen about a server in the process table (never from launching it)."""
+
+    pid: int
+    # Client app whose process tree it runs under, e.g. "claude-desktop"; None if unknown.
+    client: str | None = None
+    # True when it matches a server in a scanned config; False means it escapes review.
+    declared: bool
+    # Listening TCP sockets as "host:port", read from the socket table (never probed).
+    listening: list[str] = Field(default_factory=list)
+    # True when any listening socket is bound beyond the loopback interface.
+    exposed: bool = False
+
+
 class Server(BaseModel):
     name: str
     transport: Transport
@@ -164,6 +178,8 @@ class Server(BaseModel):
     disabled: bool = False
     approval: ApprovalConfig = Field(default_factory=ApprovalConfig)
     enumeration: EnumerationResult | None = None
+    # Set when the server was seen running; absent for servers known only from configs.
+    runtime: RuntimeInfo | None = None
     launch: LaunchSpec = Field(default_factory=LaunchSpec, exclude=True, repr=False)
 
 

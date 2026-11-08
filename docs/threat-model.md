@@ -131,6 +131,8 @@ authentication widen the supply-chain and access surface.
 | CAP-007 | medium | Server not pinned to an exact version or digest, or not in `trusted_sources` (when configured) |
 | CAP-008 | high | Tool description flagged suspicious by the classifier |
 | CAP-009 | medium | The same tool name on more than one server of one agent |
+| CAP-010 | medium | An MCP server is running but is in no scanned config (`scan --running`) |
+| CAP-011 | high | An MCP server is listening on a non-loopback address (`scan --running`) |
 
 All rules live in [`policies/default.yaml`](../policies/default.yaml) and can be changed
 without touching code. Notes on the defaults:

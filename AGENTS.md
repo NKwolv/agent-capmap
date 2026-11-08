@@ -156,6 +156,14 @@ the sections above apply here:
   refused, including names that resolve to them (`enumerate/netguard.py`).
   `SECURITY-REVIEW:` open item: the name is resolved once to check and again to connect,
   so DNS rebinding could still slip through; closing it needs IP pinning.
+- **Reading the process table (section 3, SSRF and OS commands):** `scan --running`
+  reads the current user's processes and listening sockets with psutil (optional
+  `runtime` extra). It is read-only: nothing is started, connected to or probed, and
+  servers found this way are never enumerated, so no command from the process table is
+  ever executed. Command lines are hostile input: redacted like config values and
+  bounded (`limits.py`). Detection is heuristic and documented as such.
+  `SECURITY-REVIEW:` open item: a process can be named to look like a declared server,
+  which only suppresses CAP-010 for that process.
 - **Project design rules** (the LLM only classifies; never call MCP tools; redact all
   secrets; no network in tests) are in [CONTRIBUTING.md](CONTRIBUTING.md) and apply in
   addition to this file.

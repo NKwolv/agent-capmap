@@ -17,6 +17,7 @@ from agentcapmap.classify.cache import ClassificationCache
 from agentcapmap.classify.provider import AnthropicProvider
 from agentcapmap.diff import diff_evaluations, render_markdown, should_fail_diff
 from agentcapmap.discovery import discover, user_config_paths
+from agentcapmap.discovery.runtime import PsutilSource, RuntimeDiscoveryError, discover_running
 from agentcapmap.enumerate import DEFAULT_TIMEOUT, enumerate_inventory
 from agentcapmap.findings import Evaluation, Severity
 from agentcapmap.models import Inventory
@@ -116,6 +117,12 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     scan.add_argument(
         "--user", action="store_true", help="also scan per-user client configs on this machine"
+    )
+    scan.add_argument(
+        "--running",
+        action="store_true",
+        help="also find MCP servers running on this machine (needs `agent-capmap[runtime]`); "
+        "reads the process table only, never starts or connects to anything",
     )
     scan.add_argument(
         "--enumerate",
@@ -320,6 +327,24 @@ def _cmd_scan(args: argparse.Namespace) -> int:
         )
     paths: list[Path] = args.paths or ([] if args.user else [Path.cwd()])
     inventory = discover(paths, user=args.user, root=Path.cwd())
+    if args.running:
+        try:
+            runtime = discover_running(inventory, PsutilSource())
+        except RuntimeDiscoveryError as exc:
+            raise CliError(str(exc)) from None
+        print(
+            f"running: {runtime.declared} declared and {runtime.undeclared} undeclared MCP "
+            f"server process(es) found, {runtime.exposed} listening beyond loopback",
+            file=sys.stderr,
+        )
+        for note in runtime.notes:
+            print(f"note: {note}", file=sys.stderr)
+        if not args.user:
+            print(
+                "note: 'declared' means found in the scanned configs; add --user to include "
+                "your per-user client configs",
+                file=sys.stderr,
+            )
     if args.enumerate:
         print(ENUMERATE_WARNING, file=sys.stderr)
         enumerate_inventory(inventory, timeout=args.timeout, concurrency=args.concurrency)

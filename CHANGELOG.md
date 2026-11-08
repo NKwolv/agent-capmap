@@ -10,6 +10,13 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- **Runtime discovery** (`scan --running`, needs `pip install "agent-capmap[runtime]"`):
+  finds MCP servers that are running on this machine from the process table (current user
+  only, read-only; nothing is started, connected to or probed). Servers that match a
+  scanned config are marked with their process id; the rest are added under a
+  `runtime:<client>` agent. New rules **CAP-010** (running but in no scanned config) and
+  **CAP-011** (listening on a non-loopback address), and new `provenance` and `exposure`
+  policy fields. Servers found this way are never enumerated.
 - **Pull request comment** (`comment: "true"` in the GitHub Action): scans the base commit
   too and posts one updating comment with new findings, newly unassessed servers, gained
   capabilities and resolved findings. Config-only (never starts servers), never combined
