@@ -39,6 +39,14 @@ pip install --require-hashes -r requirements/runtime.lock
 pip install --no-deps .
 ```
 
+> **Locked-down Windows machines:** if your organization's policy (Device Guard,
+> AppLocker, Smart App Control) blocks `agentcapmap.exe` or `pipx.exe`, run the tool
+> through Python instead, which is the same program:
+> `python -m agentcapmap scan --user`. With pipx, use the interpreter in its virtual
+> environment (`pipx environment --value PIPX_LOCAL_VENVS` shows where it is):
+> `<venvs>\agent-capmap\Scripts\python.exe -m agentcapmap scan --user`. Do not try to
+> bypass the policy; ask your administrator to allow the launcher if you want it.
+
 > **Windows:** if `pip install` fails with "No such file or directory" deep inside
 > `site-packages`, the path is too long for Windows' 260-character limit. Clone to a
 > short path (for example `C:\src\agent-capmap`) or enable long path support.

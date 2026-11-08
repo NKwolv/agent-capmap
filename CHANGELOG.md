@@ -13,6 +13,8 @@ Everything below is unreleased work towards 0.1.0, newest first within each sect
 - `scan` prints a one-line summary to stderr (agents, servers, errors), says where it
   looked when it finds no servers, and points to `--enumerate --classify --evaluate`
   when tools were not listed. Stdout stays pure JSON.
+- README documents running via `python -m agentcapmap` when a Windows policy blocks the
+  `.exe` launcher.
 - `--version` also shows where the package is installed, which exposes a stale install
   shadowing a newer one.
 - **`agentcapmap diff OLD NEW`**: compares two evaluations and reports new and resolved
