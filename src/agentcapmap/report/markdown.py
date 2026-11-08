@@ -18,6 +18,13 @@ _SEVERITY_LABEL = {
 }
 _MAX_FINDINGS = 200
 _MAX_ROWS = 50
+# Shown instead of a bare "No findings." when nothing could be assessed.
+_NOT_AN_ALL_CLEAR = (
+    "No findings, but this is **not an all-clear**: some tools were not assessed. "
+    "To assess them, run `agentcapmap scan <path> --enumerate --classify --evaluate` "
+    "(this starts the configured servers and needs an API key), or use a saved "
+    "inventory whose tools are already classified."
+)
 
 
 def _finding(index: int, finding: Finding) -> list[str]:
@@ -97,13 +104,7 @@ def render(evaluation: Evaluation) -> str:
 
     lines += ["## Findings", ""]
     if not evaluation.findings and not_assessed:
-        lines += [
-            "No findings, but this is **not an all-clear**: some tools were not assessed. "
-            "To assess them, run `agentcapmap scan <path> --enumerate --classify --evaluate` "
-            "(this starts the configured servers and needs an API key), or use a saved "
-            "inventory whose tools are already classified.",
-            "",
-        ]
+        lines += [_NOT_AN_ALL_CLEAR, ""]
     elif not evaluation.findings:
         lines += ["No findings.", ""]
     for index, finding in enumerate(evaluation.findings[:_MAX_FINDINGS], start=1):
