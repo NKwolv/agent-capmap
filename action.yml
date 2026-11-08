@@ -17,6 +17,13 @@ inputs:
   baseline:
     description: Baseline JSON for rug-pull detection (CAP-006).
     default: ""
+  waivers:
+    description: >-
+      Waivers YAML: findings accepted by fingerprint, each with an owner, a reason and an
+      expiry date. A pull request can edit this file, so put it under CODEOWNERS. With
+      `comment`, the base branch's copy is used for the comparison, so waivers a pull
+      request adds are listed as "newly waived" for review.
+    default: ""
   fail-on:
     description: "Fail when a finding is at or above: critical, high, medium, low, info, or none."
     default: high
@@ -99,6 +106,7 @@ runs:
         INPUT_PATH: ${{ inputs.path }}
         INPUT_POLICY: ${{ inputs.policy }}
         INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_WAIVERS: ${{ inputs.waivers }}
         INPUT_FAIL_ON: ${{ inputs.fail-on }}
         INPUT_FAIL_ON_NOT_ASSESSED: ${{ inputs.fail-on-not-assessed }}
         INPUT_ENUMERATE: ${{ inputs.enumerate }}
@@ -115,11 +123,13 @@ runs:
         done
         case "$INPUT_FAIL_ON" in critical|high|medium|low|info|none) ;; *) fail "fail-on is invalid";; esac
         case "$INPUT_SARIF_FILE" in /*|*..*|"") fail "sarif-file must be a relative path inside the workspace";; esac
+        case "$INPUT_WAIVERS" in /*|*..*) fail "waivers must be a relative path inside the workspace";; esac
 
         evaluation="${RUNNER_TEMP}/agentcapmap-evaluation.json"
         args=(scan "$INPUT_PATH" --evaluate -o "$evaluation")
         [[ -n "$INPUT_POLICY" ]] && args+=(--policy "$INPUT_POLICY")
         [[ -n "$INPUT_BASELINE" ]] && args+=(--baseline "$INPUT_BASELINE")
+        [[ -n "$INPUT_WAIVERS" ]] && args+=(--waivers "$INPUT_WAIVERS")
         if [[ "$INPUT_ENUMERATE" == "true" ]]; then
           echo "::warning title=agent-capmap::enumerate is on: the commands in the scanned configs will run"
           args+=(--enumerate)
@@ -160,6 +170,7 @@ runs:
         INPUT_PATH: ${{ inputs.path }}
         INPUT_POLICY: ${{ inputs.policy }}
         INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_WAIVERS: ${{ inputs.waivers }}
         INPUT_ENUMERATE: ${{ inputs.enumerate }}
       run: |
         set -uo pipefail
@@ -192,6 +203,11 @@ runs:
         args=(scan "$scan_target" --evaluate -o "$base_eval")
         [[ -n "$INPUT_POLICY" ]] && args+=(--policy "$(abs "$INPUT_POLICY")")
         [[ -n "$INPUT_BASELINE" ]] && args+=(--baseline "$(abs "$INPUT_BASELINE")")
+        # The base branch's own waivers (not the PR's), so waivers the PR adds show up as
+        # "newly waived" instead of cancelling out.
+        if [[ -n "$INPUT_WAIVERS" && -f "$base_dir/$INPUT_WAIVERS" ]]; then
+          args+=(--waivers "$base_dir/$INPUT_WAIVERS")
+        fi
         (cd "$base_dir" && "$PY" -m agentcapmap "${args[@]}") || soft "could not scan the base commit"
 
         "$PY" -m agentcapmap diff "$base_eval" "$head_eval" --format json -o "$diff_json" || fail "diff failed"
@@ -209,7 +225,7 @@ runs:
         marker = "<!-- agent-capmap-diff -->"
         open(sys.argv[3], "w", encoding="utf-8").write(marker + "\n" + text)
         keys = ("new_findings", "resolved_findings", "gained_capabilities",
-                "lost_capabilities", "new_not_assessed")
+                "lost_capabilities", "new_not_assessed", "newly_waived")
         print(1 if any(data[k] for k in keys) else 0)
         EOF
         )

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from datetime import date
 from enum import StrEnum
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -89,6 +90,30 @@ class Finding(BaseModel):
     fingerprint: str
 
 
+class Waiver(BaseModel):
+    """A recorded decision to accept one specific finding, with an owner and an end date."""
+
+    fingerprint: str
+    rule: str | None = None
+    reason: str
+    owner: str
+    expires: date  # last day the waiver applies
+
+
+class WaivedFinding(BaseModel):
+    finding: Finding
+    waiver: Waiver
+
+
+class WaiverIssue(BaseModel):
+    """Something to fix in the waivers file: it is not doing what its author meant."""
+
+    kind: Literal["expired", "rule_mismatch", "unused"]
+    fingerprint: str
+    owner: str
+    message: str
+
+
 class NotAssessed(BaseModel):
     agent_id: str
     server: str
@@ -124,6 +149,10 @@ class Evaluation(BaseModel):
     baseline_used: bool = False
     agents: list[AgentCapabilities] = Field(default_factory=list)
     findings: list[Finding] = Field(default_factory=list)
+    # Findings accepted by a valid waiver: not counted in `findings`, `summary` or the exit
+    # status, but always listed here with the reason.
+    waived: list[WaivedFinding] = Field(default_factory=list)
+    waiver_issues: list[WaiverIssue] = Field(default_factory=list)
     not_assessed: list[NotAssessed] = Field(default_factory=list)
     skipped_rules: list[SkippedRule] = Field(default_factory=list)
     summary: dict[str, int] = Field(default_factory=dict)

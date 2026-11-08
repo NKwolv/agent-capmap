@@ -116,6 +116,40 @@ def render(evaluation: Evaluation) -> str:
             "",
         ]
 
+    if evaluation.waived:
+        lines += [
+            f"## Waived findings ({len(evaluation.waived)})",
+            "",
+            "Accepted by a recorded waiver. They do not count above or in the exit status.",
+            "",
+            "| Rule | Servers | Owner | Expires | Reason |",
+            "|---|---|---|---|---|",
+        ]
+        for entry in evaluation.waived[:_MAX_FINDINGS]:
+            servers = ", ".join(entry.finding.servers)
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        md_code(entry.finding.rule_id, 40, in_table=True),
+                        md_code(servers, 160, in_table=True),
+                        md_code(entry.waiver.owner, 100, in_table=True),
+                        md_code(entry.waiver.expires.isoformat(), 12, in_table=True),
+                        md_code(entry.waiver.reason, 300, in_table=True),
+                    ]
+                )
+                + " |"
+            )
+        lines.append("")
+    if evaluation.waiver_issues:
+        lines += [f"## Waiver issues ({len(evaluation.waiver_issues)})", ""]
+        for issue in evaluation.waiver_issues[:_MAX_FINDINGS]:
+            lines.append(
+                f"- **{issue.kind}** {md_code(issue.fingerprint, 40)} "
+                f"(owner {md_code(issue.owner, 100)}): {md_code(issue.message, 300)}"
+            )
+        lines.append("")
+
     if not_assessed:
         lines += ["## Not assessed", "", "| Agent | Server | Tool | Reason |", "|---|---|---|---|"]
         for item in evaluation.not_assessed[:_MAX_FINDINGS]:

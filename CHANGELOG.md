@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Waivers** (`--waivers FILE`, `waivers:` in the Action): accept a finding on purpose,
+  by exact fingerprint, with an owner, a reason and an expiry (at most a year ahead).
+  Expired, mismatched or stale waivers are reported and never applied. Waived findings
+  leave the counts and exit status but stay listed with their reason (Markdown, JSON);
+  SARIF omits them and says so. `diff` and the PR comment list **newly waived** findings
+  for review and no longer count them as resolved.
+
+### Fixed
+
+- A malformed unquoted YAML date (for example `2026-13-45`) in a policy file crashed
+  with a traceback; it is now a clean error.
+
 ## [0.2.0] - 2026-11-08
 
 ### Added

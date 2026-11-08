@@ -136,6 +136,12 @@ def _parse_yaml(text: str) -> Any:
         raise PolicyError(f"invalid YAML{where}") from None
     except RecursionError:
         raise PolicyError("YAML nested too deeply") from None
+    except PolicyError:
+        raise  # our own, more specific errors (a PolicyError is also a ValueError)
+    except ValueError:
+        # PyYAML raises a bare ValueError for scalars that look like a date but are not
+        # one (for example 2026-13-45); that must be a clean error, not a traceback.
+        raise PolicyError("invalid YAML value (for example an impossible date)") from None
 
 
 @functools.cache

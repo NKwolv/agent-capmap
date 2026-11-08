@@ -166,6 +166,25 @@ def render(evaluation: Evaluation) -> dict[str, Any]:
                 },
             }
         )
+    if evaluation.waived:
+        notifications.append(
+            {
+                "level": "note",
+                "descriptor": {"id": "findings-waived"},
+                "message": {
+                    "text": f"{len(evaluation.waived)} finding(s) are waived and not reported "
+                    "here; see the JSON or Markdown report for the reasons."
+                },
+            }
+        )
+    for issue in evaluation.waiver_issues:
+        notifications.append(
+            {
+                "level": "warning" if issue.kind != "unused" else "note",
+                "descriptor": {"id": f"waiver-{issue.kind.replace('_', '-')}"},
+                "message": {"text": clean(issue.message, 300)},
+            }
+        )
     if omitted:
         notifications.append(
             {

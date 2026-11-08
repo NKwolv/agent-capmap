@@ -14,6 +14,7 @@ A complete example is in [`examples/agentcapmap.yml`](examples/agentcapmap.yml).
 | `path` | `.` | Directory or config file to scan, relative to the workspace. |
 | `policy` | built-in | Policy YAML file. |
 | `baseline` | none | Baseline JSON for rug-pull detection (CAP-006). |
+| `waivers` | none | Waivers YAML (see the README). A PR can edit it: put it under `CODEOWNERS`. |
 | `fail-on` | `high` | `critical`, `high`, `medium`, `low`, `info` or `none`. |
 | `fail-on-not-assessed` | `false` | Also fail when any server or tool could not be assessed. |
 | `enumerate` | `false` | Start the configured servers and list their tools. **Runs the commands in the scanned configs.** |
@@ -50,6 +51,10 @@ Requirements:
   so the comment cannot be posted and the diff appears in the job summary only.
 - Not with `enumerate: "true"`: the comment mode never starts servers, so it is safe on
   pull requests.
+
+Waivers a pull request adds appear under **Newly waived** with their reason and owner: the
+comparison uses the base branch's waivers file, so a PR cannot quietly waive its own
+finding. Protect the file with `CODEOWNERS` so a maintainer must approve such changes.
 
 The head's policy and baseline are used for both sides, so only the pull request's own
 changes appear. A bot comment is only ever updated if the `github-actions[bot]` user

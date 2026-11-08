@@ -8,7 +8,13 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
-from agentcapmap.findings import Evaluation, Finding, NotAssessed, Severity
+from agentcapmap.findings import (
+    Evaluation,
+    Finding,
+    NotAssessed,
+    Severity,
+    WaivedFinding,
+)
 from agentcapmap.report._text import md_code
 
 _MAX_ROWS = 100
@@ -28,6 +34,9 @@ class EvaluationDiff(BaseModel):
     # Servers or tools that could not be assessed now but were not before: in config-only
     # mode this is how a newly added MCP server shows up.
     new_not_assessed: list[NotAssessed] = Field(default_factory=list)
+    # Findings waived in the new evaluation but not in the old one: a decision to accept a
+    # risk, which a reviewer should see, not a finding that was fixed.
+    newly_waived: list[WaivedFinding] = Field(default_factory=list)
 
     @property
     def changed(self) -> bool:
@@ -37,6 +46,7 @@ class EvaluationDiff(BaseModel):
             or self.gained_capabilities
             or self.lost_capabilities
             or self.new_not_assessed
+            or self.newly_waived
         )
 
 
@@ -63,9 +73,16 @@ def diff_evaluations(old: Evaluation, new: Evaluation) -> EvaluationDiff:
     new_prints = {f.fingerprint for f in new.findings}
     old_caps, new_caps = _capabilities(old), _capabilities(new)
     seen = {(n.agent_id, n.server, n.tool) for n in old.not_assessed}
+    old_waived = {w.finding.fingerprint for w in old.waived}
+    new_waived = {w.finding.fingerprint for w in new.waived}
     return EvaluationDiff(
         new_findings=[f for f in new.findings if f.fingerprint not in old_prints],
-        resolved_findings=[f for f in old.findings if f.fingerprint not in new_prints],
+        resolved_findings=[
+            f
+            for f in old.findings
+            if f.fingerprint not in new_prints and f.fingerprint not in new_waived
+        ],
+        newly_waived=[w for w in new.waived if w.finding.fingerprint not in old_waived],
         gained_capabilities=_changes(new_caps, old_caps),
         lost_capabilities=_changes(old_caps, new_caps),
         new_not_assessed=[
@@ -123,6 +140,23 @@ def _not_assessed_lines(items: list[NotAssessed]) -> list[str]:
     return [*lines, ""]
 
 
+def _waived_lines(items: list[WaivedFinding]) -> list[str]:
+    lines = [f"## Newly waived ({len(items)})", ""]
+    if not items:
+        return [*lines, "None.", ""]
+    lines += ["Accepted in this change: a reviewer should agree with each reason.", ""]
+    for item in items[:_MAX_ROWS]:
+        lines.append(
+            f"- {md_code(item.finding.rule_id, 40)} on "
+            f"{md_code(', '.join(item.finding.servers), 160)}: {md_code(item.waiver.reason, 300)} "
+            f"(owner {md_code(item.waiver.owner, 100)}, until "
+            f"{md_code(item.waiver.expires.isoformat(), 12)})"
+        )
+    if len(items) > _MAX_ROWS:
+        lines.append(f"- ... and {len(items) - _MAX_ROWS} more")
+    return [*lines, ""]
+
+
 def render_markdown(diff: EvaluationDiff) -> str:
     lines = ["# agent-capmap diff", ""]
     if diff.changed:
@@ -130,6 +164,7 @@ def render_markdown(diff: EvaluationDiff) -> str:
             f"{len(diff.new_findings)} new finding(s), "
             f"{len(diff.gained_capabilities)} gained capability(ies), "
             f"{len(diff.new_not_assessed)} newly not assessed, "
+            f"{len(diff.newly_waived)} newly waived, "
             f"{len(diff.resolved_findings)} resolved.",
             "",
         ]
@@ -138,6 +173,7 @@ def render_markdown(diff: EvaluationDiff) -> str:
     lines += _finding_lines("New findings", diff.new_findings)
     lines += _capability_lines("Gained capabilities", diff.gained_capabilities)
     lines += _not_assessed_lines(diff.new_not_assessed)
+    lines += _waived_lines(diff.newly_waived)
     lines += _finding_lines("Resolved findings", diff.resolved_findings)
     lines += _capability_lines("Lost capabilities", diff.lost_capabilities)
     return "\n".join(lines)

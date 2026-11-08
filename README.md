@@ -123,6 +123,36 @@ agentcapmap scan --user --enumerate --classify --evaluate --format markdown -o r
 trust. To try the whole pipeline on two known servers first, see
 [`examples/live-trifecta`](https://github.com/NKwolv/agent-capmap/blob/main/examples/README.md).
 
+### Accept a finding on purpose (waivers)
+
+When you have reviewed a finding and accept the risk, record that decision instead of
+ignoring the finding. Copy its `fingerprint` from the JSON output into a waivers file
+([example](https://github.com/NKwolv/agent-capmap/blob/main/docs/examples/waivers.yaml)):
+
+```yaml
+version: 1
+waivers:
+  - fingerprint: 3f2a9c0b7d1e4a5c8b6d0e2f1a3c5b7d   # from the finding
+    rule: CAP-001                                  # optional check
+    owner: platform-security
+    reason: Filesystem server limited to the sandbox directory; reviewed in SEC-1234.
+    expires: 2027-03-31                            # at most a year ahead
+```
+
+```sh
+agentcapmap evaluate inventory.json --waivers waivers.yaml --fail-on high
+```
+
+Waivers are deliberately strict: they match one finding exactly (no wildcards), need an
+owner, a reason and an end date, and **stop applying after that date** (the finding comes
+back and the waiver is reported). Waived findings leave the exit status and the counts but
+stay listed with their reason; a waiver that matches nothing is reported as stale. A broken
+waivers file is an error, never silently ignored.
+
+A pull request can edit the waivers file, so keep it under `CODEOWNERS`. In the GitHub
+Action, the PR comment compares against the base branch's waivers and lists any waiver the
+PR adds under **Newly waived**, so a reviewer sees what was accepted.
+
 ### Find servers that are running right now
 
 Config files only show what is *declared*. `--running` also reads the process table and

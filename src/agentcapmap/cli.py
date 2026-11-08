@@ -22,6 +22,7 @@ from agentcapmap.enumerate import DEFAULT_TIMEOUT, enumerate_inventory
 from agentcapmap.findings import Evaluation, Severity
 from agentcapmap.models import Inventory
 from agentcapmap.policy import PolicyError, evaluate, load_policy
+from agentcapmap.policy.waivers import WaiverError, apply_waivers, load_waivers
 from agentcapmap.redact import RedactingFilter, get_logger, redact_text
 from agentcapmap.report import Format, render, should_fail
 
@@ -74,6 +75,11 @@ def _add_classify_options(p: argparse.ArgumentParser) -> None:
 def _add_policy_options(p: argparse.ArgumentParser) -> None:
     p.add_argument("--policy", type=Path, help="policy YAML (default: built-in default policy)")
     p.add_argument("--baseline", type=Path, help="baseline JSON for rug-pull detection (CAP-006)")
+    p.add_argument(
+        "--waivers",
+        type=Path,
+        help="waivers YAML: findings accepted by name, with an owner and an expiry date",
+    )
 
 
 def _add_report_options(p: argparse.ArgumentParser) -> None:
@@ -256,7 +262,18 @@ def _evaluate(inventory: Inventory, args: argparse.Namespace) -> Evaluation:
         baseline: Baseline | None = load_baseline(args.baseline) if args.baseline else None
     except (PolicyError, BaselineError) as exc:
         raise CliError(str(exc)) from None
-    return evaluate(inventory, policy, baseline)
+    evaluation = evaluate(inventory, policy, baseline)
+    if args.waivers:
+        try:
+            evaluation = apply_waivers(evaluation, load_waivers(args.waivers))
+        except WaiverError as exc:
+            raise CliError(str(exc)) from None
+        print(
+            f"waivers: {len(evaluation.waived)} finding(s) waived, "
+            f"{len(evaluation.waiver_issues)} waiver issue(s)",
+            file=sys.stderr,
+        )
+    return evaluation
 
 
 def _write(payload: str, output: Path | None) -> None:

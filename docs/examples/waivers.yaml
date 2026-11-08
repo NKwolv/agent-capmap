@@ -1,0 +1,19 @@
+# Example waivers file: pass it with `--waivers waivers.yaml` (or `waivers:` in the Action).
+#
+# A waiver accepts ONE finding, named by its `fingerprint` (copy it from the JSON output).
+# There are no wildcards, so a waiver can never hide a future finding. Every waiver needs
+# an owner, a specific reason and an end date at most a year ahead. After `expires` the
+# finding is active again and the waiver is reported. Waived findings stay visible in the
+# report with their reason, and a waiver that matches nothing is reported as stale.
+#
+# Put this file under CODEOWNERS: a pull request can edit it.
+version: 1
+waivers:
+  # This fingerprint is a placeholder and matches nothing, so it will be reported as stale.
+  - fingerprint: 0123456789abcdef0123456789abcdef
+    rule: CAP-001 # optional: the rule the finding must have
+    owner: platform-security
+    reason: >-
+      The filesystem server is limited to the sandbox directory and the web-fetch server
+      only reaches the docs site; reviewed in SEC-1234.
+    expires: 2027-03-31

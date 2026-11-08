@@ -164,6 +164,12 @@ the sections above apply here:
   bounded (`limits.py`). Detection is heuristic and documented as such.
   `SECURITY-REVIEW:` open item: a process can be named to look like a declared server,
   which only suppresses CAP-010 for that process.
+- **Waivers (section 5, authorization):** a waiver accepts one finding by exact
+  fingerprint, with an owner, a reason and an end date at most a year ahead; expired,
+  mismatched or stale waivers are reported and never applied. The file is hostile input
+  (a pull request can edit it): hardened YAML, schema validation, size and count limits,
+  and the PR comment lists newly added waivers. Protecting the file is the repository's
+  job (`CODEOWNERS`).
 - **Project design rules** (the LLM only classifies; never call MCP tools; redact all
   secrets; no network in tests) are in [CONTRIBUTING.md](CONTRIBUTING.md) and apply in
   addition to this file.

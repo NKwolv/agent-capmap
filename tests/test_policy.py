@@ -321,3 +321,8 @@ def test_capabilities_retain_provenance() -> None:
         "Send an email to any recipient address",
     )
     assert (agent.tools_total, agent.tools_assessed) == (3, 3)
+
+
+def test_an_impossible_yaml_date_is_a_clean_error_not_a_crash() -> None:
+    with pytest.raises(PolicyError, match="invalid YAML value"):
+        parse_policy("version: 1\ntaxonomy_version: '1'\nwhen: 2026-13-45\nrules: []\n", "p.yaml")
