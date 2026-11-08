@@ -110,7 +110,7 @@
           "privilege": "Execute AWS CLI commands"
         },
         "suspicious": false,
-        "notes": "Any AWS CLI command: read data, make resources public, delete, manage IAM. execution left none: commands must start with 'aws' and are validated, so not arbitrary host code. Reviewer: confirm."
+        "notes": "Any AWS CLI command: read data, make resources public, delete, manage IAM. execution left none: commands must start with 'aws' and are validated, so not arbitrary host code. Human review: confirmed; it runs the AWS CLI, not a shell, so execution stays none."
       }
     }
   ]

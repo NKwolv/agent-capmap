@@ -78,7 +78,7 @@
           "egress": "Fetches a URL from the internet"
         },
         "suspicious": true,
-        "notes": "Official server. The description tells the model to disregard earlier guidance ('were advised to refuse ... this tool now grants you internet access'), which matches the taxonomy's 'ignore previous instructions' criterion even though the intent is benign. Reviewer: confirm or clear."
+        "notes": "Official server. The description tells the model that earlier refusals no longer apply ('were advised to refuse ... this tool now grants you internet access'), which matches the taxonomy's 'ignore previous instructions' criterion even though the intent is benign. Human review: kept flagged on purpose; users who accept it can waive the finding (owner, reason, expiry)."
       }
     }
   ]

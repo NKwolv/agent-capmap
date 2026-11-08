@@ -515,7 +515,7 @@
           "egress": "Fill multiple form fields"
         },
         "suspicious": false,
-        "notes": "Form data on an arbitrary site. Reviewer: confirm egress for typing/filling."
+        "notes": "Form data on an arbitrary site. Human review: confirmed external egress, consistent with the other browser tools."
       }
     },
     {

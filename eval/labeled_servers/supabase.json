@@ -748,7 +748,7 @@
           "data_access": "Gets all publishable API keys for a project"
         },
         "suspicious": false,
-        "notes": "Publishable/anon keys are designed to be public; labeled secrets_read because the taxonomy counts API keys. Reviewer: decide."
+        "notes": "Publishable/anon keys are designed to be public; labeled secrets_read because the taxonomy counts API keys. Human review: kept secrets_read as the fail-safe; users who accept it can waive the finding."
       }
     },
     {

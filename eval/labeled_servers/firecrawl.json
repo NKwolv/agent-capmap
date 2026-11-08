@@ -2336,7 +2336,7 @@
           "data_access": "Local MCP reads `filePath` from the server filesystem"
         },
         "suspicious": false,
-        "notes": "The document is sent to the Firecrawl API (fixed vendor): egress none per ruling. Reviewer: decide."
+        "notes": "The document is sent to the Firecrawl API (fixed vendor): egress none per ruling. Human review: confirmed egress none; one fixed vendor, same ruling as search APIs."
       }
     },
     {

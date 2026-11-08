@@ -301,7 +301,7 @@
           "untrusted_input": "App logs"
         },
         "suspicious": false,
-        "notes": "Request logs carry attacker-controllable strings (paths, user agents). Reviewer: confirm untrusted_input."
+        "notes": "Request logs carry attacker-controllable strings (paths, user agents). Human review: confirmed untrusted_input; same ruling as Azure Monitor, Sentry and Supabase logs."
       }
     },
     {

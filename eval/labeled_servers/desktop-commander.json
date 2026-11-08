@@ -1135,7 +1135,7 @@
         },
         "evidence": {},
         "suspicious": false,
-        "notes": "Returns vendor onboarding prompts; product guidance, not hidden manipulation. Reviewer: confirm not suspicious."
+        "notes": "Returns vendor onboarding prompts; product guidance, not hidden manipulation. Human review: confirmed not suspicious; it openly describes vendor onboarding behavior."
       }
     }
   ]

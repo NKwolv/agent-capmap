@@ -2403,7 +2403,7 @@
           "mutation": "Delete a block"
         },
         "suspicious": false,
-        "notes": "Notion moves deleted blocks to trash; labeled by the description. Reviewer: decide."
+        "notes": "Notion moves deleted blocks to trash; labeled by the description. Human review: kept destructive; the definition says delete (trash does not change that)."
       }
     },
     {
