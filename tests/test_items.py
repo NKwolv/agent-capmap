@@ -7,7 +7,6 @@ from typing import Any
 
 import pytest
 
-import agentcapmap.enumerate as enumerate_module
 from agentcapmap import cli
 from agentcapmap.baseline import Baseline, create_baseline, diff_server, load_baseline
 from agentcapmap.classify import Classifier, classify_inventory, item_as_tool
@@ -155,7 +154,7 @@ def test_hostile_entries_are_skipped_not_fatal(mock_stdio_config: MakeConfig) ->
 def test_the_per_server_cap_is_enforced_and_reported(
     mock_stdio_config: MakeConfig, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setattr(enumerate_module, "MAX_ITEMS_PER_SERVER", 3)
+    monkeypatch.setattr("agentcapmap.enumerate.MAX_ITEMS_PER_SERVER", 3)
     resources = [{"uri": f"file:///f{i}", "name": f"f{i}", "description": "x"} for i in range(8)]
     server, _ = _enumerated(mock_stdio_config, {"resources": resources, "no_templates": True})
     enumeration = server.enumeration
@@ -281,9 +280,7 @@ def test_the_classifier_sees_an_item_shaped_like_a_tool() -> None:
 def test_per_server_classification_cap(
     mock_stdio_config: MakeConfig, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    import agentcapmap.classify as classify_module
-
-    monkeypatch.setattr(classify_module, "MAX_CLASSIFIED_ITEMS_PER_SERVER", 2)
+    monkeypatch.setattr("agentcapmap.classify.MAX_CLASSIFIED_ITEMS_PER_SERVER", 2)
     resources = [
         {"uri": f"file:///f{i}", "name": f"f{i}", "description": f"d{i}"} for i in range(5)
     ]
@@ -336,7 +333,7 @@ def test_unclassified_items_are_reported_not_assumed_safe(mock_stdio_config: Mak
 def test_a_failed_listing_and_omitted_items_are_reported(
     mock_stdio_config: MakeConfig, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setattr(enumerate_module, "MAX_ITEMS_PER_SERVER", 1)
+    monkeypatch.setattr("agentcapmap.enumerate.MAX_ITEMS_PER_SERVER", 1)
     inventory = _inventory_with_items(
         mock_stdio_config, {**FULL, "list_errors": {"prompts/list": -32603}}
     )
