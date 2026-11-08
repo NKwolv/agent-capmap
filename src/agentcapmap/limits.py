@@ -15,6 +15,10 @@ MAX_MESSAGE_BYTES: Final = 8 * 1024 * 1024
 MAX_CONFIG_BYTES: Final = 4 * 1024 * 1024
 # Tools accepted from a single server across all tools/list pages.
 MAX_TOOLS_PER_SERVER: Final = 5000
+# Prompts, resources and resource templates kept from one server (the rest are counted but
+# not examined), and how many of them are sent to the classifier.
+MAX_ITEMS_PER_SERVER: Final = 2000
+MAX_CLASSIFIED_ITEMS_PER_SERVER: Final = 200
 # Unanswered server-to-client messages buffered while waiting for a response.
 MAX_QUEUED_MESSAGES: Final = 1000
 # Process table: processes read, MCP servers reported, and characters kept per argument.

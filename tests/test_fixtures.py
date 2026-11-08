@@ -103,7 +103,14 @@ def test_trifecta_evidence_names_each_leg() -> None:
 
 def test_rug_pull_baseline_matches_the_pre_change_definitions() -> None:
     regenerated = create_baseline(load_scenario("rug-pull", baseline_tools=True))
-    assert regenerated == _baseline("rug-pull")
+    pinned = _baseline("rug-pull")
+    assert pinned is not None
+    # The fixture is an old-format baseline (made before prompts and resources were
+    # recorded): it has no `items`, and is still compared on tools.
+    assert all(server.items is None for server in pinned.servers.values())
+    assert {k: v.tools for k, v in regenerated.servers.items()} == {
+        k: v.tools for k, v in pinned.servers.items()
+    }
     (finding,) = [f for f in _evaluate("rug-pull").findings if f.rule_id == "CAP-006"]
     assert finding.details["changed"] == ["search_notes"]
     assert finding.details["added"] == ["export_notes"]

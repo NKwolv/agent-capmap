@@ -13,7 +13,8 @@ Especially relevant reports:
 
 - secret values appearing in agent-capmap output, logs or error messages;
 - any way to make agent-capmap send an MCP request other than `initialize`,
-  `notifications/initialized` or `tools/list`;
+  `notifications/initialized` or the read-only listings (`tools/list`,
+  `resources/list`, `resources/templates/list`, `prompts/list`);
 - a tool definition that can make the classifier ignore its instructions or escape
   the data delimiters;
 - a config file that crashes discovery or causes code to run without `--enumerate`.

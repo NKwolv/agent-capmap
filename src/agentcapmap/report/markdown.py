@@ -49,7 +49,7 @@ def _finding(index: int, finding: Finding) -> list[str]:
             names = finding.details.get(key)
             if names:
                 rendered = ", ".join(md_code(n, 120) for n in names[:_MAX_ROWS])
-                lines.append(f"- **Tools {key}:** {rendered}")
+                lines.append(f"- **Definitions {key}:** {rendered}")
     if finding.evidence:
         lines += ["", "| Server | Tool | Matched | Evidence |", "|---|---|---|---|"]
         for ev in finding.evidence[:_MAX_ROWS]:

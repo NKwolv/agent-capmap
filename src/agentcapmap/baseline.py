@@ -1,8 +1,10 @@
 """Baseline pinning of tool definition hashes, for rug-pull detection (CAP-006).
 
-`agentcapmap baseline create` records, per server, the hash of every tool definition.
-Later scans compare against it: a changed, added or removed tool means the server's
-definitions changed after review.
+`agentcapmap baseline create` records, per server, the hash of every tool definition and
+of every prompt, resource and resource template it lists (as `prompt:name`, `resource:uri`,
+...). Later scans compare against it: a changed, added or removed definition means the
+server's definitions changed after review. A baseline made before items were recorded has
+no `items` and is compared on tools only, so it cannot cause false alarms.
 
 A server is identified by its name, transport and (redacted) launch command or URL, so
 a deliberate config change (e.g. a new pinned version) is a new server, while the same
@@ -18,8 +20,13 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError
 
-from agentcapmap.limits import MAX_CONFIG_BYTES, MAX_TOOLS_PER_SERVER, loads_untrusted
-from agentcapmap.models import EnumerationStatus, Inventory, Server
+from agentcapmap.limits import (
+    MAX_CONFIG_BYTES,
+    MAX_ITEMS_PER_SERVER,
+    MAX_TOOLS_PER_SERVER,
+    loads_untrusted,
+)
+from agentcapmap.models import EnumerationStatus, Inventory, McpItem, Server
 
 BASELINE_VERSION: Literal[1] = 1
 _MAX_BASELINE_BYTES = 16 * MAX_CONFIG_BYTES
@@ -38,6 +45,8 @@ class BaselineServer(BaseModel):
 
     name: Annotated[str, StringConstraints(min_length=1, max_length=512)]
     tools: dict[ToolName, Sha256Hex] = Field(max_length=MAX_TOOLS_PER_SERVER)
+    # None in baselines made before prompts and resources were recorded.
+    items: dict[ToolName, Sha256Hex] | None = Field(default=None, max_length=MAX_ITEMS_PER_SERVER)
 
 
 class Baseline(BaseModel):
@@ -74,6 +83,27 @@ def _current_tools(server: Server) -> dict[str, str] | None:
     return {tool.name: tool.definition_hash for tool in enumeration.tools}
 
 
+def item_key(item: McpItem) -> str:
+    """A stable, bounded name for a prompt or resource, e.g. `resource:file:///a`."""
+    key = f"{item.kind}:{item.uri or item.name}" if item.kind != "prompt" else item.ref
+    if len(key) > 500:
+        key = key[:480] + "#" + hashlib.sha256(key.encode("utf-8")).hexdigest()[:16]
+    return key
+
+
+def _current_items(server: Server) -> dict[str, str] | None:
+    enumeration = server.enumeration
+    if enumeration is None or enumeration.status is not EnumerationStatus.OK:
+        return None
+    items: dict[str, str] = {}
+    for item in enumeration.items:
+        key = item_key(item)
+        if key in items and items[key] != item.definition_hash:
+            key = f"{key}#{item.definition_hash[:8]}"  # two different items, one key
+        items[key] = item.definition_hash
+    return items
+
+
 def create_baseline(inventory: Inventory) -> Baseline:
     """Pin every successfully enumerated, enabled server in the inventory."""
     baseline = Baseline()
@@ -82,8 +112,11 @@ def create_baseline(inventory: Inventory) -> Baseline:
             tools = _current_tools(server)
             if server.disabled or tools is None:
                 continue
+            items = _current_items(server) or {}
             baseline.servers[server_identity(server)] = BaselineServer(
-                name=server.name, tools=dict(sorted(tools.items()))
+                name=server.name,
+                tools=dict(sorted(tools.items())),
+                items=dict(sorted(items.items())),
             )
     baseline.servers = dict(sorted(baseline.servers.items()))
     return baseline
@@ -115,7 +148,10 @@ def diff_server(baseline: Baseline, server: Server) -> HashDiff | None:
     current = _current_tools(server)
     if pinned is None or current is None:
         return None
-    before, after = pinned.tools, current
+    before, after = dict(pinned.tools), dict(current)
+    if pinned.items is not None:  # older baselines have no item data: tools only
+        before.update(pinned.items)
+        after.update(_current_items(server) or {})
     changed = sorted(n for n in before.keys() & after.keys() if before[n] != after[n])
     return HashDiff(
         added=sorted(after.keys() - before.keys()),

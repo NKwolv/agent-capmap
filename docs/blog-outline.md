@@ -25,7 +25,7 @@ labels are reviewed and frozen. **Do not publish placeholder values.**
 
 ## 3. How agent-capmap works
 
-- Discover → enumerate (`initialize` + `tools/list` only) → classify → policy → report.
+- Discover → enumerate (`initialize` + read-only list calls only) → classify → policy → report.
 - Safety properties: never calls tools, redacts secrets, minimal environment for
   launched servers, enumeration is opt-in.
 - Policy-as-code example and a SARIF finding in the GitHub Security tab (screenshot

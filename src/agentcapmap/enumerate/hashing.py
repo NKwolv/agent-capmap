@@ -32,6 +32,27 @@ def tool_definition_hash(
     return hashlib.sha256(canonical_tool_definition(name, description, input_schema)).hexdigest()
 
 
+def item_definition_hash(
+    kind: str,
+    name: str,
+    description: str | None,
+    uri: str | None,
+    mime_type: str | None,
+    arguments: list[dict[str, Any]] | None,
+) -> str:
+    """Hex SHA-256 of a prompt, resource or resource template definition."""
+    payload = {
+        "kind": kind,
+        "name": name,
+        "description": description or "",
+        "uri": uri or "",
+        "mimeType": mime_type or "",
+        "arguments": arguments or [],
+    }
+    text = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
 def server_definition_hash(tool_hashes: Iterable[str]) -> str:
     """Order-independent hash over a server's tool hashes."""
     return hashlib.sha256("\n".join(sorted(tool_hashes)).encode("ascii")).hexdigest()

@@ -12,30 +12,37 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from agentcapmap import __version__
-from agentcapmap.enumerate.hashing import server_definition_hash, tool_definition_hash
+from agentcapmap.enumerate.hashing import (
+    item_definition_hash,
+    server_definition_hash,
+    tool_definition_hash,
+)
 from agentcapmap.enumerate.http import LegacySseTransport, StreamableHttpTransport
 from agentcapmap.enumerate.netguard import check_remote_url
 from agentcapmap.enumerate.stdio import StdioTransport
 from agentcapmap.enumerate.transport import (
+    JSONRPC_METHOD_NOT_FOUND,
     AuthRequired,
     MCPError,
     RequestTimeout,
     Transport,
     TransportError,
 )
-from agentcapmap.limits import MAX_CONFIG_BYTES, MAX_TOOLS_PER_SERVER
+from agentcapmap.limits import MAX_CONFIG_BYTES, MAX_ITEMS_PER_SERVER, MAX_TOOLS_PER_SERVER
 from agentcapmap.models import (
     AuthHint,
     AuthMethod,
     EnumerationResult,
     EnumerationStatus,
     Inventory,
+    ItemKind,
     LaunchSpec,
+    McpItem,
     Server,
     ToolDefinition,
 )
 from agentcapmap.models import Transport as TransportKind
-from agentcapmap.redact import get_logger, known_secrets, redact_text
+from agentcapmap.redact import get_logger, known_secrets, redact_text, redact_url
 
 log = get_logger(__name__)
 
@@ -167,6 +174,126 @@ def _parse_tools(raw_tools: Any) -> list[ToolDefinition]:
     return tools
 
 
+def _as_text(value: Any) -> str:
+    return value if isinstance(value, str) else ""
+
+
+def _parse_arguments(raw: Any) -> list[dict[str, Any]]:
+    if not isinstance(raw, list):
+        return []
+    arguments = []
+    for entry in raw:
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str):
+            arguments.append(
+                {
+                    "name": entry["name"],
+                    "description": _as_text(entry.get("description")),
+                    "required": entry.get("required") is True,
+                }
+            )
+    return arguments
+
+
+def _parse_item(kind: ItemKind, raw: Any) -> McpItem | None:
+    """One entry of a prompts/resources list. Hostile input: anything odd is skipped."""
+    if not isinstance(raw, dict):
+        return None
+    uri_key = "uriTemplate" if kind == "resource_template" else "uri"
+    uri = raw.get(uri_key) if isinstance(raw.get(uri_key), str) else None
+    name = raw.get("name") if isinstance(raw.get("name"), str) else None
+    if not name and kind != "prompt":
+        name = uri  # resources may omit a name; their URI identifies them
+    if not name:
+        return None
+    title = _as_text(raw.get("title"))
+    description = _as_text(raw.get("description"))
+    # A title is text a reader sees too, so it is checked like the description.
+    text = f"{title}\n{description}".strip() if title else description
+    mime = raw.get("mimeType") if isinstance(raw.get("mimeType"), str) else None
+    arguments = _parse_arguments(raw.get("arguments")) if kind == "prompt" else []
+    return McpItem(
+        kind=kind,
+        name=name,
+        description=text,
+        uri=redact_url(uri) if uri else None,
+        mime_type=mime,
+        arguments=arguments,
+        definition_hash=item_definition_hash(kind, name, text, uri, mime, arguments),
+    )
+
+
+def _list_items(
+    transport: Transport,
+    method: str,
+    key: str,
+    kind: ItemKind,
+    remaining: Callable[[], float],
+    budget: int,
+) -> tuple[list[McpItem], int]:
+    """Page through one listing. Returns (items kept, how many were beyond the budget)."""
+    items: list[McpItem] = []
+    omitted = 0
+    cursor: str | None = None
+    seen_cursors: set[str] = set()
+    for _ in range(_MAX_PAGES):
+        params: dict[str, Any] = {"cursor": cursor} if cursor else {}
+        page = transport.request(method, params, remaining())
+        raw_items = page.get(key)
+        if not isinstance(raw_items, list):
+            raise TransportError(f"{method} result has no {key!r} array")
+        for raw in raw_items:
+            if len(items) >= budget:
+                omitted += 1
+                continue
+            if (item := _parse_item(kind, raw)) is not None:
+                items.append(item)
+        next_cursor = page.get("nextCursor")
+        if not isinstance(next_cursor, str) or not next_cursor or next_cursor in seen_cursors:
+            break
+        seen_cursors.add(next_cursor)
+        cursor = next_cursor
+    return items, omitted
+
+
+def _list_all_items(
+    transport: Transport, capabilities: dict[str, Any] | None, remaining: Callable[[], float]
+) -> tuple[list[McpItem], int, str | None]:
+    """Prompts, resources and templates, for the capabilities the server advertises only.
+
+    Failing to list them never fails the whole enumeration: the tools are still valid.
+    The failure is recorded so the report can say these were not examined.
+    """
+    capabilities = capabilities or {}
+    plan: list[tuple[str, str, ItemKind]] = []
+    if "resources" in capabilities:
+        plan += [
+            ("resources/list", "resources", "resource"),
+            ("resources/templates/list", "resourceTemplates", "resource_template"),
+        ]
+    if "prompts" in capabilities:
+        plan.append(("prompts/list", "prompts", "prompt"))
+    items: list[McpItem] = []
+    omitted = 0
+    errors: list[str] = []
+    for method, key, kind in plan:
+        try:
+            found, over = _list_items(
+                transport, method, key, kind, remaining, MAX_ITEMS_PER_SERVER - len(items)
+            )
+        except MCPError as exc:
+            if exc.code != JSONRPC_METHOD_NOT_FOUND:  # templates are optional: not an error
+                errors.append(f"{method} failed ({exc.code})")
+            continue
+        except RequestTimeout:
+            raise
+        except TransportError as exc:
+            errors.append(redact_text(f"{method} failed: {exc}"))
+            continue
+        items += found
+        omitted += over
+    return items, omitted, "; ".join(errors) or None
+
+
 def list_tools(transport: Transport, timeout: float) -> EnumerationResult:
     """Run the handshake and page through tools/list within one overall deadline."""
     deadline = time.monotonic() + timeout
@@ -207,12 +334,18 @@ def list_tools(transport: Transport, timeout: float) -> EnumerationResult:
             seen_cursors.add(next_cursor)
             cursor = next_cursor
 
+    items, omitted, items_error = _list_all_items(transport, capabilities, remaining)
     return EnumerationResult(
         status=EnumerationStatus.OK,
         protocol_version=protocol_version if isinstance(protocol_version, str) else None,
         server_info=server_info,
         tools=tools,
-        definition_hash=server_definition_hash(t.definition_hash for t in tools),
+        items=items,
+        items_omitted=omitted,
+        items_error=items_error,
+        definition_hash=server_definition_hash(
+            [*(t.definition_hash for t in tools), *(i.definition_hash for i in items)]
+        ),
     )
 
 

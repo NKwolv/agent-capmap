@@ -170,6 +170,12 @@ the sections above apply here:
   (a pull request can edit it): hardened YAML, schema validation, size and count limits,
   and the PR comment lists newly added waivers. Protecting the file is the repository's
   job (`CODEOWNERS`).
+- **Prompts and resources (section 3 and 10):** `--enumerate` also sends the read-only
+  listings `resources/list`, `resources/templates/list` and `prompts/list`, only to
+  servers that advertise them (maintainer decision, widening design rule 2 by exactly
+  these three). Items are never read or fetched; entries are hostile input (malformed
+  ones are skipped, counts and classification are capped), URIs are redacted, and their
+  text goes through the suspicious-description check only.
 - **Project design rules** (the LLM only classifies; never call MCP tools; redact all
   secrets; no network in tests) are in [CONTRIBUTING.md](CONTRIBUTING.md) and apply in
   addition to this file.

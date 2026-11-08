@@ -16,6 +16,7 @@ from agentcapmap.graph.server_attrs import LaunchSource, SourceTrust, launch_sou
 from agentcapmap.models import (
     Agent,
     ClassificationStatus,
+    EnumerationResult,
     EnumerationStatus,
     Inventory,
     Server,
@@ -108,6 +109,9 @@ class ToolView:
     tags: ToolTags
     approval_gate: ApprovalGate
     approval_source: str | None
+    # A prompt or resource checked for suspicious text: it has neutral tags, counts for
+    # no capability and is not a callable tool.
+    is_item: bool = False
 
     @property
     def ref(self) -> str:
@@ -258,7 +262,52 @@ def build_agent_view(agent: Agent, trusted_sources: list[str] | None = None) -> 
                     approval_source=gate_source,
                 )
             )
+        _add_item_views(view, sv, enumeration)
     return view
+
+
+_NEUTRAL_TAGS = ToolTags.model_validate(DEFAULTS)
+
+
+def _add_item_views(view: AgentView, sv: ServerView, enumeration: EnumerationResult) -> None:
+    """Prompts and resources: checked for suspicious text only (never called or read)."""
+    agent_id, server = view.agent.id, sv.server.name
+    waiting = 0
+    for item in enumeration.items:
+        if not item.has_text:
+            continue  # nothing to read, nothing to poison
+        result = item.classification
+        if result is None or result.status is not ClassificationStatus.CLASSIFIED:
+            waiting += 1
+            continue
+        view.tools.append(
+            ToolView(
+                server=sv,
+                tool=ToolDefinition(
+                    name=item.ref,
+                    description=item.description,
+                    input_schema={},
+                    definition_hash=item.definition_hash,
+                ),
+                classification=result,
+                tags=_NEUTRAL_TAGS,
+                approval_gate=ApprovalGate.UNKNOWN,
+                approval_source=None,
+                is_item=True,
+            )
+        )
+
+    def note(reason: str) -> None:
+        view.not_assessed.append(NotAssessed(agent_id=agent_id, server=server, reason=reason))
+
+    if waiting:
+        note(f"{waiting} prompt(s)/resource(s) with text not classified (run with --classify)")
+    if enumeration.items_omitted:
+        note(
+            f"{enumeration.items_omitted} prompt(s)/resource(s) beyond the limit were not examined"
+        )
+    if enumeration.items_error:
+        note(f"prompts/resources not examined: {enumeration.items_error}")
 
 
 def capabilities(view: AgentView) -> AgentCapabilities:
@@ -282,7 +331,7 @@ def capabilities(view: AgentView) -> AgentCapabilities:
         config_path=view.agent.config_path,
         capabilities=dict(sorted(caps.items())),
         tools_total=sum(len(names) for names in view.tool_names.values()),
-        tools_assessed=len(view.tools),
+        tools_assessed=sum(1 for tv in view.tools if not tv.is_item),
     )
 
 

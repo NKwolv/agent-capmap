@@ -1,7 +1,8 @@
 """Mock MCP server for tests: stdio (run as a script) and HTTP (in-process).
 
 Every received method is recorded so tests can prove the client only ever sends
-`initialize`, `notifications/initialized` and `tools/list`.
+`initialize`, `notifications/initialized` and the read-only list methods
+(`tools/list`, `resources/list`, `resources/templates/list`, `prompts/list`).
 
 stdio usage: python mock_mcp_server.py SPEC.json
 Spec keys (all optional):
@@ -13,6 +14,10 @@ Spec keys (all optional):
   report_env: env var names; serverInfo.env reports which ones the server can see
   junk_before_init: raw text written to stdout before the initialize response
   tool_count: generate this many trivial tools
+  resources / resource_templates / prompts: lists of dicts; each one advertises that
+      capability and answers its list method (items_page_size paginates them)
+  no_templates: answer resources/templates/list with "method not found"
+  list_errors: {method: JSON-RPC error code} to fail a list method
 
 HTTP mock extras (spec): redirect_to (POST answers 307 to this URL),
   endpoint (legacy SSE endpoint event value), body_padding (extra bytes in JSON body)
@@ -61,6 +66,10 @@ def handle(spec: dict[str, Any], message: dict[str, Any]) -> dict[str, Any] | No
     request_id = message["id"]
     if method == "initialize":
         capabilities: dict[str, Any] = {} if spec.get("no_tools_capability") else {"tools": {}}
+        if "resources" in spec or "resource_templates" in spec:
+            capabilities["resources"] = {}
+        if "prompts" in spec:
+            capabilities["prompts"] = {}
         return {
             "jsonrpc": "2.0",
             "id": request_id,
@@ -88,6 +97,27 @@ def handle(spec: dict[str, Any], message: dict[str, Any]) -> dict[str, Any] | No
         if start + page_size < len(tools):
             result["nextCursor"] = str(start + page_size)
         return {"jsonrpc": "2.0", "id": request_id, "result": result}
+    listings = {
+        "resources/list": ("resources", "resources"),
+        "resources/templates/list": ("resource_templates", "resourceTemplates"),
+        "prompts/list": ("prompts", "prompts"),
+    }
+    if method in listings:
+        spec_key, result_key = listings[method]
+        code = spec.get("list_errors", {}).get(method)
+        if code is not None or (method == "resources/templates/list" and spec.get("no_templates")):
+            return {
+                "jsonrpc": "2.0",
+                "id": request_id,
+                "error": {"code": code if code is not None else -32601, "message": "mock error"},
+            }
+        entries = spec.get(spec_key, [])
+        size = int(spec.get("items_page_size") or len(entries) or 1)
+        begin = int(message.get("params", {}).get("cursor") or 0)
+        page: dict[str, Any] = {result_key: entries[begin : begin + size]}
+        if begin + size < len(entries):
+            page["nextCursor"] = str(begin + size)
+        return {"jsonrpc": "2.0", "id": request_id, "result": page}
     return {
         "jsonrpc": "2.0",
         "id": request_id,

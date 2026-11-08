@@ -23,9 +23,12 @@ from agentcapmap.classify.cache import ClassificationCache, cache_key
 from agentcapmap.classify.prompt import PROMPT_VERSION, SYSTEM_PROMPT, user_message
 from agentcapmap.classify.provider import LLMProvider, ProviderError, configured_model
 from agentcapmap.classify.reference import ReferenceLabels, load_reference
+from agentcapmap.enumerate.hashing import tool_definition_hash
+from agentcapmap.limits import MAX_CLASSIFIED_ITEMS_PER_SERVER
 from agentcapmap.models import (
     ClassificationStatus,
     Inventory,
+    McpItem,
     SuspiciousDescription,
     ToolClassification,
     ToolDefinition,
@@ -192,23 +195,53 @@ class Classifier:
         return result
 
 
+def item_as_tool(item: McpItem) -> ToolDefinition:
+    """A prompt or resource shaped like a tool definition, so the classifier can read it.
+
+    Only the suspicious-description flag of the answer is used for items; the prompt text
+    is unchanged, which keeps every cached classification valid.
+    """
+    if item.kind == "prompt":
+        schema: dict[str, Any] = {"arguments": item.arguments}
+    else:
+        schema = {"uri": item.uri or "", "mimeType": item.mime_type or ""}
+    return ToolDefinition(
+        name=item.ref,
+        description=item.description,
+        input_schema=schema,
+        definition_hash=tool_definition_hash(item.ref, item.description, schema),
+    )
+
+
 def classify_inventory(inventory: Inventory, classifier: Classifier, concurrency: int = 4) -> None:
-    """Classify every enumerated tool in place, once per distinct definition."""
+    """Classify every enumerated tool, prompt and resource in place, once per definition."""
     by_hash: dict[str, list[ToolDefinition]] = {}
+    items_by_hash: dict[str, tuple[ToolDefinition, list[McpItem]]] = {}
     for agent in inventory.agents:
         for server in agent.servers:
             if server.enumeration is None:
                 continue
             for tool in server.enumeration.tools:
                 by_hash.setdefault(tool.definition_hash, []).append(tool)
+            # Items with no text have nothing to check; the rest are capped per server.
+            texty = [i for i in server.enumeration.items if i.has_text]
+            for item in texty[:MAX_CLASSIFIED_ITEMS_PER_SERVER]:
+                pseudo = item_as_tool(item)
+                items_by_hash.setdefault(pseudo.definition_hash, (pseudo, []))[1].append(item)
 
     def run(tools: list[ToolDefinition]) -> None:
         result = classifier.classify(tools[0])
         for tool in tools:
             tool.classification = result
 
+    def run_items(entry: tuple[ToolDefinition, list[McpItem]]) -> None:
+        result = classifier.classify(entry[0])
+        for item in entry[1]:
+            item.classification = result
+
     with ThreadPoolExecutor(max_workers=max(1, concurrency)) as pool:
         list(pool.map(run, by_hash.values()))
+        list(pool.map(run_items, items_by_hash.values()))
 
     results = [tools[0].classification for tools in by_hash.values()]
     unclassified = sum(1 for r in results if r and r.status is ClassificationStatus.UNCLASSIFIED)

@@ -95,9 +95,13 @@ merged.
 1. **The LLM only classifies.** Risk decisions (combinations, severities) are
    deterministic code driven by the policy file. Never add an LLM call to the policy
    engine or reporting.
-2. **Never execute tools.** The MCP client may send only `initialize`,
-   `notifications/initialized` and `tools/list`. The allowlist in
-   `src/agentcapmap/enumerate/transport.py` enforces this; do not widen it.
+2. **Never execute tools, never read or fill in content.** The MCP client may send only
+   `initialize`, `notifications/initialized` and the read-only *listings*: `tools/list`,
+   `resources/list`, `resources/templates/list` and `prompts/list` (the last three only to
+   servers that advertise the capability). Never `tools/call`, `resources/read`,
+   `resources/subscribe`, `prompts/get` or anything else that runs, fetches or fills in
+   content. The allowlist in `src/agentcapmap/enumerate/transport.py` enforces this and a
+   test pins it exactly; do not widen it without a maintainer decision.
 3. **No secrets in output or logs.** Anything derived from a config must go through
    `agentcapmap.redact`. Use `redact.get_logger(__name__)` for logging. Raw values
    belong only in `LaunchSpec`, which is never serialized.

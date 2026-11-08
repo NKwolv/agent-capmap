@@ -11,7 +11,7 @@
 #   when_agent_has_any     at least one predicate is satisfied by at least one tool
 #                          (fields inside one predicate must match on the same tool;
 #                          a list value means "any of these values")
-#   when_hash_changed      tool definitions differ from the --baseline file
+#   when_hash_changed      tool, prompt or resource definitions differ from the --baseline file
 #   when_tool_name_shadowed  the same tool name is exposed by more than one server
 version: 1
 taxonomy_version: "1"
@@ -81,8 +81,8 @@ rules:
     severity: high
     when_hash_changed: true
     message: >-
-      Tool definitions changed since the pinned baseline (possible rug pull). Review
-      the change before trusting this server again.
+      Tool, prompt or resource definitions changed since the pinned baseline (possible
+      rug pull). Review the change before trusting this server again.
     maps_to: [OWASP-LLM03, MITRE-ATLAS-AML.T0109, MITRE-ATLAS-AML.T0010.005]
 
   - id: CAP-007

@@ -119,13 +119,52 @@ class EnumerationStatus(StrEnum):
     SKIPPED = "skipped"
 
 
+ItemKind = Literal["prompt", "resource", "resource_template"]
+
+
+class McpItem(BaseModel):
+    """A prompt, resource or resource template a server offers (listed, never fetched).
+
+    Their text is where an instruction aimed at the model can hide, so it is checked like
+    a tool description. Only the suspicious-description flag of the classification is used:
+    prompts and resources are not tools and carry no capability tags.
+    """
+
+    kind: ItemKind
+    name: str
+    description: str = ""
+    uri: str | None = None  # resource URI or template, redacted
+    mime_type: str | None = None
+    arguments: list[dict[str, Any]] = Field(default_factory=list)  # prompts only
+    definition_hash: str
+    classification: ToolClassification | None = None
+
+    @property
+    def ref(self) -> str:
+        """The name shown in findings and baselines, e.g. `prompt:summarize`."""
+        return f"{self.kind}:{self.name}"
+
+    @property
+    def has_text(self) -> bool:
+        """Is there any free text a poisoned instruction could live in?"""
+        return bool(self.description.strip()) or any(
+            isinstance(a.get("description"), str) and a["description"].strip()
+            for a in self.arguments
+        )
+
+
 class EnumerationResult(BaseModel):
     status: EnumerationStatus
     error: str | None = None
     protocol_version: str | None = None
     server_info: dict[str, Any] | None = None
     tools: list[ToolDefinition] = Field(default_factory=list)
-    # Hash over the sorted tool definition hashes: changes if any tool changes.
+    # Prompts, resources and resource templates the server advertises and listed.
+    items: list[McpItem] = Field(default_factory=list)
+    # How many more were advertised than kept, and why listing them failed, if it did.
+    items_omitted: int = 0
+    items_error: str | None = None
+    # Hash over the sorted tool and item definition hashes: changes if any of them changes.
     definition_hash: str | None = None
 
 

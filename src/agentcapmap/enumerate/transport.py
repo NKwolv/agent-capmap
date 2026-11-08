@@ -3,6 +3,11 @@
 Design rule: agent-capmap never executes tools on enumerated servers. Every outgoing
 request goes through `check_allowed`, so a `tools/call` (or anything else) cannot be
 sent even by mistake.
+
+The allowlist is the handshake plus read-only *listings* of what a server offers: tools,
+resources, resource templates and prompts. Never `tools/call`, `resources/read`,
+`resources/subscribe`, `prompts/get` or anything else that runs, fetches or fills in
+content.
 """
 
 from __future__ import annotations
@@ -10,7 +15,9 @@ from __future__ import annotations
 import itertools
 from typing import Any, Protocol
 
-ALLOWED_REQUESTS = frozenset({"initialize", "tools/list"})
+ALLOWED_REQUESTS = frozenset(
+    {"initialize", "tools/list", "resources/list", "resources/templates/list", "prompts/list"}
+)
 ALLOWED_NOTIFICATIONS = frozenset({"notifications/initialized"})
 
 JSONRPC_METHOD_NOT_FOUND = -32601

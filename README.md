@@ -95,7 +95,7 @@ and send data externally, so injected instructions can exfiltrate data.`
 ```
 config files ──► discover ──► enumerate ──► classify ──► policy ──► report
                  (read only)  (initialize +  (LLM tags    (YAML      (JSON, Markdown,
-                              tools/list)    6 axes)      rules)     SARIF, exit code)
+                              list calls)    6 axes)      rules)     SARIF, exit code)
 ```
 
 1. **Discover** MCP configs: Claude Desktop, Cursor, VS Code (`.vscode/mcp.json`,
@@ -122,6 +122,17 @@ agentcapmap scan --user --enumerate --classify --evaluate --format markdown -o r
 `--enumerate` **runs the server commands in your configs**: only use it on configs you
 trust. To try the whole pipeline on two known servers first, see
 [`examples/live-trifecta`](https://github.com/NKwolv/agent-capmap/blob/main/examples/README.md).
+
+### Prompts and resources
+
+MCP servers also offer prompts and resources, and their descriptions are another place a
+poisoned instruction can hide. When a server advertises them, `--enumerate` **lists**
+them (`prompts/list`, `resources/list`, `resources/templates/list`): it never reads a
+resource or gets a prompt. With `--classify`, each one that has any text is checked for
+instructions aimed at the model (rule **CAP-008**), and `baseline create` pins them so a
+later change is a rug pull (**CAP-006**). They add no capabilities: they are not tools.
+Items with no description are skipped, at most 200 per server are sent to the classifier,
+and anything not checked is reported under "not assessed".
 
 ### Accept a finding on purpose (waivers)
 
@@ -198,7 +209,7 @@ The built-in [`policies/default.yaml`](https://github.com/NKwolv/agent-capmap/bl
 | CAP-003 | high | a destructive or host-execution tool with no approval gate |
 | CAP-004 | high | secrets access + external egress |
 | CAP-005 | high | a remote server with no authentication exposing capabilities |
-| CAP-006 | high | tool definitions that changed since the baseline (rug pull) |
+| CAP-006 | high | tool, prompt or resource definitions that changed since the baseline (rug pull) |
 | CAP-007 | medium | a server not pinned to an exact version, or from an unvetted source |
 | CAP-008 | high | a tool description that tries to instruct the model (tool poisoning) |
 | CAP-009 | medium | the same tool name on two servers (shadowing) |
@@ -291,7 +302,8 @@ also power classification without an API key for these known tools; see
 ## Safety
 
 Secrets from configs are redacted in all output and logs. Enumeration sends only
-`initialize` and `tools/list`, with a minimal environment for launched servers, no
+`initialize` and the read-only listings of tools, prompts and resources (never calling,
+reading or fetching anything), with a minimal environment for launched servers, no
 credential-forwarding redirects, and size limits on everything a server returns.
 Reports render untrusted text inertly. See [SECURITY.md](https://github.com/NKwolv/agent-capmap/blob/main/SECURITY.md) and the
 [threat model](https://github.com/NKwolv/agent-capmap/blob/main/docs/threat-model.md).

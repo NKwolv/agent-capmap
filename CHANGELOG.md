@@ -8,12 +8,28 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- **Prompts and resources coverage.** When a server advertises them, `--enumerate` now also
+  lists its prompts, resources and resource templates (read-only: `prompts/list`,
+  `resources/list`, `resources/templates/list`; nothing is read, fetched or filled in). Each
+  one with text is checked for instructions aimed at the model (CAP-008) when you
+  `--classify`, and baselines pin them so changes are caught (CAP-006; baselines made
+  earlier keep working and are compared on tools only). They add no capability tags.
+  Resource URIs are redacted; counts and classification are capped, and anything not
+  checked is reported as not assessed.
 - **Waivers** (`--waivers FILE`, `waivers:` in the Action): accept a finding on purpose,
   by exact fingerprint, with an owner, a reason and an expiry (at most a year ahead).
   Expired, mismatched or stale waivers are reported and never applied. Waived findings
   leave the counts and exit status but stay listed with their reason (Markdown, JSON);
   SARIF omits them and says so. `diff` and the PR comment list **newly waived** findings
   for review and no longer count them as resolved.
+
+### Changed
+
+- The method allowlist grew by exactly `resources/list`, `resources/templates/list` and
+  `prompts/list` (design rule 2, CONTRIBUTING.md, SECURITY.md and the threat model are
+  updated, and a test pins the exact list). `tools/call`, `resources/read` and
+  `prompts/get` remain refused.
+- CAP-006's message and the Markdown report say "definitions" instead of "tools".
 
 ### Fixed
 
