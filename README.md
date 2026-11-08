@@ -1,20 +1,81 @@
-# agent-capmap
+<h1 align="center">agent-capmap</h1>
 
-**Find out what your AI agents can actually do, and which combinations of their tools
-an attacker could abuse.**
+<p align="center">
+  <strong>Find out what your AI agents can actually do,<br>
+  and which combinations of their tools an attacker could abuse.</strong>
+</p>
+
+<p align="center">
+  <a href="https://pypi.org/project/agent-capmap/"><img alt="PyPI" src="https://img.shields.io/pypi/v/agent-capmap?color=blue"></a>
+  <a href="https://pypi.org/project/agent-capmap/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/agent-capmap"></a>
+  <a href="https://github.com/NKwolv/agent-capmap/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/NKwolv/agent-capmap"></a>
+  <a href="https://github.com/NKwolv/agent-capmap/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/NKwolv/agent-capmap/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/NKwolv/agent-capmap/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/NKwolv/agent-capmap/actions/workflows/codeql.yml/badge.svg"></a>
+  <img alt="Status: alpha" src="https://img.shields.io/badge/status-alpha-orange">
+</p>
+
+<p align="center">
+  <img alt="MCP" src="https://img.shields.io/badge/MCP-security-blueviolet">
+  <img alt="AI agent security" src="https://img.shields.io/badge/AI%20agent-security-informational">
+  <img alt="Prompt injection" src="https://img.shields.io/badge/prompt-injection-informational">
+  <img alt="Policy as code" src="https://img.shields.io/badge/policy-as%20code-informational">
+  <img alt="SARIF" src="https://img.shields.io/badge/output-SARIF%20%7C%20Markdown%20%7C%20JSON-informational">
+</p>
+
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#quickstart-5-minutes-no-api-key">Quickstart</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#policy">Policy</a> ·
+  <a href="#ci-and-github-code-scanning">GitHub Action</a> ·
+  <a href="#documentation">Docs</a>
+</p>
+
+---
+
+## Why
 
 AI assistants such as Claude Desktop, Cursor, VS Code and Claude Code get their powers
 from MCP servers: read files, browse the web, send email, run shell commands. Each tool
-can look harmless on its own. The danger is usually the combination: an agent that can
-read private data, read attacker-written content (a web page, an issue, an email), and
-send data out can be talked into leaking that data. That is the "lethal trifecta".
+can look harmless on its own. The danger is usually the **combination**: an agent that can
+
+| 1. Read **private data** | 2. Read **attacker-written content** | 3. **Send data out** |
+|---|---|---|
+| files, repos, email, databases | a web page, an issue, an email | email, HTTP requests, `git push` |
+
+can be talked into leaking that data by a single poisoned page. That is the
+**"lethal trifecta"**, and no single tool shows it.
 
 agent-capmap inventories every MCP server and tool reachable by each agent, classifies
 what each tool can do, and applies policy-as-code rules to the **combination** of tools
 per agent. Findings come with evidence and can gate CI through SARIF and exit codes.
 
-> **Status: pre-release (0.1.0).** All features below work. The classifier's accuracy
-> has not been benchmarked yet; see [Accuracy](#accuracy).
+> **Status: alpha.** All features below work. The classifier's accuracy has not been
+> benchmarked yet, and the bundled labels are AI-reviewed; see [Accuracy](#accuracy).
+
+## Highlights
+
+| | |
+|---|---|
+| 🔎 **Inventory** | Claude Desktop, Cursor, VS Code, Claude Code and generic `mcp.json`. Secrets are redacted everywhere. |
+| 🧰 **Tools, prompts and resources** | Listed read-only, never called, read or fetched. Poisoned descriptions are flagged. |
+| 🏷️ **Six-axis classification** | An LLM only tags capabilities; every risk decision is deterministic code. |
+| 📜 **Policy as code** | Eleven built-in rules, your own rules in YAML, and expiring waivers for accepted risks. |
+| 🏃 **Runtime discovery** | Finds MCP servers that are running but declared in no config file. |
+| 🧾 **Rug-pull detection** | Pin definitions in a baseline; see what a pull request changed in a PR comment. |
+| 🛡️ **CI-ready** | Evidence for every finding, SARIF for code scanning, and exit codes for gating. |
+| 🔌 **Works without a key** | 381 tools from 28 well-known servers are classified from bundled labels. |
+
+## Contents
+
+- [Install](#install)
+- [Quickstart](#quickstart-5-minutes-no-api-key)
+- [Example output](#example-output)
+- [How it works](#how-it-works)
+- [Capability taxonomy](#capability-taxonomy) · [Policy](#policy)
+- [CI and GitHub code scanning](#ci-and-github-code-scanning)
+- [Accuracy](#accuracy) · [Limitations](#limitations) · [Safety](#safety)
+- [Documentation](#documentation)
 
 ## Install
 
@@ -102,11 +163,12 @@ config files ──► discover ──► enumerate ──► classify ──►
    `settings.json`), Claude Code (`.mcp.json`, and with `--user` your `~/.claude.json`
    user and per-project servers, including permission rules) and generic `mcp.json`.
    Secrets are redacted everywhere.
-2. **Enumerate** (`--enumerate`): start each server and ask only for its tool list.
-   Tools are never called.
-3. **Classify** (`--classify`): an LLM tags each tool on six axes and flags tool
-   descriptions that try to manipulate the model. Results are cached and validated
-   against a JSON schema.
+2. **Enumerate** (`--enumerate`): start each server and ask only for what it offers: its
+   tools, and its prompts and resources if it has them. Nothing is called, read or
+   fetched.
+3. **Classify** (`--classify`): an LLM tags each tool on six axes and flags descriptions
+   that try to manipulate the model. Results are cached and validated against a JSON
+   schema.
 4. **Evaluate** (`--evaluate`): deterministic rules decide what is dangerous. The LLM
    never makes risk decisions.
 5. **Report**: JSON, Markdown, or SARIF for GitHub code scanning; `--fail-on` sets the
@@ -204,17 +266,17 @@ The built-in [`policies/default.yaml`](https://github.com/NKwolv/agent-capmap/bl
 
 | ID | Severity | Fires when an agent has |
 |---|---|---|
-| CAP-001 | critical | private data + untrusted input + external egress (lethal trifecta) |
-| CAP-002 | critical | untrusted input + host code execution |
-| CAP-003 | high | a destructive or host-execution tool with no approval gate |
-| CAP-004 | high | secrets access + external egress |
-| CAP-005 | high | a remote server with no authentication exposing capabilities |
-| CAP-006 | high | tool, prompt or resource definitions that changed since the baseline (rug pull) |
-| CAP-007 | medium | a server not pinned to an exact version, or from an unvetted source |
-| CAP-008 | high | a tool description that tries to instruct the model (tool poisoning) |
-| CAP-009 | medium | the same tool name on two servers (shadowing) |
-| CAP-010 | medium | an MCP server is running but is in no scanned config (`scan --running`) |
-| CAP-011 | high | an MCP server is listening on a non-loopback address (`scan --running`) |
+| CAP-001 | 🔴 critical | private data + untrusted input + external egress (lethal trifecta) |
+| CAP-002 | 🔴 critical | untrusted input + host code execution |
+| CAP-003 | 🟠 high | a destructive or host-execution tool with no approval gate |
+| CAP-004 | 🟠 high | secrets access + external egress |
+| CAP-005 | 🟠 high | a remote server with no authentication exposing capabilities |
+| CAP-006 | 🟠 high | tool, prompt or resource definitions that changed since the baseline (rug pull) |
+| CAP-007 | 🟡 medium | a server not pinned to an exact version, or from an unvetted source |
+| CAP-008 | 🟠 high | a tool, prompt or resource description that tries to instruct the model (poisoning) |
+| CAP-009 | 🟡 medium | the same tool name on two servers (shadowing) |
+| CAP-010 | 🟡 medium | an MCP server is running but is in no scanned config (`scan --running`) |
+| CAP-011 | 🟠 high | an MCP server is listening on a non-loopback address (`scan --running`) |
 
 Write your own rules in the same format and pass `--policy my-policy.yaml`:
 

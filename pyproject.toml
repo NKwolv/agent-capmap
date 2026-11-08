@@ -11,16 +11,32 @@ license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.11"
 authors = [{ name = "NKwolv" }]
-keywords = ["mcp", "model-context-protocol", "security", "ai-agents", "sarif"]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "security",
+    "ai-agents",
+    "agent-security",
+    "llm-security",
+    "prompt-injection",
+    "tool-poisoning",
+    "policy-as-code",
+    "supply-chain-security",
+    "sarif",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+    "Typing :: Typed",
 ]
 dependencies = [
     "anthropic>=1.11",
