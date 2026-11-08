@@ -6,8 +6,6 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-## [0.1.1] - 2026-11-08
-
 ### Added
 
 - **Runtime discovery** (`scan --running`, needs `pip install "agent-capmap[runtime]"`):
@@ -17,6 +15,11 @@ All notable changes to this project are documented here. The format follows
   `runtime:<client>` agent. New rules **CAP-010** (running but in no scanned config) and
   **CAP-011** (listening on a non-loopback address), and new `provenance` and `exposure`
   policy fields. Servers found this way are never enumerated.
+
+## [0.1.1] - 2026-11-08
+
+### Added
+
 - **Pull request comment** (`comment: "true"` in the GitHub Action): scans the base commit
   too and posts one updating comment with new findings, newly unassessed servers, gained
   capabilities and resolved findings. Config-only (never starts servers), never combined
