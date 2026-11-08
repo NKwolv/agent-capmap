@@ -6,7 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-Everything below is unreleased work towards 0.1.0, newest first within each section.
+## [0.1.0] - 2026-11-08
+
+First release, newest first within each section. Accuracy is not benchmarked yet and the
+reference labels are AI-reviewed (see README, Accuracy).
 
 ### Added
 
