@@ -142,7 +142,8 @@ def main() -> int:
         path.write_text(text, encoding="utf-8", newline="\n")
     print(
         f"Prepared {args.version}. Next:\n"
-        "  1. python scripts/check.py\n"
+        "  1. AGENTCAPMAP_UPDATE_GOLDEN=1 python -m pytest tests/test_fixtures.py   "
+        "(the demo inventory stamps the version), then python scripts/check.py\n"
         f'  2. git commit -am "Release {args.version}" && git push origin main\n'
         "  3. wait for CI on that commit to pass\n"
         f'  4. git tag -a v{args.version} -m "agent-capmap {args.version}" '

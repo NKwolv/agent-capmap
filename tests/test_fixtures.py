@@ -60,7 +60,7 @@ def test_golden_findings(name: str) -> None:
     actual = _golden_view(_evaluate(name))
     golden = FIXTURES / name / "expected.json"
     if UPDATE_GOLDEN:
-        golden.write_text(json.dumps(actual, indent=2) + "\n", encoding="utf-8")
+        golden.write_text(json.dumps(actual, indent=2) + "\n", encoding="utf-8", newline="\n")
     assert actual == json.loads(golden.read_text(encoding="utf-8"))
 
 
@@ -163,7 +163,7 @@ def build_demo_inventory() -> str:
 def test_demo_inventory_is_current() -> None:
     expected = build_demo_inventory()
     if UPDATE_GOLDEN:
-        DEMO.write_text(expected, encoding="utf-8")
+        DEMO.write_text(expected, encoding="utf-8", newline="\n")
     assert DEMO.read_text(encoding="utf-8") == expected, "run with AGENTCAPMAP_UPDATE_GOLDEN=1"
 
 

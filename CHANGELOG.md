@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-08
+
 ### Added
 
 - **Pull request comment** (`comment: "true"` in the GitHub Action): scans the base commit

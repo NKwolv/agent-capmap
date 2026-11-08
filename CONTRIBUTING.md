@@ -170,7 +170,10 @@ For every release, including patch releases:
    `src/agentcapmap/__init__.py` (a test keeps them equal) and dates the changelog. It
    refuses on a dirty tree, a version that is not higher, an empty `[Unreleased]`, or
    stale reference labels, and it never commits or pushes (add `--dry-run` to preview).
-3. `python scripts/check.py`, then commit, push, and wait for CI on that commit.
+3. Regenerate the demo inventory, which stamps the version:
+   `AGENTCAPMAP_UPDATE_GOLDEN=1 python -m pytest tests/test_fixtures.py` (PowerShell:
+   `$env:AGENTCAPMAP_UPDATE_GOLDEN=1; python -m pytest tests/test_fixtures.py`). Then
+   `python scripts/check.py`, then commit, push, and wait for CI on that commit.
 4. Tag that exact commit and push the tag:
    `git tag -a vX.Y.Z -m "agent-capmap X.Y.Z" && git push origin vX.Y.Z`.
 5. `.github/workflows/release.yml` checks that the tag matches the version, runs the
