@@ -1,7 +1,9 @@
 """Regression tests for security hardening: each test pins one vulnerability class shut."""
 
+import itertools
 import json
 import logging
+import re
 import time
 from collections.abc import Callable
 from pathlib import Path
@@ -229,3 +231,81 @@ def test_deeply_nested_model_output_is_invalid_not_a_crash() -> None:
     tool = ToolDefinition(name="t", definition_hash=tool_definition_hash("t", "", {}))
     with pytest.raises(InvalidOutput, match="nested too deeply"):
         parse_output("[" * 200_000, tool, model="m")
+
+
+# --- PEM redaction: linear time, and identical results to the regex it replaced -----------
+
+_OLD_PEM = re.compile(
+    r"-----BEGIN [A-Z ]{0,40}PRIVATE KEY-----[\s\S]{0,16384}?"
+    r"-----END [A-Z ]{0,40}PRIVATE KEY-----"
+)
+_PEM_PIECES = [
+    "-----BEGIN PRIVATE KEY-----",
+    "-----END PRIVATE KEY-----",
+    "-----BEGIN RSA PRIVATE KEY-----",
+    "-----END RSA PRIVATE KEY-----",
+    "x",
+    "-----BEGIN PUBLIC KEY-----",
+]
+
+
+def test_pem_scrubbing_matches_the_old_regex_on_every_combination() -> None:
+    """The O(n log n) scrubber must redact exactly what the old lazy regex did."""
+    from agentcapmap.redact import REDACTED, _scrub_pem
+
+    checked = 0
+    for length in range(0, 6):
+        for combo in itertools.product(_PEM_PIECES, repeat=length):
+            text = "".join(combo)
+            assert _scrub_pem(text) == _OLD_PEM.sub(REDACTED, text), combo
+            checked += 1
+    assert checked > 9000
+
+
+@pytest.mark.parametrize("body", [0, 1, 16383, 16384, 16385, 20000])
+def test_pem_body_window_matches_the_old_regex(body: int) -> None:
+    from agentcapmap.redact import REDACTED, _scrub_pem
+
+    text = "a-----BEGIN PRIVATE KEY-----" + "z" * body + "-----END PRIVATE KEY-----b"
+    assert _scrub_pem(text) == _OLD_PEM.sub(REDACTED, text)
+    assert (REDACTED in _scrub_pem(text)) == (body <= 16384)  # the window is exactly 16 KB
+
+
+def test_pem_blocks_are_redacted_and_surrounding_text_is_kept() -> None:
+    block = "-----BEGIN RSA PRIVATE KEY-----\nMIIfakefakefake\n-----END RSA PRIVATE KEY-----"
+    out = redact_text(f"before {block} middle {block} after")
+    assert "MIIfake" not in out and "BEGIN" not in out
+    assert out.startswith("before ") and " middle " in out and out.endswith(" after")
+
+
+def test_a_lone_begin_or_end_marker_is_left_alone() -> None:
+    assert "BEGIN" in redact_text("-----BEGIN PRIVATE KEY----- no end here")
+    assert "END" in redact_text("just an -----END PRIVATE KEY----- marker")
+
+
+def test_a_huge_message_of_repeated_markers_is_redacted_quickly() -> None:
+    """The old pattern cost ~40 microseconds per character here: minutes at maximum size."""
+    for hostile in (
+        "-----BEGIN PRIVATE KEY-----" * 100_000,
+        "-----BEGIN PRIVATE KEY-----abc-----END PRIVATE KEY-----" * 50_000,
+        "-----END PRIVATE KEY-----" * 100_000,
+    ):
+        start = time.process_time()  # CPU time: not fooled by a busy machine
+        redact_text(hostile)
+        assert time.process_time() - start < 5.0, len(hostile)
+
+
+def test_pem_cost_grows_linearly_not_quadratically() -> None:
+    unit = "-----BEGIN PRIVATE KEY-----"
+
+    def cost(repeats: int) -> float:
+        text = unit * repeats
+        best = float("inf")
+        for _ in range(3):
+            start = time.process_time()
+            redact_text(text)
+            best = min(best, time.process_time() - start)
+        return best
+
+    small, large = cost(20_000), cost(80_000)  # four times the input
+    assert large < max(small, 0.02) * 12  # quadratic growth would be ~16x or worse

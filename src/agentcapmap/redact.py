@@ -8,6 +8,7 @@ little readability, a false negative leaks a credential.
 
 from __future__ import annotations
 
+import bisect
 import logging
 import re
 import threading
@@ -32,10 +33,15 @@ _TOKEN_PATTERNS: list[re.Pattern[str]] = [
         r"AIza[0-9A-Za-z_\-]{35}",
         r"npm_[A-Za-z0-9]{36}",
         r"eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}",  # JWT
-        r"-----BEGIN [A-Z ]{0,40}PRIVATE KEY-----[\s\S]{0,16384}?"
-        r"-----END [A-Z ]{0,40}PRIVATE KEY-----",
     )
 ]
+# PEM private-key blocks are NOT one regex: "BEGIN ... lazy up to 16 KB ... END" would rescan
+# up to 16 KB from every BEGIN marker, so a message of repeated markers cost ~40 microseconds
+# per character (minutes for a maximum-size message). `_scrub_pem` finds every marker once
+# and pairs each BEGIN with the nearest END by binary search: O(n log n), same result.
+_PEM_BEGIN = re.compile(r"-----BEGIN [A-Z ]{0,40}PRIVATE KEY-----")
+_PEM_END = re.compile(r"-----END [A-Z ]{0,40}PRIVATE KEY-----")
+_PEM_MAX_BODY = 16384
 # Every quantifier below is bounded, and matches may only start at an identifier
 # boundary, so hostile input (e.g. a malicious server's stderr) cannot trigger
 # catastrophic backtracking.
@@ -138,6 +144,32 @@ def _redact_assignment(m: re.Match[str]) -> str:
     return m.group(0)
 
 
+def _scrub_pem(text: str) -> str:
+    """Replace each PEM private-key block (BEGIN to the nearest END, at most 16 KB)."""
+    if "-----BEGIN" not in text or "-----END" not in text:
+        return text
+    ends = [(m.start(), m.end()) for m in _PEM_END.finditer(text)]
+    if not ends:
+        return text
+    end_starts = [start for start, _ in ends]
+    pieces: list[str] = []
+    position = 0
+    for begin in _PEM_BEGIN.finditer(text):
+        if begin.start() < position:
+            continue  # inside a block that was already replaced
+        index = bisect.bisect_left(end_starts, begin.end())
+        if index == len(ends):
+            break  # no END after this BEGIN, so none after any later BEGIN either
+        end_start, end_end = ends[index]
+        if end_start - begin.end() > _PEM_MAX_BODY:
+            continue  # the nearest END is too far away to belong to this BEGIN
+        pieces.append(text[position : begin.start()])
+        pieces.append(REDACTED)
+        position = end_end
+    pieces.append(text[position:])
+    return "".join(pieces)
+
+
 def redact_text(text: str) -> str:
     """Scrub known secrets and secret-shaped substrings from free text."""
     if not text:
@@ -145,6 +177,7 @@ def redact_text(text: str) -> str:
     text = known_secrets.scrub(text)
     for pattern in _TOKEN_PATTERNS:
         text = pattern.sub(REDACTED, text)
+    text = _scrub_pem(text)
     text = _BEARER.sub(lambda m: f"{m.group(1)} {REDACTED}", text)
     text = _URL_USERINFO.sub(lambda m: f"{m.group(1)}:{REDACTED}@", text)
     text = _ASSIGNMENT_IN_TEXT.sub(_redact_assignment, text)
