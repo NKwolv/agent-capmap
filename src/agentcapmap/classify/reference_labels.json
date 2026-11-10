@@ -121,7 +121,7 @@
         "egress": "read any URL",
         "untrusted_input": "Read a webpage's full content"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "exa",
       "suspicious": false,
       "tags": {
@@ -153,7 +153,7 @@
       "evidence": {
         "data_access": "Get recently modified files in the vault"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -185,7 +185,7 @@
       "evidence": {
         "data_access": "analyze production errors"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "sentry",
       "suspicious": false,
       "tags": {
@@ -235,7 +235,7 @@
       "evidence": {
         "data_access": "Lists all files and directories in the root directory of your Obsidian vault"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -362,7 +362,7 @@
         "data_access": "Get the contents of a file or directory from a GitLab project",
         "untrusted_input": "Get the contents of a file or directory from a GitLab project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "gitlab",
       "suspicious": false,
       "tags": {
@@ -443,7 +443,7 @@
       "evidence": {
         "data_access": "Get most recent periodic notes"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -459,7 +459,7 @@
       "evidence": {
         "data_access": "Get some personal information about the user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "qdrant",
       "suspicious": false,
       "tags": {
@@ -554,7 +554,7 @@
       "evidence": {
         "data_access": "List public or pre-defined channels in the workspace"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "slack",
       "suspicious": false,
       "tags": {
@@ -570,7 +570,7 @@
       "evidence": {
         "data_access": "Read the complete contents of a file"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -708,7 +708,7 @@
       "evidence": {
         "data_access": "Read the complete contents of a file from the file system"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -741,7 +741,7 @@
       "evidence": {
         "data_access": "Complex search for documents"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -789,7 +789,7 @@
       "evidence": {
         "mutation": "Add new observations to existing entities"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "memory",
       "suspicious": false,
       "tags": {
@@ -853,7 +853,7 @@
         "egress": "Create a new GitLab project",
         "mutation": "Create a new GitLab project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "gitlab",
       "suspicious": false,
       "tags": {
@@ -885,7 +885,7 @@
       "evidence": {
         "data_access": "Get a recursive tree view of files and directories"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -996,7 +996,7 @@
       "evidence": {
         "mutation": "Add a reaction emoji to a message"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "slack",
       "suspicious": false,
       "tags": {
@@ -1028,7 +1028,7 @@
       "evidence": {
         "mutation": "Delete a file or directory from the vault"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -1095,7 +1095,7 @@
       "evidence": {
         "mutation": "Create a new directory"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -1111,7 +1111,7 @@
       "evidence": {
         "data_access": "Find organizations that the user has access to in Sentry"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "sentry",
       "suspicious": false,
       "tags": {
@@ -1127,7 +1127,7 @@
       "evidence": {
         "data_access": "Shows changes in the working directory"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -1301,7 +1301,7 @@
       "evidence": {
         "mutation": "Append content to a new or existing file"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -1317,7 +1317,7 @@
       "evidence": {
         "untrusted_input": "Ask any question about a GitHub repository's codebase"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "deepwiki",
       "suspicious": false,
       "tags": {
@@ -1380,7 +1380,7 @@
     },
     "3d0b8a91b3428ed08cb4331ddd97486e670a79fbf6071004cdc386fa5a58d3f5": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "time",
       "suspicious": false,
       "tags": {
@@ -1412,7 +1412,7 @@
       "evidence": {
         "untrusted_input": "View documentation about a GitHub repository"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "deepwiki",
       "suspicious": false,
       "tags": {
@@ -1523,7 +1523,7 @@
       "evidence": {
         "data_access": "Recursively search for files and directories matching a pattern"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -1713,7 +1713,7 @@
       "evidence": {
         "data_access": "Get a detailed listing of all files and directories"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -1777,7 +1777,7 @@
       "evidence": {
         "data_access": "Get detailed profile information for a specific user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "slack",
       "suspicious": false,
       "tags": {
@@ -1793,7 +1793,7 @@
       "evidence": {
         "data_access": "Read the contents of multiple files simultaneously"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -1972,7 +1972,7 @@
       "evidence": {
         "untrusted_input": "Search the web for any topic"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "exa",
       "suspicious": false,
       "tags": {
@@ -2032,7 +2032,7 @@
       "evidence": {
         "mutation": "Fork a GitLab project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "gitlab",
       "suspicious": false,
       "tags": {
@@ -2160,7 +2160,7 @@
       "evidence": {
         "data_access": "Simple search for documents matching a specified text query across all files in the vault"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -2275,7 +2275,7 @@
       "evidence": {
         "data_access": "Read a file and return it as a base64-encoded content block"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -2308,7 +2308,7 @@
       "evidence": {
         "data_access": "Get a list of all users in the workspace"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "slack",
       "suspicious": false,
       "tags": {
@@ -2324,7 +2324,7 @@
       "evidence": {
         "mutation": "Insert content into an existing note"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -2405,7 +2405,7 @@
       "evidence": {
         "untrusted_input": "Ratings and review counts"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "brave-search",
       "suspicious": false,
       "tags": {
@@ -2455,7 +2455,7 @@
       "evidence": {
         "data_access": "Get a detailed listing of all files and directories in a specified path, including sizes"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -2537,7 +2537,7 @@
       "evidence": {
         "data_access": "Shows differences between branches or commits"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -2600,7 +2600,7 @@
       "evidence": {
         "data_access": "Find all notes carrying a specific tag"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -2616,7 +2616,7 @@
       "evidence": {
         "data_access": "Return just the YAML frontmatter of a note"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -2632,7 +2632,7 @@
       "evidence": {
         "mutation": "Create multiple new entities in the knowledge graph"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "memory",
       "suspicious": false,
       "tags": {
@@ -2665,7 +2665,7 @@
       "evidence": {
         "data_access": "Retrieve detailed metadata about a file or directory"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -2682,7 +2682,7 @@
         "data_access": "Execute an available Sentry MCP tool",
         "mutation": "Execute an available Sentry MCP tool"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "sentry",
       "suspicious": false,
       "tags": {
@@ -2826,7 +2826,7 @@
       "evidence": {
         "mutation": "Update a Sentry issue's status or assignment"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "sentry",
       "suspicious": false,
       "tags": {
@@ -2842,7 +2842,7 @@
       "evidence": {
         "untrusted_input": "Search the web for current information"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "tavily",
       "suspicious": false,
       "tags": {
@@ -2890,7 +2890,7 @@
       "evidence": {
         "data_access": "Shows the commit logs"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -2907,7 +2907,7 @@
         "data_access": "Fetch a Sentry resource by URL",
         "untrusted_input": "agent conversations, replays"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "sentry",
       "suspicious": false,
       "tags": {
@@ -2923,7 +2923,7 @@
       "evidence": {
         "mutation": "completely overwrite an existing file"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -2937,7 +2937,7 @@
     },
     "7c1dfc139fc2704e3bfea219d85a8295183a06a0551bf5fea83b27abe281594b": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "time",
       "suspicious": false,
       "tags": {
@@ -2997,7 +2997,7 @@
       "evidence": {
         "data_access": "Shows changes that are staged for commit"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -3043,7 +3043,7 @@
       "evidence": {
         "mutation": "Unstages all staged changes"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -3060,7 +3060,7 @@
         "egress": "Reply to a specific message thread in Slack",
         "mutation": "Reply to a specific message thread"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "slack",
       "suspicious": false,
       "tags": {
@@ -3139,7 +3139,7 @@
       "evidence": {
         "untrusted_input": "returns matching libraries"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "context7",
       "suspicious": false,
       "tags": {
@@ -3156,7 +3156,7 @@
         "egress": "Create a new issue in a GitLab project",
         "mutation": "Create a new issue"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "gitlab",
       "suspicious": false,
       "tags": {
@@ -3235,7 +3235,7 @@
       "evidence": {
         "data_access": "Lists all files and directories that exist in a specific Obsidian directory"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -3285,7 +3285,7 @@
       "evidence": {
         "mutation": "Delete multiple entities and their associated relations"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "memory",
       "suspicious": false,
       "tags": {
@@ -3349,7 +3349,7 @@
       "evidence": {
         "data_access": "Get current periodic note"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -3412,7 +3412,7 @@
       "evidence": {
         "untrusted_input": "documentation topics for a GitHub repository"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "deepwiki",
       "suspicious": false,
       "tags": {
@@ -3490,7 +3490,7 @@
         "egress": "Extract content from URLs",
         "untrusted_input": "Extract content from URLs"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "tavily",
       "suspicious": false,
       "tags": {
@@ -3617,7 +3617,7 @@
       "evidence": {
         "mutation": "Create multiple new relations between entities"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "memory",
       "suspicious": false,
       "tags": {
@@ -3698,7 +3698,7 @@
       "evidence": {
         "mutation": "Creates a new branch"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -3765,7 +3765,7 @@
         "egress": "Post a new message to a Slack channel",
         "mutation": "Post a new message"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "slack",
       "suspicious": false,
       "tags": {
@@ -3846,7 +3846,7 @@
         "egress": "Crawl a website starting from a URL",
         "untrusted_input": "Crawl a website starting from a URL"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "tavily",
       "suspicious": false,
       "tags": {
@@ -3947,7 +3947,7 @@
         "data_access": "Search Sentry events and replays",
         "untrusted_input": "Search Sentry events and replays"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "sentry",
       "suspicious": false,
       "tags": {
@@ -3963,7 +3963,7 @@
       "evidence": {
         "mutation": "Keep the memory for later use"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "qdrant",
       "suspicious": false,
       "tags": {
@@ -3979,7 +3979,7 @@
       "evidence": {
         "mutation": "Create a new branch"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "gitlab",
       "suspicious": false,
       "tags": {
@@ -4028,7 +4028,7 @@
       "evidence": {
         "mutation": "Delete specific observations from entities"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "memory",
       "suspicious": false,
       "tags": {
@@ -4094,7 +4094,7 @@
       "evidence": {
         "data_access": "Shows the working tree status"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -4144,7 +4144,7 @@
       "evidence": {
         "data_access": "Return the contents of multiple files in your vault"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -4161,7 +4161,7 @@
         "data_access": "Get all replies in a message thread",
         "untrusted_input": "Get all replies in a message thread"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "slack",
       "suspicious": false,
       "tags": {
@@ -4193,7 +4193,7 @@
       "evidence": {
         "mutation": "Switches branches"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -4226,7 +4226,7 @@
         "egress": "in a GitLab project",
         "mutation": "Create or update a single file"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "gitlab",
       "suspicious": false,
       "tags": {
@@ -4259,7 +4259,7 @@
         "egress": "Create a new merge request in a GitLab project",
         "mutation": "Create a new merge request"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "gitlab",
       "suspicious": false,
       "tags": {
@@ -4291,7 +4291,7 @@
       "evidence": {
         "mutation": "Delete multiple relations from the knowledge graph"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "memory",
       "suspicious": false,
       "tags": {
@@ -4340,7 +4340,7 @@
       "evidence": {
         "data_access": "Open specific nodes in the knowledge graph"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "memory",
       "suspicious": false,
       "tags": {
@@ -4388,7 +4388,7 @@
         "execution": "Run a process on this win32 machine",
         "mutation": "Run a process"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "commands",
       "suspicious": false,
       "tags": {
@@ -4437,7 +4437,7 @@
       "evidence": {
         "mutation": "Records changes to the repository"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -4519,7 +4519,7 @@
       "evidence": {
         "data_access": "Read the entire knowledge graph"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "memory",
       "suspicious": false,
       "tags": {
@@ -4776,7 +4776,7 @@
       "evidence": {
         "mutation": "Move or rename files and directories"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -4806,7 +4806,7 @@
       "evidence": {
         "data_access": "List Git branches"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -4854,7 +4854,7 @@
       "evidence": {
         "data_access": "Return the content of a single file in your vault"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -4887,7 +4887,7 @@
       "evidence": {
         "untrusted_input": "gather information from multiple sources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "tavily",
       "suspicious": false,
       "tags": {
@@ -4937,7 +4937,7 @@
       "evidence": {
         "data_access": "Run a read-only SQL query"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "postgres",
       "suspicious": false,
       "tags": {
@@ -4987,7 +4987,7 @@
       "evidence": {
         "data_access": "Shows the contents of a commit"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -5019,7 +5019,7 @@
       "evidence": {
         "mutation": "COMPLETELY OVERWRITES the content of an existing file"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "obsidian",
       "suspicious": false,
       "tags": {
@@ -5052,7 +5052,7 @@
       "evidence": {
         "data_access": "Find projects in Sentry"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "sentry",
       "suspicious": false,
       "tags": {
@@ -5248,7 +5248,7 @@
         "data_access": "Get recent messages from a channel",
         "untrusted_input": "Get recent messages from a channel"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "slack",
       "suspicious": false,
       "tags": {
@@ -5327,7 +5327,7 @@
       "evidence": {
         "untrusted_input": "Performs a web search"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "brave-search",
       "suspicious": false,
       "tags": {
@@ -5476,7 +5476,7 @@
         "data_access": "Search for grouped issues/problems in Sentry",
         "untrusted_input": "Search for grouped issues/problems in Sentry"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "sentry",
       "suspicious": false,
       "tags": {
@@ -5492,7 +5492,7 @@
       "evidence": {
         "untrusted_input": "Search for GitLab projects"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "gitlab",
       "suspicious": false,
       "tags": {
@@ -5516,7 +5516,7 @@
         "data_access": "none",
         "egress": "external",
         "execution": "none",
-        "mutation": "reversible_write",
+        "mutation": "destructive",
         "privilege": "none",
         "untrusted_input": false
       }
@@ -5572,14 +5572,14 @@
         "egress": "Push multiple files to a GitLab project",
         "mutation": "Push multiple files"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "gitlab",
       "suspicious": false,
       "tags": {
         "data_access": "none",
         "egress": "external",
         "execution": "none",
-        "mutation": "reversible_write",
+        "mutation": "destructive",
         "privilege": "none",
         "untrusted_input": false
       }
@@ -5714,7 +5714,7 @@
     },
     "f1cad252b87bcdadf90a2523e350cad45bcf636f559c5435ee76c7a79f195e0c": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "sequential-thinking",
       "suspicious": false,
       "tags": {
@@ -5730,7 +5730,7 @@
       "evidence": {
         "untrusted_input": "documentation and code examples from Context7 for any programming library"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "context7",
       "suspicious": false,
       "tags": {
@@ -5747,7 +5747,7 @@
         "egress": "starting from the base URL",
         "untrusted_input": "Returns a list of URLs found"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "tavily",
       "suspicious": false,
       "tags": {
@@ -5812,7 +5812,7 @@
       "evidence": {
         "mutation": "Adds file contents to the staging area"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "git",
       "suspicious": false,
       "tags": {
@@ -5826,7 +5826,7 @@
     },
     "f8d3d97b7c2f77048d995bcda96d5857c00e1b814e89536ecddcabefc10c1c3d": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "sentry",
       "suspicious": false,
       "tags": {
@@ -5842,7 +5842,7 @@
       "evidence": {
         "data_access": "Search for nodes in the knowledge graph"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "memory",
       "suspicious": false,
       "tags": {
@@ -5990,7 +5990,7 @@
       "evidence": {
         "mutation": "Make line-based edits to a text file"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {
@@ -6102,7 +6102,7 @@
     },
     "fe7d40d713a335fa54765eb86288cdd59c2a8eedc121f6156f45f9c96271c0e4": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "filesystem",
       "suspicious": false,
       "tags": {

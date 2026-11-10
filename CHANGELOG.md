@@ -8,14 +8,30 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
-- First human review of the eval labels: the maintainer reviewed `fetch` and `aws-api`
-  (3 tools) and decided the 8 calls that had open "Reviewer:" notes, confirming every
-  label as it was. The rest stay AI-reviewed; the README and eval notes say so.
+- Human review of the eval labels has begun: the maintainer decided the 8 calls that had
+  open "Reviewer:" notes (confirming every label as it was) and has reviewed whole files so
+  far (`python eval/review.py list` shows which). The rest stay AI-reviewed; the README and
+  eval notes say so.
 - `eval/review.py` helps a person review the eval labels: `list` ranks files by risk,
   `sheet` writes a worksheet with hints about possibly-missed capabilities, and `mark`
   records a finished human review (refuses `AI:` names; edits only the `labeling` block).
 - `.github/CODEOWNERS` for the security-sensitive paths (allowlist, policies, schemas,
   waivers, shipped labels, CI and release workflows, dependencies).
+
+### Changed
+
+- Reference labels: `push_files` in the github and gitlab servers is now `destructive`
+  (a push can overwrite files), consistent with `create_or_update_file`; agents using them
+  may see CAP-003 findings they did not see before.
+
+### Security
+
+- Redacting text that contains many `-----BEGIN ... PRIVATE KEY-----` markers could take
+  minutes for a maximum-size message: the old pattern rescanned up to 16 KB from every
+  marker (about 40 microseconds per character), so a hostile config or server reply could
+  stall a scan. PEM blocks are now found with a linear-time scan and a binary search
+  (O(n log n)), with identical results to the old pattern (checked against it on every
+  combination of marker fragments); a 216 KB case went from 9 s to 0.08 s.
 
 ## [0.3.0] - 2026-11-08
 

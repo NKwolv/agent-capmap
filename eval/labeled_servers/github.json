@@ -283,7 +283,7 @@
           "data_access": "none",
           "untrusted_input": false,
           "egress": "external",
-          "mutation": "reversible_write",
+          "mutation": "destructive",
           "execution": "none",
           "privilege": "none"
         },
@@ -292,7 +292,7 @@
           "egress": "Push multiple files to a GitHub repository"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Human review: was reversible_write; now destructive, consistent with create_or_update_file (a push can overwrite existing files)."
       }
     },
     {

@@ -18,8 +18,8 @@
     "status": "reviewed",
     "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
     "labeled_at": "2026-10-21",
-    "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
-    "reviewed_at": "2026-11-08"
+    "reviewed_by": "NKWolv",
+    "reviewed_at": "2026-11-10"
   },
   "tools": [
     {
@@ -655,7 +655,7 @@
           "mutation": "Execute an available Sentry MCP tool"
         },
         "suspicious": false,
-        "notes": "Generic dispatcher over the long-tail Sentry tool catalog, including project management."
+        "notes": "Generic dispatcher over the long-tail Sentry tool catalog, including project management. Human review: kept reversible_write; the definition names nothing destructive, so the label follows it."
       }
     }
   ]
