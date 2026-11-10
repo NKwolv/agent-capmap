@@ -18,8 +18,8 @@
     "status": "reviewed",
     "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
     "labeled_at": "2026-10-20",
-    "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
-    "reviewed_at": "2026-11-08"
+    "reviewed_by": "NKWolv",
+    "reviewed_at": "2026-11-10"
   },
   "tools": [
     {
@@ -546,17 +546,18 @@
       "label": {
         "tags": {
           "data_access": "private_read",
-          "untrusted_input": false,
+          "untrusted_input": true,
           "egress": "none",
           "mutation": "none",
           "execution": "none",
           "privilege": "none"
         },
         "evidence": {
-          "data_access": "Get list of commits"
+          "data_access": "Get list of commits",
+          "untrusted_input": "commits of a branch in a GitHub repository"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Human review: untrusted_input set (was false); commit messages come from contributors, like the PR and issue tools."
       }
     },
     {
@@ -797,7 +798,7 @@
           "untrusted_input": "Search for code across GitHub repositories"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Human review: kept without private_read (public-search semantics; the definition mentions nothing private)."
       }
     },
     {
@@ -862,7 +863,7 @@
           "untrusted_input": "Search for issues and pull requests across GitHub repositories"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Human review: kept without private_read (public-search semantics; the definition mentions nothing private)."
       }
     },
     {

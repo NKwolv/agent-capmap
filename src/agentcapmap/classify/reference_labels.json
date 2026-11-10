@@ -5,7 +5,7 @@
         "egress": "Create a review on a pull request",
         "mutation": "Create a review on a pull request"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -38,7 +38,7 @@
         "egress": "Create a new issue in a GitHub repository",
         "mutation": "Create a new issue"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -71,7 +71,7 @@
         "data_access": "Get details of a specific pull request",
         "untrusted_input": "Get details of a specific pull request"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -1144,7 +1144,7 @@
         "egress": "Update an existing issue in a GitHub repository",
         "mutation": "Update an existing issue"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -1235,7 +1235,7 @@
       "evidence": {
         "mutation": "Fork a GitHub repository"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -1635,7 +1635,7 @@
         "data_access": "Get the review comments on a pull request",
         "untrusted_input": "Get the review comments on a pull request"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -1956,7 +1956,7 @@
         "data_access": "List and filter repository pull requests",
         "untrusted_input": "List and filter repository pull requests"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -2111,7 +2111,7 @@
       "evidence": {
         "mutation": "Merge a pull request"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -2357,7 +2357,7 @@
       "evidence": {
         "mutation": "Create a new branch"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -2471,7 +2471,7 @@
       "evidence": {
         "untrusted_input": "Search for GitHub repositories"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -2715,7 +2715,7 @@
         "egress": "Add a comment to an existing issue",
         "mutation": "Add a comment to an existing issue"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -3429,7 +3429,7 @@
         "data_access": "Get the contents of a file or directory from a GitHub repository",
         "untrusted_input": "Get the contents of a file or directory from a GitHub repository"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -3507,7 +3507,7 @@
         "data_access": "Get details of a specific issue",
         "untrusted_input": "Get details of a specific issue"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -3524,7 +3524,7 @@
         "egress": "Create a new pull request in a GitHub repository",
         "mutation": "Create a new pull request"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -3540,7 +3540,7 @@
       "evidence": {
         "data_access": "Get the combined status of all status checks"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -3863,7 +3863,7 @@
         "data_access": "Get the reviews on a pull request",
         "untrusted_input": "Get the reviews on a pull request"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -3930,7 +3930,7 @@
       "evidence": {
         "mutation": "Update a pull request branch"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -4307,7 +4307,7 @@
       "evidence": {
         "untrusted_input": "Search for issues and pull requests across GitHub repositories"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -4582,7 +4582,7 @@
       "evidence": {
         "untrusted_input": "Search for code across GitHub repositories"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -4871,7 +4871,7 @@
         "egress": "Create a new GitHub repository",
         "mutation": "Create a new GitHub repository"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -5375,7 +5375,7 @@
         "data_access": "List issues in a GitHub repository",
         "untrusted_input": "List issues in a GitHub repository"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -5509,7 +5509,7 @@
         "egress": "Push multiple files to a GitHub repository",
         "mutation": "Push multiple files"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -5669,7 +5669,7 @@
         "data_access": "Get the list of files changed in a pull request",
         "untrusted_input": "files changed in a pull request"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -5686,7 +5686,7 @@
         "egress": "in a GitHub repository",
         "mutation": "Create or update a single file"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -5763,7 +5763,7 @@
       "evidence": {
         "untrusted_input": "Search for users on GitHub"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -5955,9 +5955,10 @@
     },
     "fc449a6a26ccabba9a9ab74c955cbc92f151b5f70752957cde0fa12912f7a7ac": {
       "evidence": {
-        "data_access": "Get list of commits"
+        "data_access": "Get list of commits",
+        "untrusted_input": "commits of a branch in a GitHub repository"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "github",
       "suspicious": false,
       "tags": {
@@ -5966,7 +5967,7 @@
         "execution": "none",
         "mutation": "none",
         "privilege": "none",
-        "untrusted_input": false
+        "untrusted_input": true
       }
     },
     "fc8c35ba481d0124a970d499940adfe71a34c35ac7394cc4bafbf63026f3fc84": {
