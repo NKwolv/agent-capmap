@@ -240,10 +240,10 @@ _OLD_PEM = re.compile(
     r"-----END [A-Z ]{0,40}PRIVATE KEY-----"
 )
 _PEM_PIECES = [
-    "-----BEGIN PRIVATE KEY-----",
-    "-----END PRIVATE KEY-----",
-    "-----BEGIN RSA PRIVATE KEY-----",
-    "-----END RSA PRIVATE KEY-----",
+    "-----BEGIN FAKE PRIVATE KEY-----",
+    "-----END FAKE PRIVATE KEY-----",
+    "-----BEGIN FAKE RSA PRIVATE KEY-----",
+    "-----END FAKE RSA PRIVATE KEY-----",
     "x",
     "-----BEGIN PUBLIC KEY-----",
 ]
@@ -266,29 +266,31 @@ def test_pem_scrubbing_matches_the_old_regex_on_every_combination() -> None:
 def test_pem_body_window_matches_the_old_regex(body: int) -> None:
     from agentcapmap.redact import REDACTED, _scrub_pem
 
-    text = "a-----BEGIN PRIVATE KEY-----" + "z" * body + "-----END PRIVATE KEY-----b"
+    text = "a-----BEGIN FAKE PRIVATE KEY-----" + "z" * body + "-----END FAKE PRIVATE KEY-----b"
     assert _scrub_pem(text) == _OLD_PEM.sub(REDACTED, text)
     assert (REDACTED in _scrub_pem(text)) == (body <= 16384)  # the window is exactly 16 KB
 
 
 def test_pem_blocks_are_redacted_and_surrounding_text_is_kept() -> None:
-    block = "-----BEGIN RSA PRIVATE KEY-----\nMIIfakefakefake\n-----END RSA PRIVATE KEY-----"
+    block = (
+        "-----BEGIN FAKE RSA PRIVATE KEY-----\nMIIfakefakefake\n-----END FAKE RSA PRIVATE KEY-----"
+    )
     out = redact_text(f"before {block} middle {block} after")
     assert "MIIfake" not in out and "BEGIN" not in out
     assert out.startswith("before ") and " middle " in out and out.endswith(" after")
 
 
 def test_a_lone_begin_or_end_marker_is_left_alone() -> None:
-    assert "BEGIN" in redact_text("-----BEGIN PRIVATE KEY----- no end here")
-    assert "END" in redact_text("just an -----END PRIVATE KEY----- marker")
+    assert "BEGIN" in redact_text("-----BEGIN FAKE PRIVATE KEY----- no end here")
+    assert "END" in redact_text("just an -----END FAKE PRIVATE KEY----- marker")
 
 
 def test_a_huge_message_of_repeated_markers_is_redacted_quickly() -> None:
     """The old pattern cost ~40 microseconds per character here: minutes at maximum size."""
     for hostile in (
-        "-----BEGIN PRIVATE KEY-----" * 100_000,
-        "-----BEGIN PRIVATE KEY-----abc-----END PRIVATE KEY-----" * 50_000,
-        "-----END PRIVATE KEY-----" * 100_000,
+        "-----BEGIN FAKE PRIVATE KEY-----" * 100_000,
+        "-----BEGIN FAKE PRIVATE KEY-----abc-----END FAKE PRIVATE KEY-----" * 50_000,
+        "-----END FAKE PRIVATE KEY-----" * 100_000,
     ):
         start = time.process_time()  # CPU time: not fooled by a busy machine
         redact_text(hostile)
@@ -296,7 +298,7 @@ def test_a_huge_message_of_repeated_markers_is_redacted_quickly() -> None:
 
 
 def test_pem_cost_grows_linearly_not_quadratically() -> None:
-    unit = "-----BEGIN PRIVATE KEY-----"
+    unit = "-----BEGIN FAKE PRIVATE KEY-----"
 
     def cost(repeats: int) -> float:
         text = unit * repeats

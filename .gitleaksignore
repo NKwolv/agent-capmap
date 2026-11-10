@@ -5,3 +5,11 @@
 # Since replaced (tests/fake_secrets.py PATH_SECRET, tests/test_redact.py JWT sample).
 bc368719f073b650f42dd721394bfa5db74c4f75:tests/test_redact.py:jwt:39
 bc368719f073b650f42dd721394bfa5db74c4f75:tests/fake_secrets.py:generic-api-key:13
+#
+# 3d22e23 (PEM redaction tests): synthetic private-key marker strings in test code, with no
+# key material at all. They did not yet contain "fake"; the next commit rewrote them with
+# FAKE markers, so nothing flaggable remains in the current tree.
+3d22e237807a0fbb94556ec6f7fb29a897f1ac89:tests/test_hardening.py:private-key:243
+3d22e237807a0fbb94556ec6f7fb29a897f1ac89:tests/test_hardening.py:private-key:269
+3d22e237807a0fbb94556ec6f7fb29a897f1ac89:tests/test_hardening.py:private-key:282
+3d22e237807a0fbb94556ec6f7fb29a897f1ac89:tests/test_hardening.py:private-key:289
