@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-11-10
+
 ### Added
 
 - Human review of the eval labels has begun: the maintainer decided the 8 calls that had
