@@ -16,13 +16,16 @@ reviewed) by a person.
 
 Labels were **drafted by an AI model**, then **reviewed by a second AI model** (2026-11-08,
 at the maintainer's request): 6 tags were corrected (see the `notes` starting with
-"Review:") and every file was marked `reviewed` with `reviewed_by` beginning `AI:`. A person
-has since gone through some files and replaced that with their name (`python eval/review.py
-list` shows which); the rest are **still AI-reviewed**. A model grading a model can overstate
-accuracy, so `run_eval.py` adds an **AI-REVIEWED** banner to results while any reviewer
-is an AI, and marks results **PROVISIONAL** while any file is still a draft. When a
-person reviews a file, replace `reviewed_by` with their name (no `AI:` prefix) and
-re-run `scripts/build_reference_labels.py`.
+"Review:"). The maintainer then went through **every tool in every file** (November 2026),
+with AI-prepared summaries and recommendations: 8 tags were changed and the rest confirmed
+(see the `notes` starting with "Human review:"), and each file now names the person in
+`reviewed_by` (`python eval/review.py list` shows the state). This is a person's review but
+**not an independent one**: the labels began as AI output and the review leaned on AI
+recommendations, so a model grading itself can still overstate accuracy. `run_eval.py`
+adds an **AI-REVIEWED** banner to results while any `reviewed_by` starts with `AI:`, and
+marks results **PROVISIONAL** while any file is still a draft. A file's `reviewed_by` should
+be replaced with a person's name (no `AI:` prefix) only after they have been through every
+tool in it; then re-run `scripts/build_reference_labels.py`.
 
 The evaluation never uses the shipped reference labels (they come from these same
 files); `run_eval.py` always classifies with an empty reference table.

@@ -21,7 +21,7 @@
       "evidence": {
         "mutation": "Rebases a development branch on production"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -54,7 +54,7 @@
       "evidence": {
         "untrusted_input": "Returns the title, abstract, authors"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -137,7 +137,7 @@
       "evidence": {
         "untrusted_input": "Take a screenshot of the current page"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -169,7 +169,7 @@
       "evidence": {
         "data_access": "Lists Heroku Private Spaces with CIDR blocks"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -313,7 +313,7 @@
     },
     "0c8c90dcfdf1a2f22a3b0e58933210ef94b38fc86064bc6cf80b73bb9ac2919e": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -329,7 +329,7 @@
       "evidence": {
         "data_access": "Lists all Edge Functions in a Supabase project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -345,7 +345,7 @@
       "evidence": {
         "data_access": "Get add-on details: plan, state, billing"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -411,7 +411,7 @@
         "data_access": "App logs",
         "untrusted_input": "App logs"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -427,7 +427,7 @@
       "evidence": {
         "mutation": "Restores a Supabase project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -473,7 +473,7 @@
     },
     "166c339be6b49ea0bebb4c30facf84d14417396d98c511824f7f8e47cd70fb0f": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -489,7 +489,7 @@
       "evidence": {
         "data_access": "Monitor active queries"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -505,7 +505,7 @@
       "evidence": {
         "mutation": "Deletes a development branch"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -521,7 +521,7 @@
       "evidence": {
         "mutation": "Create app"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -538,7 +538,7 @@
         "egress": "webhook",
         "mutation": "Patch an existing monitor by ID"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -586,7 +586,7 @@
       "evidence": {
         "mutation": "Any untracked data or schema changes will be lost"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -600,7 +600,7 @@
     },
     "1adfffa74a1d2e43cf4af2ea5cbd5775dc8eb2b9361ea749b9524e9354ab7865": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -616,7 +616,7 @@
       "evidence": {
         "data_access": "Gets all publishable API keys for a project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -632,7 +632,7 @@
       "evidence": {
         "data_access": "Retrieve a database"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -646,7 +646,7 @@
     },
     "1bbd146c7a84c821e30d1538b3af284b9129ad7838941dc1298a18b9bd72d4df": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -662,7 +662,7 @@
       "evidence": {
         "mutation": "Enable maintenance mode"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -676,7 +676,7 @@
     },
     "1c15075fd7e4ca51ddd749adbb4d0c2a3c21bc03a70e5848fe260b8233b642fb": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -692,7 +692,7 @@
       "evidence": {
         "mutation": "This operation cannot be undone"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -725,7 +725,7 @@
         "egress": "Update page properties",
         "mutation": "delete a block"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -773,7 +773,7 @@
       "evidence": {
         "mutation": "Manage backups: schedules, status, verification, recovery"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -819,7 +819,7 @@
       "evidence": {
         "mutation": "Restart Heroku app processes"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -869,7 +869,7 @@
       "evidence": {
         "mutation": "Creates a new Supabase project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -933,7 +933,7 @@
     },
     "26cb146f87fa07b20f0fc9fc77844063fb8696ca94b733669958d0ad579bca6e": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -963,7 +963,7 @@
       "evidence": {
         "egress": "Type text into editable element"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -980,7 +980,7 @@
         "data_access": "Drop files",
         "egress": "Drop files or MIME-typed data onto an element"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -1012,7 +1012,7 @@
       "evidence": {
         "data_access": "Lists all migrations in the database"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -1045,7 +1045,7 @@
         "data_access": "Query a data source",
         "untrusted_input": "Query a data source"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -1158,7 +1158,7 @@
     },
     "30ad4fb088ae3823a175332bf295f7916c883d292464a73d102ff4e019752674": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -1174,7 +1174,7 @@
       "evidence": {
         "mutation": "Disable maintenance mode"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -1219,7 +1219,7 @@
     },
     "340b1f848787fff8c5d96c73ea2f2b921136fd247f7c8b3f92fd03318f06099d": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -1268,7 +1268,7 @@
       "evidence": {
         "data_access": "Lists all Supabase projects for the user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -1333,7 +1333,7 @@
       "evidence": {
         "data_access": "Track maintenance"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -1366,7 +1366,7 @@
       "evidence": {
         "data_access": "List templates in a data source"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -1396,7 +1396,7 @@
       "evidence": {
         "untrusted_input": "Retrieve in-body passages from one paper"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -1443,7 +1443,7 @@
     },
     "3e964327512ae36b6a098a352e1b07ef8a6d73ebe1d0eabea7e767af52502108": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -1476,7 +1476,7 @@
       "evidence": {
         "data_access": "Retrieve a user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -1493,7 +1493,7 @@
         "egress": "Append block children",
         "mutation": "Append block children"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -1571,7 +1571,7 @@
     },
     "42ffdf5ad42cf9f31457caacbe57d01e352a41f8b4754e5f6ec11f26d4aa7f94": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -1588,7 +1588,7 @@
         "egress": "Update a page's content as Markdown",
         "mutation": "Update a page's content as Markdown"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -1602,7 +1602,7 @@
     },
     "43d376a153394f4c89e2de4b68da5cfcd77035ce6dce2e207a32e72ef3b58392": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -1649,7 +1649,7 @@
     },
     "4632b2cd556a69206771e4e7800d2590c1981e891aa697e89affc98b7f72080e": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -1681,7 +1681,7 @@
       "evidence": {
         "mutation": "Scale Heroku app dynos"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -1697,7 +1697,7 @@
       "evidence": {
         "data_access": "Retrieves file contents for an Edge Function"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -1730,7 +1730,7 @@
         "mutation": "Set a specific configuration value by key",
         "privilege": "allows full access to the entire file system"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -1809,7 +1809,7 @@
       "evidence": {
         "data_access": "Retrieve one monitor by ID"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -1826,7 +1826,7 @@
         "egress": "Start a multi-page crawl at a website URL",
         "untrusted_input": "Start a multi-page crawl at a website URL"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -1879,7 +1879,7 @@
         "execution": "Run code/commands in Heroku one-off dyno",
         "mutation": "Run code/commands"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -1895,7 +1895,7 @@
       "evidence": {
         "mutation": "Creates a development branch"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -1909,7 +1909,7 @@
     },
     "5025c1238e23aec3311704688b88770214325bbed8357d0ddb3f6bef8aa02115": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -1923,7 +1923,7 @@
     },
     "5479893d04a42f62d4f99d8d7876c9e4266d4ba6af7f0504b28fe0fddb949312": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -1988,7 +1988,7 @@
       "evidence": {
         "untrusted_input": "Returns a numbered list of network requests"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -2002,7 +2002,7 @@
     },
     "5b0fc59772483edaef923d6c8c8197de9c6dfff2befc33759543546dbfa1c0f0": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -2016,7 +2016,7 @@
     },
     "5b9c5f87eed94dbf5fbef14f60e5c63d2d285fe93117ba45f23bc6f3cf980123": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -2049,7 +2049,7 @@
         "execution": "Deploys new/existing apps",
         "mutation": "Deploys new/existing apps"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -2065,7 +2065,7 @@
       "evidence": {
         "data_access": "Get more results from an active search"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -2095,7 +2095,7 @@
     },
     "5ea47d50cd2d3e0365ad65043ce9ac93e974f612c1c265d5f388817e1e252ffb": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -2144,7 +2144,7 @@
       "evidence": {
         "untrusted_input": "final results for a `firecrawl_agent` job ID"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -2176,7 +2176,7 @@
       "evidence": {
         "data_access": "List historical checks for a monitor"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -2211,7 +2211,7 @@
         "egress": "Read contents from files and URLs",
         "untrusted_input": "Read contents from files and URLs"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -2245,7 +2245,7 @@
         "execution": "executes arbitrary JavaScript in the Playwright server process",
         "mutation": "RCE-equivalent"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -2259,7 +2259,7 @@
     },
     "654e45227b9056561c693eb3451de53b25361d1c9acd159c8349588015ad9893": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -2292,7 +2292,7 @@
         "egress": "seed `urls`",
         "untrusted_input": "navigates, reads pages"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -2341,7 +2341,7 @@
         "execution": "Send input to an existing terminal or REPL process",
         "mutation": "Send input to an existing terminal or REPL process"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -2373,7 +2373,7 @@
       "evidence": {
         "data_access": "Find resource-heavy queries"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -2389,7 +2389,7 @@
       "evidence": {
         "data_access": "List all users"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -2439,7 +2439,7 @@
         "data_access": "unified logs stream",
         "untrusted_input": "unified logs stream"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -2488,7 +2488,7 @@
         "egress": "Enumerate URLs indexed under one website",
         "untrusted_input": "Enumerate URLs indexed under one website"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -2569,7 +2569,7 @@
     },
     "6baef26ea2a4b522ef587ce52b434327d9db3db171a045303c3aac7ff2a522c1": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -2650,7 +2650,7 @@
         "egress": "Navigate to a URL",
         "untrusted_input": "Navigate to a URL"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -2699,7 +2699,7 @@
       "evidence": {
         "mutation": "Promotes apps between pipeline stages"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -2763,7 +2763,7 @@
         "data_access": "Upload one or multiple files",
         "egress": "Upload one or multiple files"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -2811,7 +2811,7 @@
       "evidence": {
         "data_access": "Read the contents of multiple files simultaneously"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -2859,7 +2859,7 @@
       "evidence": {
         "untrusted_input": "Search paper metadata and abstracts"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -2968,7 +2968,7 @@
       "evidence": {
         "data_access": "Lists all development branches"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -3012,7 +3012,7 @@
     },
     "807a759bbb7e064fce3b9d9fa4c03f58641c5f3679d9f472797b02a007dbdfa6": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -3028,7 +3028,7 @@
       "evidence": {
         "data_access": "Generates TypeScript types for a project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -3094,7 +3094,7 @@
       "evidence": {
         "mutation": "Stop processes: stuck queries, blocking transactions"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -3108,7 +3108,7 @@
     },
     "8199a59c0c625938ccf32d5dde0c53ef5531be1c2620d1f5fee8cad8e67b316b": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -3124,7 +3124,7 @@
       "evidence": {
         "data_access": "Retrieve a data source"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -3173,7 +3173,7 @@
       "evidence": {
         "untrusted_input": "Returns all console messages"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -3189,7 +3189,7 @@
       "evidence": {
         "mutation": "Pauses a Supabase project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -3220,7 +3220,7 @@
     },
     "8644dd166ff7cf093829a74f4c97137afce081b9eab48ed4c75788200afe64af": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -3253,7 +3253,7 @@
         "data_access": "Retrieve block children",
         "untrusted_input": "Retrieve block children"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -3270,7 +3270,7 @@
         "data_access": "Retrieve comments",
         "untrusted_input": "Retrieve comments"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -3302,7 +3302,7 @@
       "evidence": {
         "mutation": "Creates new Heroku deployment pipeline"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -3318,7 +3318,7 @@
       "evidence": {
         "untrusted_input": "Returns full details (headers and body) of a single network request"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -3334,7 +3334,7 @@
       "evidence": {
         "mutation": "Delete a block"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -3458,7 +3458,7 @@
     },
     "8e8dbe8cae07d4f84022e2afa3f175503d11817078c30f6323681435ce383d66": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -3474,7 +3474,7 @@
       "evidence": {
         "mutation": "Create add-on"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -3555,7 +3555,7 @@
     },
     "9265fe1e33fea0b791a7987c1da723d0260fb0bb87b604aecddeafc8bb605580": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -3569,7 +3569,7 @@
     },
     "94ceb3170ee46bd30ec84b92b2841b57f09e97c5438c789255ddb97e608a2b95": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -3585,7 +3585,7 @@
       "evidence": {
         "data_access": "List and monitor Heroku app dynos"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -3602,7 +3602,7 @@
         "data_access": "Retrieve a block",
         "untrusted_input": "Retrieve a block"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -3634,7 +3634,7 @@
       "evidence": {
         "data_access": "Start a streaming search"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -3650,7 +3650,7 @@
       "evidence": {
         "data_access": "Lists all tables in one or more schemas"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -3666,7 +3666,7 @@
       "evidence": {
         "data_access": "Search by title"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -3813,7 +3813,7 @@
       "evidence": {
         "untrusted_input": "Capture accessibility snapshot of the current page"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -3830,7 +3830,7 @@
         "execution": "Deploys an Edge Function to a Supabase project",
         "mutation": "this will create a new version"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -3880,7 +3880,7 @@
       "evidence": {
         "untrusted_input": "available results for an existing crawl ID"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -3897,7 +3897,7 @@
         "egress": "can send configured email or webhook notifications",
         "mutation": "Create a recurring scrape, crawl, or search monitor"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -3997,7 +3997,7 @@
         "egress": "Create comment",
         "mutation": "Create comment"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -4013,7 +4013,7 @@
       "evidence": {
         "mutation": "Create a new PDF file or modify an existing one"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -4062,7 +4062,7 @@
       "evidence": {
         "data_access": "Get a detailed listing of all files and directories"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -4112,7 +4112,7 @@
         "data_access": "Retrieve a page as Markdown",
         "untrusted_input": "Retrieve a page as Markdown"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -4178,7 +4178,7 @@
       "evidence": {
         "untrusted_input": "GitHub issues"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -4210,7 +4210,7 @@
       "evidence": {
         "mutation": "Create a data source"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -4243,7 +4243,7 @@
       "evidence": {
         "data_access": "Get recent local tool call history with arguments and outputs"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -4276,7 +4276,7 @@
       "evidence": {
         "mutation": "Move or rename files and directories"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -4454,7 +4454,7 @@
       "evidence": {
         "data_access": "Local MCP reads `filePath` from the server filesystem"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -4470,7 +4470,7 @@
       "evidence": {
         "data_access": "Gets details for an organization"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -4486,7 +4486,7 @@
       "evidence": {
         "data_access": "Analyze locks"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -4504,7 +4504,7 @@
         "mutation": "Executes raw SQL",
         "untrusted_input": "This may return untrusted user data"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -4537,7 +4537,7 @@
         "data_access": "Retrieve one monitor check",
         "untrusted_input": "page-level results"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -4567,7 +4567,7 @@
     },
     "c37bb0b42aa5e8aa57a937abef4379c59e83c8b8a93274732b2afebe8e1725f8": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -4599,7 +4599,7 @@
       "evidence": {
         "egress": "Fill multiple form fields"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -4615,7 +4615,7 @@
       "evidence": {
         "data_access": "Retrieve detailed metadata about a file or directory"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -4632,7 +4632,7 @@
         "execution": "Evaluate JavaScript expression on page",
         "untrusted_input": "Evaluate JavaScript expression on page or element"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -4648,7 +4648,7 @@
       "evidence": {
         "data_access": "Lists all extensions in the database"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -4698,7 +4698,7 @@
       "evidence": {
         "untrusted_input": "Find citation-graph candidates"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -4791,7 +4791,7 @@
     },
     "cecc75a0afbde8ac631905e20cfeb414681a31d641e61ef7c32c3713e470b0eb": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -4823,7 +4823,7 @@
       "evidence": {
         "mutation": "Destructive statements may require the user to confirm"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -4839,7 +4839,7 @@
       "evidence": {
         "data_access": "Lists accessible Heroku pipelines"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -4905,7 +4905,7 @@
         "data_access": "Execute SQL queries",
         "mutation": "modify schema, manage data"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -5004,7 +5004,7 @@
       "evidence": {
         "data_access": "Retrieve a page property item"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -5069,7 +5069,7 @@
       "evidence": {
         "mutation": "Rename app"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -5085,7 +5085,7 @@
       "evidence": {
         "data_access": "List all running processes"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -5118,7 +5118,7 @@
       "evidence": {
         "data_access": "Gets a list of advisory notices for the Supabase project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -5134,7 +5134,7 @@
       "evidence": {
         "data_access": "Lists all organizations that the user is a member of"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -5148,7 +5148,7 @@
     },
     "d796e2b655520042909e843654958f9454fc80c91cd384ba58bb9c4ace38f03e": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -5180,7 +5180,7 @@
       "evidence": {
         "data_access": "Retrieve your token's bot user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -5199,7 +5199,7 @@
         "mutation": "persistent external side effects",
         "untrusted_input": "This acts on the live site"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -5215,7 +5215,7 @@
       "evidence": {
         "data_access": "List Heroku apps"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -5232,7 +5232,7 @@
         "data_access": "Retrieve a page",
         "untrusted_input": "Retrieve a page"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -5265,7 +5265,7 @@
       "evidence": {
         "untrusted_input": "Search the accessibility snapshot of the current page"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -5281,7 +5281,7 @@
       "evidence": {
         "data_access": "List add-ons: all apps or specific app"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -5295,7 +5295,7 @@
     },
     "dc62b0cf6b005a64a4f625fcd1c91c0f1d880b18b3fb9771db40db498cb808c9": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "playwright",
       "suspicious": false,
       "tags": {
@@ -5312,7 +5312,7 @@
         "data_access": "Manage access: credentials",
         "privilege": "Manage access: credentials, permissions"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -5359,7 +5359,7 @@
     },
     "de859e5b115cb86d63fa9df5f220b3b6a55905c90356b7122d3ef6b42d472fd4": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -5393,7 +5393,7 @@
         "egress": "Scrape one URL",
         "untrusted_input": "Scrape one URL and return its content"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -5426,7 +5426,7 @@
       "evidence": {
         "mutation": "Move a page"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -5443,7 +5443,7 @@
         "egress": "Update a block",
         "mutation": "archive (delete) a block"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -5460,7 +5460,7 @@
         "execution": "Start a terminal process on the authorized device",
         "mutation": "shell commands"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -5524,7 +5524,7 @@
     },
     "e5f8894e9898c072cf0d1b9bacc9546916e222ebf670c8e893f97876a793b863": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -5540,7 +5540,7 @@
       "evidence": {
         "data_access": "Get the complete server configuration"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -5556,7 +5556,7 @@
       "evidence": {
         "data_access": "View database status"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -5589,7 +5589,7 @@
       "evidence": {
         "data_access": "Gets details for a Supabase project"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -5605,7 +5605,7 @@
       "evidence": {
         "mutation": "forcefully terminate the specified process"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -5621,7 +5621,7 @@
       "evidence": {
         "data_access": "List monitors for the authenticated account"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -5637,7 +5637,7 @@
       "evidence": {
         "data_access": "Lists accessible Heroku Teams"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -5702,7 +5702,7 @@
     },
     "f0f6580e8c2141c617081d5ef3850e0a8d8ac7eb9f3d768662ee846bb4346467": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -5781,7 +5781,7 @@
       "evidence": {
         "mutation": "Merges migrations and edge functions from a development branch to production"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "supabase",
       "suspicious": false,
       "tags": {
@@ -5860,7 +5860,7 @@
       "evidence": {
         "data_access": "Get app details: config"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -5895,7 +5895,7 @@
       "evidence": {
         "mutation": "Apply surgical edits to files"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -5911,7 +5911,7 @@
       "evidence": {
         "mutation": "mode: 'rewrite'"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -5927,7 +5927,7 @@
       "evidence": {
         "mutation": "Update a data source"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -5943,7 +5943,7 @@
       "evidence": {
         "data_access": "Displays detailed pipeline configuration"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -5977,7 +5977,7 @@
         "egress": "Create a page",
         "mutation": "Create a page"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "notion",
       "suspicious": false,
       "tags": {
@@ -6009,7 +6009,7 @@
       "evidence": {
         "data_access": "current credit balance"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {
@@ -6025,7 +6025,7 @@
       "evidence": {
         "mutation": "Create a new directory"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "desktop-commander",
       "suspicious": false,
       "tags": {
@@ -6074,7 +6074,7 @@
       "evidence": {
         "mutation": "Upgrade PostgreSQL"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "heroku",
       "suspicious": false,
       "tags": {
@@ -6121,7 +6121,7 @@
       "evidence": {
         "untrusted_input": "Search web, news, or image sources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "firecrawl",
       "suspicious": false,
       "tags": {

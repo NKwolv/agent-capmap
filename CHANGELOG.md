@@ -8,6 +8,11 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- **All 28 eval label files are now reviewed by the maintainer**, tool by tool (381 tools),
+  with AI-prepared summaries: 8 tags changed (github and gitlab `push_files` and github
+  `list_commits`; the IAM detach/remove tools; Azure `foundryextensions` and
+  `extension_azqr`) and the rest confirmed. This is not an independent review, and the
+  README and eval notes say so. No accuracy numbers are published yet.
 - Reference labels, after the maintainer's review of `aws-iam` and `azure`: the IAM
   `detach_user_policy`, `detach_group_policy` and `remove_user_from_group` tools are now
   `destructive` (revoking access); Azure `foundryextensions` and `extension_azqr` gain

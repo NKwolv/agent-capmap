@@ -285,8 +285,11 @@ def test_run_eval_end_to_end_offline(tmp_path: Path) -> None:
     data = json.loads((tmp_path / "results.json").read_text(encoding="utf-8"))
     # Empty cache: nothing classified, so the run is honest about it.
     assert data["classifier"]["unclassified"] == data["classifier"]["tools"]
-    # Labels are reviewed, but by an AI model: the report must say so, not claim a person did.
+    # The report must state exactly how many files an AI (not a person) reviewed, however far
+    # the human review has got: it may not claim a person did, and it may not cry wolf.
+    servers = load_labeled_servers(root / "eval" / "labeled_servers")
+    expected = sum(1 for s in servers if (s.labeling.reviewed_by or "").startswith("AI:"))
     assert data["provisional"] is False
-    assert data["ai_reviewed_files"] > 0
-    assert "AI-REVIEWED labels" in results
+    assert data["ai_reviewed_files"] == expected
+    assert ("AI-REVIEWED labels" in results) == (expected > 0)
     assert "_To be written by a person" in results

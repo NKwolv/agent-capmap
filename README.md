@@ -51,7 +51,8 @@ what each tool can do, and applies policy-as-code rules to the **combination** o
 per agent. Findings come with evidence and can gate CI through SARIF and exit codes.
 
 > **Status: alpha.** All features below work. The classifier's accuracy has not been
-> benchmarked yet, and the bundled labels are AI-reviewed; see [Accuracy](#accuracy).
+> benchmarked yet, and the bundled labels were drafted by AI and reviewed by the
+> maintainer, not independently verified; see [Accuracy](#accuracy).
 
 ## Highlights
 
@@ -327,13 +328,14 @@ configs only, which is safe for pull requests from forks.
 
 The classifier is evaluated against hand-labeled tools from real MCP servers (see
 [`eval/`](https://github.com/NKwolv/agent-capmap/blob/main/eval/README.md)). **No accuracy numbers are published yet.** The 381 labels
-(28 servers) were drafted by one AI model and then reviewed by another AI model at the
-maintainer's request. A person has so far reviewed only some of the files
-(`python eval/review.py list` shows which); the rest are still AI-reviewed. A model grading
-a model can overstate accuracy, so numbers will be quoted here only after a person has
-reviewed the labels and the run is frozen (`python eval/run_eval.py`). The same labels
-also power classification without an API key for these known tools; see
-[Limitations](#limitations).
+(28 servers) were drafted by one AI model and corrected by a second. The maintainer then
+went through **every tool in every file**, with AI-prepared summaries and recommendations,
+and confirmed or changed each label (8 tags changed; the rest were confirmed). That is a
+person's review, but not an independent one: the labels began as AI output and the review
+leaned on AI recommendations, so a model grading itself can still overstate accuracy.
+Numbers will be quoted here only from a frozen run (`python eval/run_eval.py`, which needs
+an API key). The same labels also power classification without an API key for these known
+tools; see [Limitations](#limitations).
 
 ## Limitations
 
@@ -351,11 +353,12 @@ also power classification without an API key for these known tools; see
   live in config files (Claude Code plugins, claude.ai connectors, IDE built-in servers,
   managed settings) are not seen. WebSocket servers are listed but not enumerated.
   Token scopes are not visible.
-- **Reference labels are AI-reviewed.** For 381 tools from 28 well-known servers, the
-  classifier answers from bundled labels (matched by exact definition hash) instead of
-  calling a model, so no API key is needed. Those labels were reviewed by an AI model, and
-  only some files by a person so far, and a wrong label is returned with full confidence; any change to a
-  tool's definition falls back to the cache or the LLM. Treat them as a convenience.
+- **Reference labels are maintainer-reviewed, not independently verified.** For 381 tools
+  from 28 well-known servers, the classifier answers from bundled labels (matched by exact
+  definition hash) instead of calling a model, so no API key is needed. The maintainer
+  reviewed every tool, but the labels began as AI output, and a wrong label is returned with
+  full confidence; any change to a tool's definition falls back to the cache or the LLM.
+  Treat them as a convenience.
 - **Runtime discovery is heuristic.** `--running` recognizes servers by their command line
   and misses ones with unrelated names; a process can also be named to look like a
   declared server. It lists what it sees and is not proof of absence.
