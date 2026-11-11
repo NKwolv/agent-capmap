@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Reference labels, after the maintainer's review of `aws-iam` and `azure`: the IAM
+  `detach_user_policy`, `detach_group_policy` and `remove_user_from_group` tools are now
+  `destructive` (revoking access); Azure `foundryextensions` and `extension_azqr` gain
+  `reversible_write`. Both files are now human-reviewed.
+
 ## [0.3.1] - 2026-11-10
 
 ### Added

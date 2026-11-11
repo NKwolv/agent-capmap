@@ -18,8 +18,8 @@
     "status": "reviewed",
     "labeled_by": "draft: claude-opus-5-5 (AI), pending human review",
     "labeled_at": "2026-10-20",
-    "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
-    "reviewed_at": "2026-11-08"
+    "reviewed_by": "NKWolv",
+    "reviewed_at": "2026-11-11"
   },
   "tools": [
     {
@@ -2271,7 +2271,7 @@
           "data_access": "none",
           "untrusted_input": false,
           "egress": "none",
-          "mutation": "reversible_write",
+          "mutation": "destructive",
           "execution": "none",
           "privilege": "identity_admin"
         },
@@ -2280,7 +2280,7 @@
           "privilege": "Detach a managed policy from an IAM user"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Human review: was reversible_write; now destructive: removing a permission or membership is revoking access (taxonomy), consistent with delete_access_key."
       }
     },
     {
@@ -2321,7 +2321,7 @@
           "privilege": "Create a new access key"
         },
         "suspicious": false,
-        "notes": "Secret is redacted in the response, so data_access stays none."
+        "notes": "Secret is redacted in the response, so data_access stays none. Human review: kept data_access none; the secret is redacted in the response, the risk is carried by identity_admin."
       }
     },
     {
@@ -2701,7 +2701,7 @@
           "data_access": "none",
           "untrusted_input": false,
           "egress": "none",
-          "mutation": "reversible_write",
+          "mutation": "destructive",
           "execution": "none",
           "privilege": "identity_admin"
         },
@@ -2710,7 +2710,7 @@
           "privilege": "Remove a user from an IAM group"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Human review: was reversible_write; now destructive: removing a permission or membership is revoking access (taxonomy), consistent with delete_access_key."
       }
     },
     {
@@ -2795,7 +2795,7 @@
           "data_access": "none",
           "untrusted_input": false,
           "egress": "none",
-          "mutation": "reversible_write",
+          "mutation": "destructive",
           "execution": "none",
           "privilege": "identity_admin"
         },
@@ -2804,7 +2804,7 @@
           "privilege": "Detach a managed policy from an IAM group"
         },
         "suspicious": false,
-        "notes": ""
+        "notes": "Human review: was reversible_write; now destructive: removing a permission or membership is revoking access (taxonomy), consistent with delete_access_key."
       }
     },
     {

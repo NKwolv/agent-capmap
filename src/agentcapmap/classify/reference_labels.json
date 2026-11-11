@@ -87,7 +87,7 @@
       "evidence": {
         "data_access": "retrieving information about monitored Azure resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -104,7 +104,7 @@
         "data_access": "executing SQL queries",
         "mutation": "managing table schemas"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -202,7 +202,7 @@
         "mutation": "updates an existing one",
         "privilege": "Create or update an inline policy for an IAM role"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -219,7 +219,7 @@
         "data_access": "retrieving con",
         "mutation": "managing key-value pairs"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -251,7 +251,7 @@
       "evidence": {
         "data_access": "Retrieve the policy document for a managed policy"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -267,7 +267,7 @@
       "evidence": {
         "data_access": "Retrieve an inline policy for an IAM role"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -281,7 +281,7 @@
     },
     "0b0e76e3500db27a98d054d85e89779599786f6b8ea21d9059ac1e5ff011a16c": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -299,7 +299,7 @@
         "mutation": "managing permissions",
         "privilege": "managing Azure Role-Based Access Control (RBAC) resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -378,7 +378,7 @@
       "evidence": {
         "data_access": "List IAM users in the account"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -394,7 +394,7 @@
       "evidence": {
         "data_access": "Get detailed information about a specific IAM group"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -757,7 +757,7 @@
       "evidence": {
         "data_access": "List IAM groups in the account"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -803,7 +803,7 @@
     },
     "21bee38de725642864b39b349df987f655ca1aff0dd40be5b346f7a17fc971fc": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -836,7 +836,7 @@
         "mutation": "Delete an IAM user",
         "privilege": "Delete an IAM user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -902,7 +902,7 @@
         "data_access": "manage Azure File Sync resources",
         "mutation": "manage Azure File Sync resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -919,7 +919,7 @@
         "data_access": "querying tamper-proof ledger entries",
         "mutation": "appending and querying tamper-proof ledger entries"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -947,7 +947,7 @@
     },
     "26cd5f013f6e28df4dcd4cd00f86f38cd9e12e880337a5f92244ee645f5b6364": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1062,7 +1062,7 @@
         "data_access": "listing and managing Application Insights components",
         "mutation": "listing and managing Application Insights components"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1079,7 +1079,7 @@
         "data_access": "read, create, modify resources",
         "mutation": "read, create, modify resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1188,7 +1188,7 @@
     },
     "33dded39c511759698a141836d4bf8fbd23967d47591e18aa1475ba2635cd843": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1205,7 +1205,7 @@
         "mutation": "Create a new IAM group",
         "privilege": "Create a new IAM group"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -1252,7 +1252,7 @@
         "data_access": "managing and accessing Event Grid topics",
         "mutation": "managing and accessing Event Grid topics"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1285,7 +1285,7 @@
         "data_access": "user sessions",
         "mutation": "managing and accessing Azure Virtual Desktop resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1350,7 +1350,7 @@
         "data_access": "managing and accessing Azure Function App resources",
         "mutation": "managing and accessing Azure Function App resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1429,7 +1429,7 @@
         "mutation": "Add a user to an IAM group",
         "privilege": "Add a user to an IAM group"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -1460,7 +1460,7 @@
         "data_access": "listing, creating, updating, and deleting workbooks",
         "mutation": "deleting workbooks"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1540,7 +1540,7 @@
         "data_access": "managing Azure App Service resources including web apps, databases, and configurations",
         "mutation": "managing Azure App Service resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1557,14 +1557,14 @@
         "mutation": "Detach a managed policy from an IAM group",
         "privilege": "Detach a managed policy from an IAM group"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
         "data_access": "none",
         "egress": "none",
         "execution": "none",
-        "mutation": "reversible_write",
+        "mutation": "destructive",
         "privilege": "identity_admin",
         "untrusted_input": false
       }
@@ -1618,7 +1618,7 @@
       "evidence": {
         "data_access": "Retrieve an inline policy for an IAM user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -1665,7 +1665,7 @@
       "evidence": {
         "data_access": "List all resource groups in a subscription"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1744,7 +1744,7 @@
     },
     "4ad7440e2cc53c3895c824cb28e3178b35f945259d58e1602a630d668e6eecaf": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1761,7 +1761,7 @@
         "data_access": "listing and inspecting",
         "mutation": "creating, updating"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1843,7 +1843,7 @@
         "mutation": "Delete an IAM group",
         "privilege": "Delete an IAM group"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -1860,7 +1860,7 @@
         "data_access": "managing and accessing Azure Key Vault resources",
         "mutation": "managing and accessing Azure Key Vault resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -1939,7 +1939,7 @@
       "evidence": {
         "data_access": "listing SignalR services"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2081,7 +2081,7 @@
       "evidence": {
         "mutation": "resource provisioning"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2128,7 +2128,7 @@
         "egress": "supports sending SMS",
         "mutation": "sending SMS"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2193,7 +2193,7 @@
         "data_access": "listing Redis resources, databases, and data access policies",
         "mutation": "managing Azure Redis resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2228,7 +2228,7 @@
         "data_access": "listing container registries",
         "mutation": "managing registry configurations"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2422,7 +2422,7 @@
         "data_access": "querying and analyzing Azure Monitor logs and metrics",
         "untrusted_input": "logs"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2502,16 +2502,17 @@
     },
     "6b7d456adc8e9387ecf31788589a97d373c52b86ef22cc79ce3bcd300b74376b": {
       "evidence": {
-        "data_access": "generate compliance and security reports for Azure resources"
+        "data_access": "generate compliance and security reports for Azure resources",
+        "mutation": "Returns the generated report file path"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
         "data_access": "private_read",
         "egress": "none",
         "execution": "none",
-        "mutation": "none",
+        "mutation": "reversible_write",
         "privilege": "none",
         "untrusted_input": false
       }
@@ -2521,7 +2522,7 @@
         "data_access": "Includes CRUD operations",
         "mutation": "Includes CRUD operations"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2554,7 +2555,7 @@
         "egress": "executing performance tests",
         "mutation": "creating and managing load test resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2584,7 +2585,7 @@
       "evidence": {
         "data_access": "List IAM roles in the account"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -2729,7 +2730,7 @@
     },
     "72fc7747c81d66942d0ccaf705863f0bb5532acf43f4494a52d4b1dd37b508ac": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2745,7 +2746,7 @@
       "evidence": {
         "data_access": "diagnosing and troubleshooting Azure resource issues"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2778,7 +2779,7 @@
       "evidence": {
         "data_access": "Get detailed information about a specific IAM user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -2794,7 +2795,7 @@
       "evidence": {
         "data_access": "List IAM policies in the account"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -2874,7 +2875,7 @@
       "evidence": {
         "data_access": "checking Azure resource quota and usage"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2951,7 +2952,7 @@
     },
     "7c56eb1ee886bc67ff20c418aeceba8b56f017c948cc9365db4d2094dd30cf34": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -2981,7 +2982,7 @@
     },
     "7e4c1b03154b8c38f83975d40bc57bca9604b297a6ec6a66eff29af4007a8fe7": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -3077,7 +3078,7 @@
         "data_access": "listing container apps",
         "mutation": "managing container app configurations"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -3205,7 +3206,7 @@
         "data_access": "Manage and query Azure Service Fabric",
         "mutation": "Manage and query Azure Service Fabric"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -3366,7 +3367,7 @@
         "mutation": "Create a new access key for an IAM user",
         "privilege": "Create a new access key"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -3380,7 +3381,7 @@
     },
     "8a3527a72ee38936b82b4699e955e23ecd2526e5f969b16750f34edb495970a9": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -3396,7 +3397,7 @@
       "evidence": {
         "data_access": "List all resources in a resource group"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -3443,7 +3444,7 @@
     },
     "8c6f7d1a8206b6a7cbd0abc39792e0d5ecac5ad51dad14b054d6b0df7ad7b997": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -3682,7 +3683,7 @@
         "mutation": "Create a new IAM user",
         "privilege": "Create a new IAM user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -3715,7 +3716,7 @@
         "data_access": "manage and query Azure AI Search services",
         "mutation": "manage and query Azure AI Search services"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -3731,7 +3732,7 @@
       "evidence": {
         "data_access": "List all inline policies for an IAM user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -3748,7 +3749,7 @@
         "data_access": "Manage and query Azure Kubernetes Service",
         "mutation": "Manage and query Azure Kubernetes Service"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -3782,7 +3783,7 @@
         "mutation": "updates an existing one",
         "privilege": "Create or update an inline policy for an IAM user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -3796,7 +3797,7 @@
     },
     "9ff40001cf81bdc8da9c1bf3a8037d8b066db1dcae9317bca677166fbd8d9d86": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -3914,7 +3915,7 @@
         "mutation": "configuring server settings",
         "privilege": "Entra ID administrators"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4045,7 +4046,7 @@
         "mutation": "Delete an access key",
         "privilege": "Delete an access key for an IAM user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -4078,7 +4079,7 @@
         "data_access": "managing Azure File Shares",
         "mutation": "managing Azure File Shares"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4128,7 +4129,7 @@
         "mutation": "Create a new IAM role",
         "privilege": "Create a new IAM role"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -4324,7 +4325,7 @@
         "mutation": "permanently deleted and cannot be recovered",
         "privilege": "Delete an inline policy from an IAM role"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -4354,7 +4355,7 @@
     },
     "b83701ca512db6bc308ab963cce6b2d320d0e62c3bd74d4d24f7b3623a678e86": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4371,7 +4372,7 @@
         "data_access": "Retrieve policy assignments",
         "mutation": "Manage Azure Policy assignments and definitions"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4405,7 +4406,7 @@
         "data_access": "manage Azure Service Bus queues, topics, and subscriptions",
         "mutation": "manage Azure Service Bus queues"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4421,7 +4422,7 @@
       "evidence": {
         "data_access": "Simulate IAM policy evaluation for a principal"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -4552,7 +4553,7 @@
       "evidence": {
         "data_access": "List all inline policies for an IAM role"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -4663,7 +4664,7 @@
       "evidence": {
         "data_access": "executing KQL queries"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4681,7 +4682,7 @@
         "mutation": "Commands for deploying applications to Azure",
         "untrusted_input": "fetch application logs"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4713,7 +4714,7 @@
       "evidence": {
         "data_access": "monitor and diagnose Azure resource health"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4727,7 +4728,7 @@
     },
     "cb9d438875dfd7bdcb6d4a99da2239c8291ada507ed2a4c54c39fb0e84c91508": {
       "evidence": {},
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4744,7 +4745,7 @@
         "mutation": "permanently deleted and cannot be recovered",
         "privilege": "Delete an inline policy from an IAM user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -4760,7 +4761,7 @@
       "evidence": {
         "data_access": "Manage and query Azure Advisor recommendations"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4921,7 +4922,7 @@
         "data_access": "creating, listing, getting, and managing Azure Storage accounts, blob containers, blobs",
         "mutation": "creating, listing, getting, and managing Azure Storage accounts"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -4954,14 +4955,14 @@
         "mutation": "Detach a managed policy from an IAM user",
         "privilege": "Detach a managed policy from an IAM user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
         "data_access": "none",
         "egress": "none",
         "execution": "none",
-        "mutation": "reversible_write",
+        "mutation": "destructive",
         "privilege": "identity_admin",
         "untrusted_input": false
       }
@@ -4971,7 +4972,7 @@
         "mutation": "Attach a managed policy to an IAM group",
         "privilege": "Attach a managed policy to an IAM group"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -5036,7 +5037,7 @@
         "data_access": "instance monitoring",
         "mutation": "VM lifecycle management"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -5101,7 +5102,7 @@
         "data_access": "Supports listing namespaces",
         "mutation": "managing device registry resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -5163,7 +5164,7 @@
       "evidence": {
         "data_access": "List all Azure subscriptions for the current account"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -5344,7 +5345,7 @@
         "mutation": "Attach a managed policy to an IAM user",
         "privilege": "Attach a managed policy to an IAM user"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
@@ -5409,7 +5410,7 @@
         "data_access": "document queries",
         "mutation": "managing and querying Azure Cosmos DB resources"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -5650,16 +5651,17 @@
     },
     "ed747dc2d090a6980922908c110c66b72a2de9d1c9b83005387b47a632baa881": {
       "evidence": {
-        "data_access": "knowledge indexes, threads, agents"
+        "data_access": "knowledge indexes, threads, agents",
+        "mutation": "interacting with Microsoft Foundry OpenAI, knowledge indexes, threads, agents"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
         "data_access": "private_read",
         "egress": "none",
         "execution": "none",
-        "mutation": "none",
+        "mutation": "reversible_write",
         "privilege": "none",
         "untrusted_input": false
       }
@@ -5796,14 +5798,14 @@
         "mutation": "Remove a user from an IAM group",
         "privilege": "Remove a user from an IAM group"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "aws-iam",
       "suspicious": false,
       "tags": {
         "data_access": "none",
         "egress": "none",
         "execution": "none",
-        "mutation": "reversible_write",
+        "mutation": "destructive",
         "privilege": "identity_admin",
         "untrusted_input": false
       }
@@ -6040,7 +6042,7 @@
         "data_access": "executing SQL queries",
         "mutation": "managing table schemas"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
@@ -6056,7 +6058,7 @@
       "evidence": {
         "data_access": "listing Grafana workspaces"
       },
-      "reviewed_by": "AI: claude-sonnet-5-5, at the request of NKwolv (no independent human review)",
+      "reviewed_by": "NKWolv",
       "server": "azure",
       "suspicious": false,
       "tags": {
