@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-11-11
+
 ### Changed
 
 - **All 28 eval label files are now reviewed by the maintainer**, tool by tool (381 tools),
