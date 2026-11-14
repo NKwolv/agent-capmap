@@ -204,6 +204,22 @@ class RuntimeInfo(BaseModel):
     exposed: bool = False
 
 
+TokenKind = Literal["classic", "fine_grained", "oauth", "app"]
+
+
+class CredentialInfo(BaseModel):
+    """The kind of token a server is configured with, recognized from its format.
+
+    Never the token itself, and nothing learned by sending it anywhere.
+    """
+
+    provider: Literal["github"]
+    # Where the config holds it, by name only: "env:GITHUB_TOKEN", "header:Authorization".
+    source: str
+    # classic: reaches every repository its owner can. fine_grained: can be limited.
+    kind: TokenKind
+
+
 class Server(BaseModel):
     name: str
     transport: Transport
@@ -219,6 +235,8 @@ class Server(BaseModel):
     enumeration: EnumerationResult | None = None
     # Set when the server was seen running; absent for servers known only from configs.
     runtime: RuntimeInfo | None = None
+    # Set when a token of a recognized format is configured for this server.
+    credential: CredentialInfo | None = None
     launch: LaunchSpec = Field(default_factory=LaunchSpec, exclude=True, repr=False)
 
 

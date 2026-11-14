@@ -6,6 +6,48 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Runtime guard for Claude Code** (`agentcapmap guard build`, `guard settings`,
+  `guard hook`): a `PreToolUse` hook that follows what a session has actually done and
+  asks (or denies, with `--on-violation deny`) at the MCP tool call that would complete
+  CAP-001, CAP-002 or CAP-004. It decides from a guard map built from a classified
+  inventory, without an LLM or the network; untrusted content counts only from earlier
+  calls. It fails closed (any error blocks the call), never approves a call, treats
+  unknown tools as not assessed, and records tool names and tags only.
+  `--track-builtins` also counts what `WebFetch`, `WebSearch`, `Read` and `Grep` read.
+- **Cross-agent chains** (`when_agents_chain`, CAP-012 and CAP-013): finds the lethal
+  trifecta, and untrusted input reaching host execution, when the parts sit in different
+  agents that share a server. Content is followed only from an agent that can write a
+  shared server to one that reads it; findings name every agent and the linking tools.
+  Inventories with more than 500 agents skip these rules (reported as skipped).
+- **More clients**: Windsurf (`mcp_config.json`), Cline, Roo Code, Gemini CLI and Qwen
+  Code (`settings.json`), Zed (`context_servers`) and Codex CLI (`config.toml`), found by
+  `scan --user` and by directory scans. Their approval and tool-exclusion settings are
+  read (`autoApprove`, `alwaysAllow`, `trust`, `excludeTools`, `disabledTools`,
+  `disabled_tools`, Zed's `always_allow_tool_actions`).
+- **WebSocket servers are enumerated** with the optional extra `pip install
+  "agent-capmap[ws]"` (adds `websockets`); without it they are skipped with that hint.
+- **Classic GitHub tokens are pointed out** (CAP-014, low): a server configured with a
+  classic personal access token, which cannot be limited to specific repositories, is
+  reported with a recommendation to use a fine-grained one. The kind is recognized from
+  the token's format; nothing is sent anywhere and its scopes are not read.
+
+### Changed
+
+- The default policy has fourteen rules (CAP-012 to CAP-014 are new). Evidence rows in the
+  JSON output gain an `agent_id` field (set by cross-agent rules, otherwise null), and
+  servers gain a `credential` field (the kind of GitHub token configured, or null).
+
+### Security
+
+- **DNS rebinding closed.** Remote servers were checked against cloud-metadata and
+  link-local addresses by resolving their name, and then connected to by resolving it
+  again, so a hostile DNS server could answer differently the second time. HTTP, SSE and
+  WebSocket connections now go only to the addresses that were checked (no second
+  lookup); TLS still verifies the host name. Behind a configured proxy the proxy
+  resolves names, so pinning does not apply there.
+
 ## [0.3.2] - 2026-11-11
 
 ### Changed

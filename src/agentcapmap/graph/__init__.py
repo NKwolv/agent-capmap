@@ -64,6 +64,8 @@ class ServerView:
             return self.provenance
         if name == "exposure":
             return self.exposure
+        if name == "token_kind":
+            return self.token_kind
         raise KeyError(name)
 
     @property
@@ -82,6 +84,12 @@ class ServerView:
             return "none"
         return "network" if runtime.exposed else "loopback"
 
+    @property
+    def token_kind(self) -> str:
+        """Kind of GitHub token configured for the server, or "none" if none was recognized."""
+        credential = self.server.credential
+        return credential.kind if credential else "none"
+
     def phrase(self, name: str) -> str:
         if name == "auth":
             evidence = ", ".join(self.server.auth.evidence) or "no credentials in config"
@@ -96,6 +104,11 @@ class ServerView:
         if name == "exposure":
             listening = ", ".join(self.server.runtime.listening) if self.server.runtime else ""
             return f"exposure={self.exposure}" + (f" ({listening})" if listening else "")
+        if name == "token_kind":
+            credential = self.server.credential
+            if credential is None:
+                return "no recognized token in config"
+            return f"{credential.kind} {credential.provider} token in {credential.source}"
         if name in ("remote", "transport"):
             return f"transport={self.server.transport.value}"
         raise KeyError(name)

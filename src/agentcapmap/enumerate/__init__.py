@@ -1,4 +1,4 @@
-"""Connect to MCP servers and list their tools. Only `initialize` and `tools/list` are sent."""
+"""Connect to MCP servers and list what they offer (handshake and read-only listings only)."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from agentcapmap import __version__
+from agentcapmap.credentials import github_token
 from agentcapmap.enumerate.hashing import (
     item_definition_hash,
     server_definition_hash,
@@ -28,6 +29,7 @@ from agentcapmap.enumerate.transport import (
     Transport,
     TransportError,
 )
+from agentcapmap.enumerate.ws import WebSocketTransport, WebSocketUnavailable
 from agentcapmap.limits import MAX_CONFIG_BYTES, MAX_ITEMS_PER_SERVER, MAX_TOOLS_PER_SERVER
 from agentcapmap.models import (
     AuthHint,
@@ -141,9 +143,13 @@ def open_transport(server: Server, spec: LaunchSpec, timeout: float) -> Transpor
         return StdioTransport(spec.command, spec.args, spec.env, cwd)
     if not spec.url:
         raise TransportError("remote server has no URL")
-    if urlsplit(spec.url).scheme.lower() not in ("http", "https"):
-        raise TransportError("remote server URL must use http or https")
+    websocket = server.transport is TransportKind.WS
+    schemes = ("ws", "wss") if websocket else ("http", "https")
+    if urlsplit(spec.url).scheme.lower() not in schemes:
+        raise TransportError(f"remote server URL must use {' or '.join(schemes)}")
     check_remote_url(spec.url)
+    if websocket:
+        return WebSocketTransport(spec.url, spec.headers, timeout)
     if server.transport is TransportKind.SSE:
         return LegacySseTransport(spec.url, spec.headers, timeout)
     return StreamableHttpTransport(spec.url, spec.headers, timeout)
@@ -359,14 +365,13 @@ def enumerate_server(server: Server, timeout: float = DEFAULT_TIMEOUT) -> Enumer
             status=EnumerationStatus.SKIPPED,
             error="found running, not in a config; agent-capmap never starts these",
         )
-    if server.transport is TransportKind.WS:
-        return EnumerationResult(
-            status=EnumerationStatus.SKIPPED, error="WebSocket servers are not enumerated yet"
-        )
     try:
         spec = resolve_launch(server.launch)
     except UnresolvedVariable as exc:
         return EnumerationResult(status=EnumerationStatus.SKIPPED, error=redact_text(str(exc)))
+    if server.credential is None:
+        # A token the config only references (${VAR}) is known once it is resolved.
+        server.credential = github_token(spec)
 
     transport: Transport | None = None
     try:
@@ -379,6 +384,8 @@ def enumerate_server(server: Server, timeout: float = DEFAULT_TIMEOUT) -> Enumer
         return EnumerationResult(
             status=EnumerationStatus.AUTH_REQUIRED, error=redact_text(str(exc))
         )
+    except WebSocketUnavailable as exc:
+        return EnumerationResult(status=EnumerationStatus.SKIPPED, error=str(exc))
     except RequestTimeout as exc:
         return EnumerationResult(status=EnumerationStatus.TIMEOUT, error=redact_text(str(exc)))
     except (TransportError, MCPError) as exc:

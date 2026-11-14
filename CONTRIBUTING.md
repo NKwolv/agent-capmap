@@ -104,7 +104,9 @@ merged.
    test pins it exactly; do not widen it without a maintainer decision.
 3. **No secrets in output or logs.** Anything derived from a config must go through
    `agentcapmap.redact`. Use `redact.get_logger(__name__)` for logging. Raw values
-   belong only in `LaunchSpec`, which is never serialized.
+   belong only in `LaunchSpec`, which is never serialized. A credential is sent only
+   to the server its config names: never add a feature that presents one anywhere
+   else, even to its issuer.
 4. **No network in tests.** `tests/conftest.py` blocks non-loopback connections. Use the
    mock MCP server (`tests/mock_mcp_server.py`) and the fake LLM provider
    (`tests/fake_llm.py`).
@@ -114,6 +116,10 @@ merged.
    launched server beyond the allowlist, and escape control characters before printing.
 6. **No secrets in the repo.** Fixture credentials must be obviously fake and listed in
    `tests/fake_secrets.py`, so the leak tests check them.
+
+7. **The runtime guard fails closed and stays light.** `guard/hook.py` runs on every
+   tool call: it imports only the standard library, every error path must end in exit
+   code 2, and it must never print an `allow` decision or record tool arguments.
 
 ## Common changes
 
@@ -130,7 +136,8 @@ merged.
 3. Register it in `FORMATS` in `discovery/__init__.py` (order matters: the first match
    wins) and add the filename to `CANDIDATE_NAMES` if needed.
 4. Add a fixture under `tests/fixtures/configs/` containing fake credentials, and
-   tests in `tests/test_discovery.py`.
+   tests in `tests/test_discovery.py` (or build the files in the test, as
+   `tests/test_more_clients.py` does).
 
 ### Changing the classifier prompt
 

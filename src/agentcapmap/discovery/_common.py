@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from agentcapmap.credentials import github_token
 from agentcapmap.models import (
     ApprovalConfig,
     AuthHint,
@@ -209,6 +210,22 @@ def parse_approval(name: str, entry: dict[str, Any]) -> ApprovalConfig:
     )
 
 
+def deny_tools(server: Server, entry: Any, key: str) -> None:
+    """Record the tools a client withholds from the model (`key` lists exact names)."""
+    names = entry.get(key) if isinstance(entry, dict) else None
+    if names is None:
+        return
+    if not isinstance(names, list) or not all(isinstance(n, str) for n in names):
+        raise ConfigError(f"server {server.name!r}: {key!r} must be an array of tool names")
+    if len(names) > _MAX_APPROVAL_ENTRIES:
+        raise ConfigError(f"server {server.name!r}: {key!r} has too many entries")
+    # Deny rules are glob patterns; these are literal names, so glob characters are
+    # escaped and a tool called `*` cannot hide every other tool.
+    escaped = {re.sub(r"[*?\[]", lambda m: f"[{m.group()}]", n) for n in names}
+    server.approval.denied_patterns.extend(sorted(escaped))
+    server.approval.sources.append(key)
+
+
 def build_server(
     name: str,
     entry: Any,
@@ -243,6 +260,18 @@ def build_server(
     for value in [*env.values(), *headers.values()]:
         known_secrets.add(value)
 
+    launch = LaunchSpec(
+        command=command,
+        args=args,
+        env=env,
+        env_file=str(env_file) if env_file else None,
+        cwd=str(cwd) if cwd else None,
+        url=url,
+        headers=headers,
+        # Absolute, so ${workspaceFolder} and the server cwd do not depend on how the
+        # scan path was written (never serialized, so it does not leak into output).
+        base_dir=str(base_dir.resolve()),
+    )
     return Server(
         name=name,
         transport=transport,
@@ -255,18 +284,9 @@ def build_server(
         location=SourceLocation(path=config_path, line=find_key_line(text, name, section_start)),
         disabled=bool(entry.get("disabled", False)),
         approval=parse_approval(name, entry),
-        launch=LaunchSpec(
-            command=command,
-            args=args,
-            env=env,
-            env_file=str(env_file) if env_file else None,
-            cwd=str(cwd) if cwd else None,
-            url=url,
-            headers=headers,
-            # Absolute, so ${workspaceFolder} and the server cwd do not depend on how the
-            # scan path was written (never serialized, so it does not leak into output).
-            base_dir=str(base_dir.resolve()),
-        ),
+        # A token written in the config; one referenced as ${VAR} is seen at enumeration.
+        credential=github_token(launch),
+        launch=launch,
     )
 
 

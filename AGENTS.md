@@ -153,9 +153,25 @@ the sections above apply here:
   accepted. Local MCP servers commonly listen on `localhost`, so loopback and private
   ranges stay allowed (maintainer decision). Link-local and cloud-metadata addresses
   (169.254.0.0/16, fe80::/10, `fd00:ec2::254`, `metadata.google.internal`, ...) are
-  refused, including names that resolve to them (`enumerate/netguard.py`).
-  `SECURITY-REVIEW:` open item: the name is resolved once to check and again to connect,
-  so DNS rebinding could still slip through; closing it needs IP pinning.
+  refused, including names that resolve to them (`enumerate/netguard.py`). The
+  transports connect only to the addresses that were checked (`PinnedTransport`, and
+  a pre-connected socket for WebSocket), so DNS rebinding cannot swap the address
+  between the check and the connection. Behind a configured HTTP proxy the proxy
+  resolves names and pinning does not apply.
+- **Credentials stay where the config sends them (section 1):** a credential is sent
+  only to the server its config names, never anywhere else. CAP-014 recognizes the
+  kind of a GitHub token from its format alone (`credentials.py`); reading its scopes
+  from GitHub's API was considered and rejected, because an Enterprise token cannot
+  be told apart from a github.com one and would be disclosed to the wrong host.
+- **Runtime guard (sections 0 and 10):** `guard/hook.py` is a Claude Code
+  `PreToolUse` hook. It must fail closed (every error path exits 2, which blocks the
+  call; any other non-zero status would let it through), never emit an `allow`
+  decision, record only tool names and tags (never arguments or results), hash the
+  session id before using it in a file name, and import only the standard library.
+  The hook input, the guard map and the state file are all hostile input.
+- **Cross-agent chains (section 0):** `when_agents_chain` rules infer a shared store
+  from an identical launch command or URL. That is a documented heuristic; the
+  analysis is bounded (`MAX_CHAIN_AGENTS`) and skipped, not truncated, beyond it.
 - **Reading the process table (section 3, SSRF and OS commands):** `scan --running`
   reads the current user's processes and listening sockets with psutil (optional
   `runtime` extra). It is read-only: nothing is started, connected to or probed, and

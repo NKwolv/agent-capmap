@@ -57,6 +57,8 @@ Security = "https://github.com/NKwolv/agent-capmap/security/policy"
 [project.optional-dependencies]
 # `scan --running`: read the process table. Optional so the base install stays small.
 runtime = ["psutil>=5.9.5"]
+# `--enumerate` for WebSocket (`"type": "ws"`) servers. Optional for the same reason.
+ws = ["websockets>=15.0"]
 dev = [
     "bandit>=1.8",
     "cyclonedx-bom>=7.5",
@@ -71,6 +73,7 @@ dev = [
     "types-pyyaml",
     "uv>=0.13.4",  # GHSA-hq85-5cpj-mr62 (compromised CA in bundled store)
     "virtualenv>=21.14.9",  # CVE-2026-113722, CVE-2026-113725 (via pre-commit)
+    "websockets>=15.0",
     "zizmor>=1.0",
 ]
 

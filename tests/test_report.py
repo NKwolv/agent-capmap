@@ -52,7 +52,7 @@ def test_sarif_meets_github_code_scanning_expectations() -> None:
     sarif = render_sarif(evaluation)
     run = sarif["runs"][0]
     rules = run["tool"]["driver"]["rules"]
-    assert [r["id"] for r in rules] == [f"CAP-{i:03d}" for i in range(1, 12)]
+    assert [r["id"] for r in rules] == [f"CAP-{i:03d}" for i in range(1, 15)]
     for rule in rules:
         assert float(rule["properties"]["security-severity"]) >= 0
         assert "security" in rule["properties"]["tags"]

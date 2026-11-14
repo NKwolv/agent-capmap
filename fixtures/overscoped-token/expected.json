@@ -24,6 +24,7 @@
       ],
       "evidence": [
         {
+          "agent_id": null,
           "server": "analytics",
           "tool": "query_events",
           "matched": {
@@ -35,6 +36,7 @@
           "unverified": []
         },
         {
+          "agent_id": null,
           "server": "analytics",
           "tool": null,
           "matched": {
@@ -73,6 +75,7 @@
       "tools": [],
       "evidence": [
         {
+          "agent_id": null,
           "server": "crm",
           "tool": null,
           "matched": {

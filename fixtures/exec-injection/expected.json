@@ -31,6 +31,7 @@
       ],
       "evidence": [
         {
+          "agent_id": null,
           "server": "fetch",
           "tool": "fetch",
           "matched": {
@@ -42,6 +43,7 @@
           "unverified": []
         },
         {
+          "agent_id": null,
           "server": "shell",
           "tool": "run_command",
           "matched": {
@@ -80,6 +82,7 @@
       ],
       "evidence": [
         {
+          "agent_id": null,
           "server": "shell",
           "tool": "run_command",
           "matched": {
@@ -93,6 +96,7 @@
           "unverified": []
         },
         {
+          "agent_id": null,
           "server": "shell",
           "tool": "run_command",
           "matched": {

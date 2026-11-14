@@ -58,10 +58,12 @@ per agent. Findings come with evidence and can gate CI through SARIF and exit co
 
 | | |
 |---|---|
-| 🔎 **Inventory** | Claude Desktop, Cursor, VS Code, Claude Code and generic `mcp.json`. Secrets are redacted everywhere. |
+| 🔎 **Inventory** | Claude Desktop, Claude Code, Cursor, VS Code, Windsurf, Cline, Roo Code, Gemini CLI, Zed, Codex CLI and generic `mcp.json`. Secrets are redacted everywhere. |
 | 🧰 **Tools, prompts and resources** | Listed read-only, never called, read or fetched. Poisoned descriptions are flagged. |
 | 🏷️ **Six-axis classification** | An LLM only tags capabilities; every risk decision is deterministic code. |
-| 📜 **Policy as code** | Eleven built-in rules, your own rules in YAML, and expiring waivers for accepted risks. |
+| 📜 **Policy as code** | Fourteen built-in rules, your own rules in YAML, and expiring waivers for accepted risks. |
+| 🚧 **Runtime guard** | A Claude Code hook that follows what a session has actually done and stops the call that would complete a risky combination. |
+| 🔗 **Across agents** | Finds chains no single agent has: one agent writes into a server another agent reads. |
 | 🏃 **Runtime discovery** | Finds MCP servers that are running but declared in no config file. |
 | 🧾 **Rug-pull detection** | Pin definitions in a baseline; see what a pull request changed in a PR comment. |
 | 🛡️ **CI-ready** | Evidence for every finding, SARIF for code scanning, and exit codes for gating. |
@@ -88,6 +90,9 @@ pipx install agent-capmap        # or: uv tool install agent-capmap
 
 Releases are built and published by GitHub Actions with PyPI trusted publishing, so
 each file on PyPI carries an attestation linking it to the workflow run that built it.
+
+Optional extras: `agent-capmap[runtime]` for `scan --running` and `agent-capmap[ws]` to
+enumerate WebSocket servers.
 
 For a fully hash-pinned install, with the exact dependency versions CI tests, install
 from a clone instead:
@@ -162,7 +167,8 @@ config files ──► discover ──► enumerate ──► classify ──►
 
 1. **Discover** MCP configs: Claude Desktop, Cursor, VS Code (`.vscode/mcp.json`,
    `settings.json`), Claude Code (`.mcp.json`, and with `--user` your `~/.claude.json`
-   user and per-project servers, including permission rules) and generic `mcp.json`.
+   user and per-project servers, including permission rules), Windsurf, Cline, Roo Code,
+   Gemini CLI, Qwen Code, Zed, Codex CLI (`config.toml`) and generic `mcp.json`.
    Secrets are redacted everywhere.
 2. **Enumerate** (`--enumerate`): start each server and ask only for what it offers: its
    tools, and its prompts and resources if it has them. Nothing is called, read or
@@ -248,6 +254,62 @@ would re-run a command taken from the process table). Detection is heuristic: it
 recognizes common launch styles (`npx`, `uvx`, `python -m`, `docker run`, MCP-named
 programs), so a custom server with an unrelated name can be missed.
 
+### Stop a risky combination as it happens (runtime guard)
+
+A scan reports what an agent *could* do. The guard is a Claude Code hook that follows
+what one session has *actually* done and steps in at the call that would complete a
+rule: for example, sending data out after the session read attacker-written content
+and private data.
+
+```sh
+# 1. Scan and classify once, then build the guard map (tool tags + enforceable rules)
+agentcapmap scan --user --enumerate --classify -o inventory.json
+agentcapmap guard build inventory.json -o guard-map.json
+
+# 2. Print the hooks block and add it to ~/.claude/settings.json
+agentcapmap guard settings --map guard-map.json
+```
+
+From then on, before every MCP tool call, the hook checks the call against the session
+so far. Nothing changes until a call would complete **CAP-001**, **CAP-002** or
+**CAP-004**; then Claude Code asks you, with the rule and the earlier tools that set it
+up (`--on-violation deny` refuses outright, for unattended runs).
+
+- **It decides without an LLM or the network**, from the guard map alone, and adds
+  roughly 0.15 s to each MCP tool call (one short Python process).
+- **It fails closed.** A missing or damaged map, unreadable state or any internal error
+  blocks the call. A tool the map does not know is never treated as safe: you are
+  asked (`--unknown ask`, the default). Rebuild the map when your servers change.
+- **It never approves anything.** With no objection it stays silent and Claude Code's
+  normal permission prompt applies.
+- **It records tool names and tags only**, per session, never arguments or results.
+- **Order matters, as in a real attack.** Untrusted content must have been read by an
+  earlier call; the call that reads it is not blocked, the one that acts on it is.
+
+By default it sees MCP tools only. `--track-builtins` also counts what Claude Code's own
+`WebFetch`, `WebSearch`, `Read` and `Grep` bring into the session (they are never
+blocked). Rules about configuration (approval settings, pinning, baselines) are not
+sequences of calls and stay with `evaluate`. See [Limitations](#limitations).
+
+### Risks that span several agents
+
+Rules are evaluated per agent, because an injected instruction controls one agent. Agents
+can still be chained through something they share: agent A, which reads the web, writes
+into a notes server; agent B reads those notes and can send email. Neither has the
+trifecta alone. **CAP-012** and **CAP-013** find such chains, following content only in
+the direction it can flow (from an agent that can write a shared server to one that
+reads it), and name every agent and the tools linking them. Two servers count as shared
+when their launch command or URL is identical.
+
+### Classic GitHub tokens
+
+A config shows that a server holds a token, not how much the token can do. One thing is
+visible from the token's format alone: a classic personal access token (`ghp_...`)
+reaches every repository its owner can, while a fine-grained one (`github_pat_...`) can
+be limited to specific repositories and permissions. **CAP-014** points out servers
+configured with a classic token. Nothing is sent anywhere to find this out, and the
+token's actual scopes are not read.
+
 ## Capability taxonomy
 
 | Axis | Values | Question |
@@ -263,7 +325,7 @@ Definitions and edge-case rulings: [docs/taxonomy.md](https://github.com/NKwolv/
 
 ## Policy
 
-The built-in [`policies/default.yaml`](https://github.com/NKwolv/agent-capmap/blob/main/policies/default.yaml) has eleven rules:
+The built-in [`policies/default.yaml`](https://github.com/NKwolv/agent-capmap/blob/main/policies/default.yaml) has fourteen rules:
 
 | ID | Severity | Fires when an agent has |
 |---|---|---|
@@ -278,6 +340,9 @@ The built-in [`policies/default.yaml`](https://github.com/NKwolv/agent-capmap/bl
 | CAP-009 | 🟡 medium | the same tool name on two servers (shadowing) |
 | CAP-010 | 🟡 medium | an MCP server is running but is in no scanned config (`scan --running`) |
 | CAP-011 | 🟠 high | an MCP server is listening on a non-loopback address (`scan --running`) |
+| CAP-012 | 🟠 high | the lethal trifecta spread over agents that share a server (no single agent has it) |
+| CAP-013 | 🟠 high | untrusted input in one agent reaching host code execution in another, through a shared server |
+| CAP-014 | 🔵 low | a server configured with a classic GitHub token, which cannot be limited to specific repositories |
 
 Write your own rules in the same format and pass `--policy my-policy.yaml`:
 
@@ -291,7 +356,8 @@ Write your own rules in the same format and pass `--policy my-policy.yaml`:
 ```
 
 Conditions: `when_agent_has_all`, `when_agent_has_any`, `when_server`,
-`when_hash_changed`, `when_tool_name_shadowed`. The format is defined by
+`when_hash_changed`, `when_tool_name_shadowed`, `when_agents_chain` (steps in the order
+content flows between agents). The format is defined by
 [`schemas/policy.schema.json`](https://github.com/NKwolv/agent-capmap/blob/main/schemas/policy.schema.json). Rug-pull detection:
 
 ```sh
@@ -349,10 +415,21 @@ tools; see [Limitations](#limitations).
   not record this, and CAP-003 treats "unknown" as "no gate" by default.
 - **Enumeration runs code.** Starting servers executes the configured commands. A
   started server can also read its parent's environment on Linux.
-- **Coverage.** Config formats evolve; Windsurf is not read yet. MCP servers that do not
-  live in config files (Claude Code plugins, claude.ai connectors, IDE built-in servers,
-  managed settings) are not seen. WebSocket servers are listed but not enumerated.
-  Token scopes are not visible.
+- **Coverage.** Config formats evolve, and allowlists of tools (`includeTools`,
+  `enabled_tools`) are not applied, which can over-report but never hide a tool. MCP
+  servers that do not live in config files (Claude Code plugins, claude.ai connectors,
+  IDE built-in servers, Zed extension servers, managed settings) are not seen. WebSocket
+  servers are enumerated only with `pip install "agent-capmap[ws]"`. Token scopes are
+  not read: only the kind of a GitHub token is recognized, from its format.
+- **The runtime guard covers Claude Code and MCP tools.** It depends on the tags in its
+  map, so a mis-tagged tool is mis-judged, and it only sees calls the hook is run for.
+  Claude Code's built-in tools (`Bash`, `WebFetch`, file edits) are outside it unless
+  you opt into tracking the reading ones, and it never blocks them. It records that a
+  tool ran, not what data moved, so it can ask when the data was in fact harmless.
+- **Cross-agent chains are inferred.** Sharing is assumed from an identical launch
+  command or URL. That cannot see two tokens for different accounts, or an environment
+  variable pointing each agent at a different store, and it misses stores shared by
+  other means (the same folder through two different servers).
 - **Reference labels are maintainer-reviewed, not independently verified.** For 381 tools
   from 28 well-known servers, the classifier answers from bundled labels (matched by exact
   definition hash) instead of calling a model, so no API key is needed. The maintainer
@@ -370,7 +447,8 @@ tools; see [Limitations](#limitations).
 Secrets from configs are redacted in all output and logs. Enumeration sends only
 `initialize` and the read-only listings of tools, prompts and resources (never calling,
 reading or fetching anything), with a minimal environment for launched servers, no
-credential-forwarding redirects, and size limits on everything a server returns.
+credential-forwarding redirects, connections only to addresses that passed the
+metadata-address check (no DNS rebinding), and size limits on everything a server returns.
 Reports render untrusted text inertly. See [SECURITY.md](https://github.com/NKwolv/agent-capmap/blob/main/SECURITY.md) and the
 [threat model](https://github.com/NKwolv/agent-capmap/blob/main/docs/threat-model.md).
 

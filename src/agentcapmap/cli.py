@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import sys
 from collections.abc import Sequence
@@ -20,6 +21,8 @@ from agentcapmap.discovery import discover, user_config_paths
 from agentcapmap.discovery.runtime import PsutilSource, RuntimeDiscoveryError, discover_running
 from agentcapmap.enumerate import DEFAULT_TIMEOUT, enumerate_inventory
 from agentcapmap.findings import Evaluation, Severity
+from agentcapmap.guard import hook as guard_hook
+from agentcapmap.guard.build import build_guard_map, settings_snippet
 from agentcapmap.models import Inventory
 from agentcapmap.policy import PolicyError, evaluate, load_policy
 from agentcapmap.policy.waivers import WaiverError, apply_waivers, load_waivers
@@ -206,6 +209,34 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     create.add_argument("inventory", type=Path, help="inventory JSON from `scan --enumerate`")
     _add_common(create)
+
+    guard = sub.add_parser(
+        "guard", help="runtime guard for Claude Code: block risky combinations as they happen"
+    )
+    guard_sub = guard.add_subparsers(dest="guard_command", required=True)
+    build = guard_sub.add_parser(
+        "build", help="turn a classified inventory and a policy into a guard map"
+    )
+    build.add_argument("inventory", type=Path, help="classified inventory JSON")
+    build.add_argument("--policy", type=Path, help="policy YAML (default: built-in)")
+    _add_common(build)
+    settings = guard_sub.add_parser(
+        "settings", help="print the hooks block to add to Claude Code's settings.json"
+    )
+    settings.add_argument("--map", type=Path, required=True, help="guard map file")
+    settings.add_argument(
+        "--on-violation", choices=("ask", "deny"), default="ask", help="default: ask"
+    )
+    settings.add_argument(
+        "--unknown", choices=("ask", "deny", "allow"), default="ask", help="default: ask"
+    )
+    settings.add_argument("--track-builtins", action="store_true")
+    _add_common(settings)
+    guard_sub.add_parser(
+        "hook",
+        add_help=False,
+        help="the PreToolUse hook itself (reads the hook input on stdin); see `guard settings`",
+    )
     return parser
 
 
@@ -416,8 +447,44 @@ def _cmd_baseline(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_guard(args: argparse.Namespace) -> int:
+    if args.guard_command == "settings":
+        if not args.map.is_file():
+            raise CliError(f"{args.map} does not exist (run `agentcapmap guard build` first)")
+        snippet = settings_snippet(
+            args.map,
+            on_violation=args.on_violation,
+            unknown=args.unknown,
+            track_builtins=args.track_builtins,
+        )
+        _write(json.dumps(snippet, indent=2) + "\n", args.output)
+        return 0
+    try:
+        policy = load_policy(args.policy)
+    except PolicyError as exc:
+        raise CliError(str(exc)) from None
+    guard_map = build_guard_map(_load_inventory(args.inventory), policy)
+    if not guard_map["tools"]:
+        raise CliError(
+            "no classified tools in this inventory (run scan with --enumerate --classify)"
+        )
+    _write(json.dumps(guard_map, indent=2) + "\n", args.output)
+    print(
+        f"guard map: {len(guard_map['tools'])} tool name(s), "
+        f"{len(guard_map['rules'])} rule(s) enforced "
+        f"({', '.join(r['id'] for r in guard_map['rules']) or 'none'}), "
+        f"{len(guard_map['unassessed'])} not assessed",
+        file=sys.stderr,
+    )
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
-    args = _build_parser().parse_args(argv)
+    raw = list(sys.argv[1:] if argv is None else argv)
+    if raw[:2] == ["guard", "hook"]:
+        # The hook has its own options and must fail closed, never with a usage error.
+        return guard_hook.main(raw[2:])
+    args = _build_parser().parse_args(raw)
     _setup_logging(getattr(args, "verbose", 0))
     commands = {
         "scan": _cmd_scan,
@@ -426,6 +493,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "report": _cmd_report,
         "diff": _cmd_diff,
         "baseline": _cmd_baseline,
+        "guard": _cmd_guard,
     }
     try:
         return commands[args.command](args)

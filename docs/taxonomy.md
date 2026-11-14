@@ -127,7 +127,7 @@ These come from the config file and from enumeration, never from the model:
 | `approval_gate` (`required` / `none` / `unknown`), per tool | Client config: `alwaysAllow` / `autoApprove` lists, `trust: true`; Claude Code `permissions.allow`/`deny` rules and `defaultMode` (default mode = `required`). No setting means `unknown` | Implemented |
 | `version_pinned` (`pinned` / `unpinned` / `local` / `not_applicable` / `unknown`) | The launch command: exact npm/PyPI versions and Docker digests are pinned; `@latest`, ranges and image tags are not | Implemented |
 | `source_trust` (`trusted` / `untrusted` / `unknown`) | `trusted_sources` glob patterns in the policy, matched against ids like `npm:@scope/pkg`, `pypi:pkg`, `docker:image`, `url:host` | Implemented |
-| `scope_breadth` | Token scopes are not visible in configs | Not implemented |
+| `token_kind` (`classic` / `fine_grained` / `oauth` / `app` / `none`) | The format of a GitHub token in the config (env, headers, args). Nothing is sent anywhere; actual scopes are not read | Implemented (GitHub only) |
 
 ## Confidence and unverified evidence
 

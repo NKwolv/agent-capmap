@@ -86,6 +86,8 @@ def _rule(rule: RuleInfo) -> dict[str, Any]:
 
 def _message(finding: Finding) -> str:
     parts = [clean(finding.message, 600), f"Agent: {clean(finding.agent_id, 200)}."]
+    if chained := finding.details.get("agents"):
+        parts.append(f"Chain of agents: {clean(' -> '.join(chained[:10]), 600)}.")
     if finding.tools:
         parts.append(f"Tools: {clean(', '.join(finding.tools), 400)}.")
     evidence = [

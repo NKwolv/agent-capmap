@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/NKwolv/agent-capmap/schemas/policy.schema.json",
   "title": "agent-capmap policy",
-  "description": "Deterministic rules evaluated per agent over the union of its tools. Policy format version 1, taxonomy version 1.",
+  "description": "Deterministic rules evaluated per agent over the union of its tools, plus chain rules across agents that share a server. Policy format version 1, taxonomy version 1.",
   "type": "object",
   "additionalProperties": false,
   "required": ["version", "taxonomy_version", "rules"],
@@ -56,14 +56,22 @@
           ]
         },
         "when_hash_changed": { "const": true },
-        "when_tool_name_shadowed": { "const": true }
+        "when_tool_name_shadowed": { "const": true },
+        "when_agents_chain": {
+          "description": "Cross-agent chain: predicates in the order content flows. Each step is met by an agent that can write into a server which the next step's agent reads. Fires only when at least two agents are involved.",
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": { "$ref": "#/$defs/tool_predicate" }
+        }
       },
       "anyOf": [
         { "required": ["when_agent_has_all"] },
         { "required": ["when_agent_has_any"] },
         { "required": ["when_server"] },
         { "required": ["when_hash_changed"] },
-        { "required": ["when_tool_name_shadowed"] }
+        { "required": ["when_tool_name_shadowed"] },
+        { "required": ["when_agents_chain"] }
       ]
     },
     "tool_predicates": {
@@ -101,7 +109,8 @@
         "version_pinned": { "$ref": "#/$defs/version_pinned" },
         "source_trust": { "$ref": "#/$defs/source_trust" },
         "provenance": { "$ref": "#/$defs/provenance" },
-        "exposure": { "$ref": "#/$defs/exposure" }
+        "exposure": { "$ref": "#/$defs/exposure" },
+        "token_kind": { "$ref": "#/$defs/token_kind" }
       }
     },
     "boolean_or_list": {
@@ -174,6 +183,13 @@
       "oneOf": [
         { "enum": ["none", "loopback", "network"] },
         { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["none", "loopback", "network"] } }
+      ]
+    },
+    "token_kind": {
+      "description": "Kind of GitHub token configured for the server, recognized from its format (nothing is sent anywhere); none if no token was recognized.",
+      "oneOf": [
+        { "enum": ["classic", "fine_grained", "oauth", "app", "none"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["classic", "fine_grained", "oauth", "app", "none"] } }
       ]
     },
     "source_trust": {
