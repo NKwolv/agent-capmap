@@ -12,7 +12,6 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from agentcapmap import __version__
-from agentcapmap.credentials import github_token
 from agentcapmap.enumerate.hashing import (
     item_definition_hash,
     server_definition_hash,
@@ -45,6 +44,7 @@ from agentcapmap.models import (
 )
 from agentcapmap.models import Transport as TransportKind
 from agentcapmap.redact import get_logger, known_secrets, redact_text, redact_url
+from agentcapmap.tokenkind import github_token
 
 log = get_logger(__name__)
 

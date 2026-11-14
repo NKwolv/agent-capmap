@@ -7,11 +7,11 @@ from typing import Any
 
 import pytest
 
-from agentcapmap.credentials import github_token
 from agentcapmap.discovery import discover
 from agentcapmap.enumerate import enumerate_server
 from agentcapmap.models import Inventory, LaunchSpec, Server
 from agentcapmap.policy import PolicyError, evaluate, load_policy, parse_policy
+from agentcapmap.tokenkind import github_token
 from tests.test_chains import _HEAD
 
 CLASSIC = "ghp_FAKEfake0000000000000000000000000001"

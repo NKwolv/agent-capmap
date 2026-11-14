@@ -22,7 +22,7 @@ waivers*.yml   @NKwolv
 
 # Code that blocks tool calls, handles credentials, or decides where connections go.
 /src/agentcapmap/guard/                  @NKwolv
-/src/agentcapmap/credentials.py          @NKwolv
+/src/agentcapmap/tokenkind.py             @NKwolv
 /src/agentcapmap/enumerate/netguard.py   @NKwolv
 
 # CI, releases and the GitHub Action (they hold publishing rights and run in PRs).

@@ -160,7 +160,7 @@ the sections above apply here:
   resolves names and pinning does not apply.
 - **Credentials stay where the config sends them (section 1):** a credential is sent
   only to the server its config names, never anywhere else. CAP-014 recognizes the
-  kind of a GitHub token from its format alone (`credentials.py`); reading its scopes
+  kind of a GitHub token from its format alone (`tokenkind.py`); reading its scopes
   from GitHub's API was considered and rejected, because an Enterprise token cannot
   be told apart from a github.com one and would be disclosed to the wrong host.
 - **Runtime guard (sections 0 and 10):** `guard/hook.py` is a Claude Code

@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from agentcapmap.credentials import github_token
 from agentcapmap.models import (
     ApprovalConfig,
     AuthHint,
@@ -28,6 +27,7 @@ from agentcapmap.redact import (
     redact_value,
     sensitive_arg_names,
 )
+from agentcapmap.tokenkind import github_token
 
 
 class ConfigError(ValueError):
