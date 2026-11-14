@@ -38,7 +38,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0 # the comment compares with the base commit
       - id: capmap
-        uses: NKwolv/agent-capmap@<AGENT_CAPMAP_SHA>
+        uses: NKwolv/agent-capmap@bf8e88dc0b3a3a3aa8a14ece4b70a57c5f18c45d # v0.4.0
         with:
           path: .
           fail-on: high
@@ -71,7 +71,7 @@ jobs:
           key: agentcapmap-${{ github.run_id }}
           restore-keys: agentcapmap-
       - id: capmap
-        uses: NKwolv/agent-capmap@<AGENT_CAPMAP_SHA>
+        uses: NKwolv/agent-capmap@bf8e88dc0b3a3a3aa8a14ece4b70a57c5f18c45d # v0.4.0
         with:
           path: .
           enumerate: "true"
