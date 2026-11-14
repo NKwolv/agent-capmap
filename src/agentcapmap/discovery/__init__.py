@@ -180,14 +180,16 @@ def user_config_paths() -> list[Path]:
     if sys.platform == "win32":
         appdata = Path(os.environ.get("APPDATA", home / "AppData" / "Roaming"))
         claude_dir, code_user = appdata / "Claude", appdata / "Code" / "User"
+        zed_dir = appdata / "Zed"
     elif sys.platform == "darwin":
         support = home / "Library" / "Application Support"
         claude_dir, code_user = support / "Claude", support / "Code" / "User"
+        zed_dir = home / ".config" / "zed"  # Zed uses XDG paths on macOS too
     else:
         config = Path(os.environ.get("XDG_CONFIG_HOME", home / ".config"))
         claude_dir, code_user = config / "Claude", config / "Code" / "User"
+        zed_dir = config / "zed"
     claude_code_home = Path(os.environ.get("CLAUDE_CONFIG_DIR") or home)
-    zed_dir = (appdata / "Zed") if sys.platform == "win32" else home / ".config" / "zed"
     storage = code_user / "globalStorage"
     codex_home = Path(os.environ.get("CODEX_HOME") or home / ".codex")
     return [
