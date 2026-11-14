@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-14
+
 ### Added
 
 - **Runtime guard for Claude Code** (`agentcapmap guard build`, `guard settings`,
