@@ -12,6 +12,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from agentcapmap import __version__
+from agentcapmap.credentials import github_token
 from agentcapmap.enumerate.hashing import (
     item_definition_hash,
     server_definition_hash,
@@ -19,7 +20,6 @@ from agentcapmap.enumerate.hashing import (
 )
 from agentcapmap.enumerate.http import LegacySseTransport, StreamableHttpTransport
 from agentcapmap.enumerate.netguard import check_remote_url
-from agentcapmap.enumerate.scopes import check_github_token
 from agentcapmap.enumerate.stdio import StdioTransport
 from agentcapmap.enumerate.transport import (
     JSONRPC_METHOD_NOT_FOUND,
@@ -369,6 +369,9 @@ def enumerate_server(server: Server, timeout: float = DEFAULT_TIMEOUT) -> Enumer
         spec = resolve_launch(server.launch)
     except UnresolvedVariable as exc:
         return EnumerationResult(status=EnumerationStatus.SKIPPED, error=redact_text(str(exc)))
+    if server.credential is None:
+        # A token the config only references (${VAR}) is known once it is resolved.
+        server.credential = github_token(spec)
 
     transport: Transport | None = None
     try:
@@ -401,32 +404,15 @@ def enumerate_server(server: Server, timeout: float = DEFAULT_TIMEOUT) -> Enumer
     return result
 
 
-def check_credential(server: Server, timeout: float = DEFAULT_TIMEOUT) -> None:
-    """Record the scopes of a GitHub token in this server's config. Never raises."""
-    if server.disabled or (server.runtime is not None and not server.runtime.declared):
-        return
-    try:
-        spec = resolve_launch(server.launch)
-    except UnresolvedVariable:
-        return  # the token is not available here, so there is nothing to check
-    server.credential = check_github_token(spec, timeout)
-
-
 def enumerate_inventory(
-    inventory: Inventory,
-    *,
-    timeout: float = DEFAULT_TIMEOUT,
-    concurrency: int = 4,
-    check_token_scopes: bool = False,
+    inventory: Inventory, *, timeout: float = DEFAULT_TIMEOUT, concurrency: int = 4
 ) -> None:
-    """Enumerate every server in place (and, if asked, read GitHub token scopes)."""
+    """Enumerate every server in place."""
     servers: Iterable[Server] = [s for agent in inventory.agents for s in agent.servers]
 
     def run(server: Server) -> None:
         log.info("enumerating %s (%s)", server.name, server.transport.value)
         server.enumeration = enumerate_server(server, timeout)
-        if check_token_scopes:
-            check_credential(server, timeout)
         log.info(
             "  %s: %s, %d tool(s)",
             server.name,

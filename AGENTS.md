@@ -158,12 +158,11 @@ the sections above apply here:
   a pre-connected socket for WebSocket), so DNS rebinding cannot swap the address
   between the check and the connection. Behind a configured HTTP proxy the proxy
   resolves names and pinning does not apply.
-- **Presenting a token to its issuer (section 1 and 3):** `--check-token-scopes`
-  (maintainer decision, opt-in) sends GitHub-shaped tokens found in configs to
-  `https://api.github.com` only, to read scope names (`enumerate/scopes.py`). Never
-  to a host from a config, never when the config points at another host, and only
-  scope names are stored. No other destination may be added without a maintainer
-  decision.
+- **Credentials stay where the config sends them (section 1):** a credential is sent
+  only to the server its config names, never anywhere else. CAP-014 recognizes the
+  kind of a GitHub token from its format alone (`credentials.py`); reading its scopes
+  from GitHub's API was considered and rejected, because an Enterprise token cannot
+  be told apart from a github.com one and would be disclosed to the wrong host.
 - **Runtime guard (sections 0 and 10):** `guard/hook.py` is a Claude Code
   `PreToolUse` hook. It must fail closed (every error path exits 2, which blocks the
   call; any other non-zero status would let it through), never emit an `allow`

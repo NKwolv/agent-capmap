@@ -159,12 +159,13 @@ rules:
     maps_to: [OWASP-LLM01, OWASP-LLM06, MITRE-ATLAS-AML.T0051.001, MITRE-ATLAS-AML.T0053]
 
   - id: CAP-014
-    severity: medium
+    severity: low
     when_server:
-      token_scope: admin
+      token_kind: classic
     message: >-
-      The GitHub token given to this server has administrative scopes (for example
-      delete_repo or admin:org), more than tools normally need; anything that steers
-      the agent inherits them. Use a fine-grained or read-only token. (Token scopes
-      are read only when the scan runs with --check-token-scopes.)
+      This server is configured with a classic GitHub personal access token, which
+      reaches every repository its owner can and cannot be limited to some of them;
+      anything that steers the agent inherits that reach. Prefer a fine-grained token
+      scoped to the repositories and permissions the server needs. (Recognized from
+      the token's format; its actual scopes are not read.)
     maps_to: [OWASP-LLM06, MITRE-ATLAS-AML.T0098]

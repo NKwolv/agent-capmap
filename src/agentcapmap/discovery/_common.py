@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from agentcapmap.credentials import github_token
 from agentcapmap.models import (
     ApprovalConfig,
     AuthHint,
@@ -259,6 +260,18 @@ def build_server(
     for value in [*env.values(), *headers.values()]:
         known_secrets.add(value)
 
+    launch = LaunchSpec(
+        command=command,
+        args=args,
+        env=env,
+        env_file=str(env_file) if env_file else None,
+        cwd=str(cwd) if cwd else None,
+        url=url,
+        headers=headers,
+        # Absolute, so ${workspaceFolder} and the server cwd do not depend on how the
+        # scan path was written (never serialized, so it does not leak into output).
+        base_dir=str(base_dir.resolve()),
+    )
     return Server(
         name=name,
         transport=transport,
@@ -271,18 +284,9 @@ def build_server(
         location=SourceLocation(path=config_path, line=find_key_line(text, name, section_start)),
         disabled=bool(entry.get("disabled", False)),
         approval=parse_approval(name, entry),
-        launch=LaunchSpec(
-            command=command,
-            args=args,
-            env=env,
-            env_file=str(env_file) if env_file else None,
-            cwd=str(cwd) if cwd else None,
-            url=url,
-            headers=headers,
-            # Absolute, so ${workspaceFolder} and the server cwd do not depend on how the
-            # scan path was written (never serialized, so it does not leak into output).
-            base_dir=str(base_dir.resolve()),
-        ),
+        # A token written in the config; one referenced as ${VAR} is seen at enumeration.
+        credential=github_token(launch),
+        launch=launch,
     )
 
 

@@ -35,11 +35,6 @@ ENUMERATE_WARNING = (
     "warning: --enumerate launches the stdio server commands found in these configs and "
     "connects to their URLs. Only enumerate configs you trust."
 )
-SCOPE_CHECK_WARNING = (
-    "warning: --check-token-scopes presents each GitHub token found in these configs to "
-    "https://api.github.com to read its scopes. Tokens are sent nowhere else and are not "
-    "stored."
-)
 _MAX_INVENTORY_BYTES = 64 * 1024 * 1024
 
 # Exit codes: 0 success; 1 findings met --fail-on (or something was not assessed with
@@ -142,12 +137,6 @@ def _build_parser() -> argparse.ArgumentParser:
         "--enumerate",
         action="store_true",
         help="connect to each server and list its tools (initialize + tools/list only)",
-    )
-    scan.add_argument(
-        "--check-token-scopes",
-        action="store_true",
-        help="with --enumerate: read the scopes of GitHub tokens found in configs by "
-        "presenting each token to api.github.com (and nowhere else)",
     )
     scan.add_argument(
         "--timeout",
@@ -370,8 +359,6 @@ def _print_scan_summary(inventory: Inventory, args: argparse.Namespace) -> None:
 
 
 def _cmd_scan(args: argparse.Namespace) -> int:
-    if args.check_token_scopes and not args.enumerate:
-        raise CliError("--check-token-scopes needs --enumerate")
     if args.classify and not args.enumerate:
         raise CliError(
             "--classify needs tool definitions: add --enumerate, "
@@ -408,14 +395,7 @@ def _cmd_scan(args: argparse.Namespace) -> int:
             )
     if args.enumerate:
         print(ENUMERATE_WARNING, file=sys.stderr)
-        if args.check_token_scopes:
-            print(SCOPE_CHECK_WARNING, file=sys.stderr)
-        enumerate_inventory(
-            inventory,
-            timeout=args.timeout,
-            concurrency=args.concurrency,
-            check_token_scopes=args.check_token_scopes,
-        )
+        enumerate_inventory(inventory, timeout=args.timeout, concurrency=args.concurrency)
     if args.classify:
         _classify(inventory, args)
     if not args.evaluate:

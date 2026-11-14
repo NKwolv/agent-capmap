@@ -204,21 +204,20 @@ class RuntimeInfo(BaseModel):
     exposed: bool = False
 
 
-class CredentialInfo(BaseModel):
-    """What a configured credential is allowed to do (`--check-token-scopes`).
+TokenKind = Literal["classic", "fine_grained", "oauth", "app"]
 
-    Scope names only: the credential itself is never stored here.
+
+class CredentialInfo(BaseModel):
+    """The kind of token a server is configured with, recognized from its format.
+
+    Never the token itself, and nothing learned by sending it anywhere.
     """
 
     provider: Literal["github"]
     # Where the config holds it, by name only: "env:GITHUB_TOKEN", "header:Authorization".
     source: str
-    # checked: scopes read. not_visible: this kind of token does not expose them, or it
-    # was deliberately not sent. rejected: the provider refused it. error: check failed.
-    status: Literal["checked", "not_visible", "rejected", "error"]
-    scopes: list[str] = Field(default_factory=list)
-    breadth: Literal["admin", "write", "read", "unknown"] = "unknown"
-    detail: str = ""
+    # classic: reaches every repository its owner can. fine_grained: can be limited.
+    kind: TokenKind
 
 
 class Server(BaseModel):
@@ -236,7 +235,7 @@ class Server(BaseModel):
     enumeration: EnumerationResult | None = None
     # Set when the server was seen running; absent for servers known only from configs.
     runtime: RuntimeInfo | None = None
-    # Set only when the scan was run with --check-token-scopes and a token was found.
+    # Set when a token of a recognized format is configured for this server.
     credential: CredentialInfo | None = None
     launch: LaunchSpec = Field(default_factory=LaunchSpec, exclude=True, repr=False)
 

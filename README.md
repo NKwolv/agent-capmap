@@ -301,20 +301,14 @@ the direction it can flow (from an agent that can write a shared server to one t
 reads it), and name every agent and the tools linking them. Two servers count as shared
 when their launch command or URL is identical.
 
-### Check what a GitHub token can do
+### Classic GitHub tokens
 
-A config shows that a server holds a token, not how much the token can do. With
-`--check-token-scopes` (off by default), each GitHub token found in the scanned configs
-is presented once to `https://api.github.com`, and nowhere else, to read its scopes;
-**CAP-014** reports a token with administrative scopes such as `delete_repo`.
-
-```sh
-agentcapmap scan --user --enumerate --check-token-scopes --evaluate --format markdown
-```
-
-Only scope names are kept. Fine-grained and app tokens do not expose their permissions
-and are reported as not visible without any request; a token configured for a GitHub
-Enterprise host or another service is never sent to github.com.
+A config shows that a server holds a token, not how much the token can do. One thing is
+visible from the token's format alone: a classic personal access token (`ghp_...`)
+reaches every repository its owner can, while a fine-grained one (`github_pat_...`) can
+be limited to specific repositories and permissions. **CAP-014** points out servers
+configured with a classic token. Nothing is sent anywhere to find this out, and the
+token's actual scopes are not read.
 
 ## Capability taxonomy
 
@@ -348,7 +342,7 @@ The built-in [`policies/default.yaml`](https://github.com/NKwolv/agent-capmap/bl
 | CAP-011 | 🟠 high | an MCP server is listening on a non-loopback address (`scan --running`) |
 | CAP-012 | 🟠 high | the lethal trifecta spread over agents that share a server (no single agent has it) |
 | CAP-013 | 🟠 high | untrusted input in one agent reaching host code execution in another, through a shared server |
-| CAP-014 | 🟡 medium | a GitHub token with administrative scopes (`scan --check-token-scopes`) |
+| CAP-014 | 🔵 low | a server configured with a classic GitHub token, which cannot be limited to specific repositories |
 
 Write your own rules in the same format and pass `--policy my-policy.yaml`:
 
@@ -426,7 +420,7 @@ tools; see [Limitations](#limitations).
   servers that do not live in config files (Claude Code plugins, claude.ai connectors,
   IDE built-in servers, Zed extension servers, managed settings) are not seen. WebSocket
   servers are enumerated only with `pip install "agent-capmap[ws]"`. Token scopes are
-  read only for classic GitHub tokens, and only with `--check-token-scopes`.
+  not read: only the kind of a GitHub token is recognized, from its format.
 - **The runtime guard covers Claude Code and MCP tools.** It depends on the tags in its
   map, so a mis-tagged tool is mis-judged, and it only sees calls the hook is run for.
   Claude Code's built-in tools (`Bash`, `WebFetch`, file edits) are outside it unless

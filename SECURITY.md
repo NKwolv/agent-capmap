@@ -50,10 +50,9 @@ agent-capmap is pre-1.0. Only the latest release on `main` receives fixes.
 - **Remote servers cannot redirect your credentials.** agent-capmap never follows HTTP
   or WebSocket redirects and rejects cross-origin SSE endpoints. It connects only to
   addresses it has checked, and refuses cloud metadata addresses.
-- **`--check-token-scopes` is the one option that presents a credential to an API.** It
-  is off by default. GitHub tokens found in the scanned configs are sent to
-  `https://api.github.com` only, to read their scope names; tokens configured for any
-  other host are not sent anywhere.
+- **Your credentials go only where your config sends them.** agent-capmap never
+  presents a token to any other service. It recognizes the kind of a GitHub token
+  from its format, without contacting GitHub.
 - **The runtime guard (`agentcapmap guard`) fails closed.** If its map or state cannot
   be read, the tool call is blocked rather than allowed. It stores tool names and tags
   per session under your user state directory (`AGENTCAPMAP_GUARD_DIR` to change it),

@@ -105,9 +105,8 @@ merged.
 3. **No secrets in output or logs.** Anything derived from a config must go through
    `agentcapmap.redact`. Use `redact.get_logger(__name__)` for logging. Raw values
    belong only in `LaunchSpec`, which is never serialized. A credential is sent only
-   to the server its config names, with one opt-in exception decided by the
-   maintainer: `--check-token-scopes` presents GitHub-shaped tokens to
-   `api.github.com` (`enumerate/scopes.py`). Do not add other destinations.
+   to the server its config names: never add a feature that presents one anywhere
+   else, even to its issuer.
 4. **No network in tests.** `tests/conftest.py` blocks non-loopback connections. Use the
    mock MCP server (`tests/mock_mcp_server.py`) and the fake LLM provider
    (`tests/fake_llm.py`).

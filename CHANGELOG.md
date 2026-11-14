@@ -28,17 +28,16 @@ All notable changes to this project are documented here. The format follows
   `disabled_tools`, Zed's `always_allow_tool_actions`).
 - **WebSocket servers are enumerated** with the optional extra `pip install
   "agent-capmap[ws]"` (adds `websockets`); without it they are skipped with that hint.
-- **GitHub token scopes** (`scan --enumerate --check-token-scopes`, CAP-014): opt-in.
-  Each classic GitHub token found in the scanned configs is presented once to
-  `https://api.github.com`, and nowhere else, to read its scope names; a token with
-  administrative scopes is reported. Fine-grained and app tokens, and tokens configured
-  for another host, are reported as not visible without sending anything.
+- **Classic GitHub tokens are pointed out** (CAP-014, low): a server configured with a
+  classic personal access token, which cannot be limited to specific repositories, is
+  reported with a recommendation to use a fine-grained one. The kind is recognized from
+  the token's format; nothing is sent anywhere and its scopes are not read.
 
 ### Changed
 
 - The default policy has fourteen rules (CAP-012 to CAP-014 are new). Evidence rows in the
   JSON output gain an `agent_id` field (set by cross-agent rules, otherwise null), and
-  servers gain a `credential` field (null unless token scopes were checked).
+  servers gain a `credential` field (the kind of GitHub token configured, or null).
 
 ### Security
 

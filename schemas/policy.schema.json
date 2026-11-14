@@ -110,7 +110,7 @@
         "source_trust": { "$ref": "#/$defs/source_trust" },
         "provenance": { "$ref": "#/$defs/provenance" },
         "exposure": { "$ref": "#/$defs/exposure" },
-        "token_scope": { "$ref": "#/$defs/token_scope" }
+        "token_kind": { "$ref": "#/$defs/token_kind" }
       }
     },
     "boolean_or_list": {
@@ -185,11 +185,11 @@
         { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["none", "loopback", "network"] } }
       ]
     },
-    "token_scope": {
-      "description": "Breadth of a GitHub token in the server config, read only with --check-token-scopes; otherwise unknown.",
+    "token_kind": {
+      "description": "Kind of GitHub token configured for the server, recognized from its format (nothing is sent anywhere); none if no token was recognized.",
       "oneOf": [
-        { "enum": ["admin", "write", "read", "unknown"] },
-        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["admin", "write", "read", "unknown"] } }
+        { "enum": ["classic", "fine_grained", "oauth", "app", "none"] },
+        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["classic", "fine_grained", "oauth", "app", "none"] } }
       ]
     },
     "source_trust": {
