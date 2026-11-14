@@ -209,6 +209,22 @@ def parse_approval(name: str, entry: dict[str, Any]) -> ApprovalConfig:
     )
 
 
+def deny_tools(server: Server, entry: Any, key: str) -> None:
+    """Record the tools a client withholds from the model (`key` lists exact names)."""
+    names = entry.get(key) if isinstance(entry, dict) else None
+    if names is None:
+        return
+    if not isinstance(names, list) or not all(isinstance(n, str) for n in names):
+        raise ConfigError(f"server {server.name!r}: {key!r} must be an array of tool names")
+    if len(names) > _MAX_APPROVAL_ENTRIES:
+        raise ConfigError(f"server {server.name!r}: {key!r} has too many entries")
+    # Deny rules are glob patterns; these are literal names, so glob characters are
+    # escaped and a tool called `*` cannot hide every other tool.
+    escaped = {re.sub(r"[*?\[]", lambda m: f"[{m.group()}]", n) for n in names}
+    server.approval.denied_patterns.extend(sorted(escaped))
+    server.approval.sources.append(key)
+
+
 def build_server(
     name: str,
     entry: Any,

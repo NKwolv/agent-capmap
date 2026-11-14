@@ -67,6 +67,8 @@ class Rule:
     server_filter: tuple[Predicate, ...] | None
     hash_changed: bool
     shadowed: bool
+    # Ordered predicates of a cross-agent chain rule (see policy/chains.py).
+    chain: tuple[Predicate, ...] = ()
 
     @property
     def tag_based(self) -> bool:
@@ -178,12 +180,17 @@ def _build_rule(raw: dict[str, Any]) -> Rule:
         server_filter=_predicates(raw["when_server"]) if "when_server" in raw else None,
         hash_changed=raw.get("when_hash_changed", False),
         shadowed=raw.get("when_tool_name_shadowed", False),
+        chain=_predicates(raw.get("when_agents_chain")),
     )
     special = [flag for flag in (rule.hash_changed, rule.shadowed) if flag]
     if len(special) > 1 or (special and rule.tag_based):
         raise PolicyError(
             f"rule {rule.id}: when_hash_changed / when_tool_name_shadowed cannot be combined "
             "with each other or with when_agent_has_* conditions"
+        )
+    if rule.chain and (special or rule.tag_based or rule.server_filter is not None):
+        raise PolicyError(
+            f"rule {rule.id}: when_agents_chain cannot be combined with other conditions"
         )
     return rule
 

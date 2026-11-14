@@ -6,6 +6,8 @@ Security properties:
 - The legacy SSE `endpoint` must be same-origin as the configured URL, for the same
   reason.
 - Response bodies, lines and SSE events are size-bounded.
+- Connections go only to addresses that passed the netguard check (`PinnedTransport`),
+  which closes the DNS-rebinding gap between checking a name and connecting to it.
 """
 
 from __future__ import annotations
@@ -14,6 +16,7 @@ import contextlib
 import queue
 import threading
 import time
+import urllib.request
 from collections.abc import Iterable, Iterator
 from typing import Any
 from urllib.parse import urljoin, urlsplit
@@ -21,6 +24,7 @@ from urllib.parse import urljoin, urlsplit
 import httpx
 
 from agentcapmap import __version__
+from agentcapmap.enumerate.netguard import resolve_checked
 from agentcapmap.enumerate.transport import (
     AuthRequired,
     IdCounter,
@@ -30,7 +34,12 @@ from agentcapmap.enumerate.transport import (
     is_response_to,
     unwrap_response,
 )
-from agentcapmap.limits import MAX_MESSAGE_BYTES, MAX_QUEUED_MESSAGES, loads_untrusted
+from agentcapmap.limits import (
+    MAX_CONNECT_ADDRESSES,
+    MAX_MESSAGE_BYTES,
+    MAX_QUEUED_MESSAGES,
+    loads_untrusted,
+)
 from agentcapmap.limits import UntrustedJSONError as _BadJSON
 from agentcapmap.redact import get_logger, redact_url
 
@@ -128,11 +137,49 @@ def _origin(url: str) -> tuple[str, str, int | None]:
     return scheme, (parts.hostname or "").lower(), parts.port or _DEFAULT_PORTS.get(scheme)
 
 
-def _client(headers: dict[str, str], timeout: float) -> httpx.Client:
+class PinnedTransport(httpx.HTTPTransport):
+    """Connect only to addresses that passed the netguard check.
+
+    Each request resolves the host once, checks every answer and connects to those
+    exact addresses, so there is no second lookup a DNS-rebinding server could answer
+    differently. TLS still verifies the certificate against the host name (SNI), and
+    the Host header is unchanged.
+    """
+
+    def handle_request(self, request: httpx.Request) -> httpx.Response:
+        host = request.url.host
+        addresses = resolve_checked(host)[:MAX_CONNECT_ADDRESSES]
+        error: httpx.TransportError = httpx.ConnectError("host name did not resolve")
+        url = request.url
+        request.extensions = {**request.extensions, "sni_hostname": host}
+        for address in addresses:
+            request.url = url.copy_with(host=address)
+            try:
+                return super().handle_request(request)
+            except (httpx.ConnectError, httpx.ConnectTimeout) as exc:
+                error = exc  # nothing was sent: safe to try the next address
+            finally:
+                request.url = url
+        raise error
+
+
+def _uses_proxy(url: str) -> bool:
+    parts = urlsplit(url)
+    proxies = urllib.request.getproxies()
+    if not (proxies.get(parts.scheme.lower()) or proxies.get("all")):
+        return False
+    return not urllib.request.proxy_bypass(parts.hostname or "")
+
+
+def _client(url: str, headers: dict[str, str], timeout: float) -> httpx.Client:
+    # Behind a configured proxy the proxy resolves the name, so there is nothing to
+    # pin; httpx's own proxy handling is kept. Otherwise connections are pinned.
+    transport = None if _uses_proxy(url) else PinnedTransport()
     return httpx.Client(
         headers={"User-Agent": _USER_AGENT, **headers},
         timeout=httpx.Timeout(timeout),
         follow_redirects=False,
+        transport=transport,
     )
 
 
@@ -141,7 +188,7 @@ class StreamableHttpTransport:
 
     def __init__(self, url: str, headers: dict[str, str], timeout: float) -> None:
         self._url = url
-        self._http = _client(headers, timeout)
+        self._http = _client(url, headers, timeout)
         self._ids = IdCounter()
         self._session_id: str | None = None
         self._protocol_version: str | None = None
@@ -223,7 +270,7 @@ class LegacySseTransport:
 
     def __init__(self, url: str, headers: dict[str, str], timeout: float) -> None:
         self._url = url
-        self._http = _client(headers, timeout)
+        self._http = _client(url, headers, timeout)
         self._ids = IdCounter()
         self._messages: queue.Queue[Any] = queue.Queue(maxsize=MAX_QUEUED_MESSAGES)
         self._endpoint: queue.Queue[str | BaseException] = queue.Queue()

@@ -48,7 +48,17 @@ agent-capmap is pre-1.0. Only the latest release on `main` receives fixes.
   of variables (such as `PATH` and `HOME`), not your API keys or cloud credentials.
   Anything else a server needs must be set in its config.
 - **Remote servers cannot redirect your credentials.** agent-capmap never follows HTTP
-  redirects and rejects cross-origin SSE endpoints.
+  or WebSocket redirects and rejects cross-origin SSE endpoints. It connects only to
+  addresses it has checked, and refuses cloud metadata addresses.
+- **`--check-token-scopes` is the one option that presents a credential to an API.** It
+  is off by default. GitHub tokens found in the scanned configs are sent to
+  `https://api.github.com` only, to read their scope names; tokens configured for any
+  other host are not sent anywhere.
+- **The runtime guard (`agentcapmap guard`) fails closed.** If its map or state cannot
+  be read, the tool call is blocked rather than allowed. It stores tool names and tags
+  per session under your user state directory (`AGENTCAPMAP_GUARD_DIR` to change it),
+  never tool arguments or results. It reduces risk; it is not a sandbox, and it only
+  sees the calls Claude Code runs the hook for.
 - **`--classify` sends tool names, descriptions and input schemas** to the configured
   LLM provider (Anthropic by default). Config values such as env vars, headers and
   arguments are never sent. Use `--offline` to classify from the local cache only.

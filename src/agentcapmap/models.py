@@ -204,6 +204,23 @@ class RuntimeInfo(BaseModel):
     exposed: bool = False
 
 
+class CredentialInfo(BaseModel):
+    """What a configured credential is allowed to do (`--check-token-scopes`).
+
+    Scope names only: the credential itself is never stored here.
+    """
+
+    provider: Literal["github"]
+    # Where the config holds it, by name only: "env:GITHUB_TOKEN", "header:Authorization".
+    source: str
+    # checked: scopes read. not_visible: this kind of token does not expose them, or it
+    # was deliberately not sent. rejected: the provider refused it. error: check failed.
+    status: Literal["checked", "not_visible", "rejected", "error"]
+    scopes: list[str] = Field(default_factory=list)
+    breadth: Literal["admin", "write", "read", "unknown"] = "unknown"
+    detail: str = ""
+
+
 class Server(BaseModel):
     name: str
     transport: Transport
@@ -219,6 +236,8 @@ class Server(BaseModel):
     enumeration: EnumerationResult | None = None
     # Set when the server was seen running; absent for servers known only from configs.
     runtime: RuntimeInfo | None = None
+    # Set only when the scan was run with --check-token-scopes and a token was found.
+    credential: CredentialInfo | None = None
     launch: LaunchSpec = Field(default_factory=LaunchSpec, exclude=True, repr=False)
 
 

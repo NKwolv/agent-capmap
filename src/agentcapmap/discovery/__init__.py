@@ -10,7 +10,18 @@ import sys
 from collections.abc import Iterable, Iterator
 from pathlib import Path
 
-from agentcapmap.discovery import claude_code, claude_desktop, cursor, mcp_json, vscode
+from agentcapmap.discovery import (
+    claude_code,
+    claude_desktop,
+    cline,
+    codex,
+    cursor,
+    gemini_cli,
+    mcp_json,
+    vscode,
+    windsurf,
+    zed,
+)
 from agentcapmap.discovery._common import ConfigError, ConfigFormat, load_jsonc
 from agentcapmap.limits import MAX_CONFIG_BYTES
 from agentcapmap.models import Agent, DiscoveryError, Inventory
@@ -24,12 +35,26 @@ FORMATS: list[ConfigFormat] = [
     *claude_desktop.FORMATS,
     *cursor.FORMATS,
     *vscode.FORMATS,
+    *windsurf.FORMATS,
+    *cline.FORMATS,
+    *gemini_cli.FORMATS,
+    *zed.FORMATS,
+    *codex.FORMATS,
     *mcp_json.FORMATS,
 ]
 _BY_NAME = {f.name: f for f in FORMATS}
 
 CANDIDATE_NAMES = frozenset(
-    {"claude_desktop_config.json", "mcp.json", ".mcp.json", "settings.json"}
+    {
+        "claude_desktop_config.json",
+        "mcp.json",
+        ".mcp.json",
+        "settings.json",
+        "mcp_config.json",  # Windsurf
+        "cline_mcp_settings.json",
+        "mcp_settings.json",  # Roo Code
+        "config.toml",  # Codex CLI (only under .codex/)
+    }
 )
 SKIP_DIRS = frozenset(
     {
@@ -162,7 +187,17 @@ def user_config_paths() -> list[Path]:
         config = Path(os.environ.get("XDG_CONFIG_HOME", home / ".config"))
         claude_dir, code_user = config / "Claude", config / "Code" / "User"
     claude_code_home = Path(os.environ.get("CLAUDE_CONFIG_DIR") or home)
+    zed_dir = (appdata / "Zed") if sys.platform == "win32" else home / ".config" / "zed"
+    storage = code_user / "globalStorage"
+    codex_home = Path(os.environ.get("CODEX_HOME") or home / ".codex")
     return [
+        home / ".codeium" / "windsurf" / "mcp_config.json",
+        storage / "saoudrizwan.claude-dev" / "settings" / "cline_mcp_settings.json",
+        storage / "rooveterinaryinc.roo-cline" / "settings" / "mcp_settings.json",
+        home / ".gemini" / "settings.json",
+        home / ".qwen" / "settings.json",
+        zed_dir / "settings.json",
+        codex_home / "config.toml",
         claude_code_home / ".claude.json",
         claude_dir / "claude_desktop_config.json",
         home / ".cursor" / "mcp.json",

@@ -1,4 +1,4 @@
-"""Connect to MCP servers and list their tools. Only `initialize` and `tools/list` are sent."""
+"""Connect to MCP servers and list what they offer (handshake and read-only listings only)."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ from agentcapmap.enumerate.hashing import (
 )
 from agentcapmap.enumerate.http import LegacySseTransport, StreamableHttpTransport
 from agentcapmap.enumerate.netguard import check_remote_url
+from agentcapmap.enumerate.scopes import check_github_token
 from agentcapmap.enumerate.stdio import StdioTransport
 from agentcapmap.enumerate.transport import (
     JSONRPC_METHOD_NOT_FOUND,
@@ -28,6 +29,7 @@ from agentcapmap.enumerate.transport import (
     Transport,
     TransportError,
 )
+from agentcapmap.enumerate.ws import WebSocketTransport, WebSocketUnavailable
 from agentcapmap.limits import MAX_CONFIG_BYTES, MAX_ITEMS_PER_SERVER, MAX_TOOLS_PER_SERVER
 from agentcapmap.models import (
     AuthHint,
@@ -141,9 +143,13 @@ def open_transport(server: Server, spec: LaunchSpec, timeout: float) -> Transpor
         return StdioTransport(spec.command, spec.args, spec.env, cwd)
     if not spec.url:
         raise TransportError("remote server has no URL")
-    if urlsplit(spec.url).scheme.lower() not in ("http", "https"):
-        raise TransportError("remote server URL must use http or https")
+    websocket = server.transport is TransportKind.WS
+    schemes = ("ws", "wss") if websocket else ("http", "https")
+    if urlsplit(spec.url).scheme.lower() not in schemes:
+        raise TransportError(f"remote server URL must use {' or '.join(schemes)}")
     check_remote_url(spec.url)
+    if websocket:
+        return WebSocketTransport(spec.url, spec.headers, timeout)
     if server.transport is TransportKind.SSE:
         return LegacySseTransport(spec.url, spec.headers, timeout)
     return StreamableHttpTransport(spec.url, spec.headers, timeout)
@@ -359,10 +365,6 @@ def enumerate_server(server: Server, timeout: float = DEFAULT_TIMEOUT) -> Enumer
             status=EnumerationStatus.SKIPPED,
             error="found running, not in a config; agent-capmap never starts these",
         )
-    if server.transport is TransportKind.WS:
-        return EnumerationResult(
-            status=EnumerationStatus.SKIPPED, error="WebSocket servers are not enumerated yet"
-        )
     try:
         spec = resolve_launch(server.launch)
     except UnresolvedVariable as exc:
@@ -379,6 +381,8 @@ def enumerate_server(server: Server, timeout: float = DEFAULT_TIMEOUT) -> Enumer
         return EnumerationResult(
             status=EnumerationStatus.AUTH_REQUIRED, error=redact_text(str(exc))
         )
+    except WebSocketUnavailable as exc:
+        return EnumerationResult(status=EnumerationStatus.SKIPPED, error=str(exc))
     except RequestTimeout as exc:
         return EnumerationResult(status=EnumerationStatus.TIMEOUT, error=redact_text(str(exc)))
     except (TransportError, MCPError) as exc:
@@ -397,15 +401,32 @@ def enumerate_server(server: Server, timeout: float = DEFAULT_TIMEOUT) -> Enumer
     return result
 
 
+def check_credential(server: Server, timeout: float = DEFAULT_TIMEOUT) -> None:
+    """Record the scopes of a GitHub token in this server's config. Never raises."""
+    if server.disabled or (server.runtime is not None and not server.runtime.declared):
+        return
+    try:
+        spec = resolve_launch(server.launch)
+    except UnresolvedVariable:
+        return  # the token is not available here, so there is nothing to check
+    server.credential = check_github_token(spec, timeout)
+
+
 def enumerate_inventory(
-    inventory: Inventory, *, timeout: float = DEFAULT_TIMEOUT, concurrency: int = 4
+    inventory: Inventory,
+    *,
+    timeout: float = DEFAULT_TIMEOUT,
+    concurrency: int = 4,
+    check_token_scopes: bool = False,
 ) -> None:
-    """Enumerate every server in place."""
+    """Enumerate every server in place (and, if asked, read GitHub token scopes)."""
     servers: Iterable[Server] = [s for agent in inventory.agents for s in agent.servers]
 
     def run(server: Server) -> None:
         log.info("enumerating %s (%s)", server.name, server.transport.value)
         server.enumeration = enumerate_server(server, timeout)
+        if check_token_scopes:
+            check_credential(server, timeout)
         log.info(
             "  %s: %s, %d tool(s)",
             server.name,

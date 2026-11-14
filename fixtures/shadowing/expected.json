@@ -31,6 +31,7 @@
       ],
       "evidence": [
         {
+          "agent_id": null,
           "server": "files",
           "tool": "read_file",
           "matched": {
@@ -42,6 +43,7 @@
           "unverified": []
         },
         {
+          "agent_id": null,
           "server": "files-plus",
           "tool": "read_file",
           "matched": {

@@ -13,6 +13,10 @@
 #                          a list value means "any of these values")
 #   when_hash_changed      tool, prompt or resource definitions differ from the --baseline file
 #   when_tool_name_shadowed  the same tool name is exposed by more than one server
+#   when_agents_chain      across agents: predicates in the order content flows. Each
+#                          step is met by an agent that can write into a server which
+#                          the next step's agent reads (same launch command or URL).
+#                          Reported only when at least two agents are needed.
 version: 1
 taxonomy_version: "1"
 
@@ -129,3 +133,38 @@ rules:
       An MCP server is listening on a non-loopback address, so other machines on the
       network may be able to reach its tools.
     maps_to: [OWASP-LLM06]
+
+  - id: CAP-012
+    severity: high
+    when_agents_chain:
+      - untrusted_input: true
+      - data_access: [private_read, secrets_read]
+      - egress: external
+    message: >-
+      Lethal trifecta across agents: no single agent has all three parts, but agents
+      that share a server can pass attacker-controlled content from one to the next,
+      so an instruction injected into one agent can make another leak private data.
+      (Sharing is inferred from identical launch commands or URLs.)
+    maps_to: [OWASP-LLM01, OWASP-LLM02, OWASP-LLM06, MITRE-ATLAS-AML.T0051.001, MITRE-ATLAS-AML.T0086]
+
+  - id: CAP-013
+    severity: high
+    when_agents_chain:
+      - untrusted_input: true
+      - execution: host
+    message: >-
+      Untrusted content read by one agent can reach host-level code execution in
+      another agent through a server they share. (Sharing is inferred from identical
+      launch commands or URLs.)
+    maps_to: [OWASP-LLM01, OWASP-LLM06, MITRE-ATLAS-AML.T0051.001, MITRE-ATLAS-AML.T0053]
+
+  - id: CAP-014
+    severity: medium
+    when_server:
+      token_scope: admin
+    message: >-
+      The GitHub token given to this server has administrative scopes (for example
+      delete_repo or admin:org), more than tools normally need; anything that steers
+      the agent inherits them. Use a fine-grained or read-only token. (Token scopes
+      are read only when the scan runs with --check-token-scopes.)
+    maps_to: [OWASP-LLM06, MITRE-ATLAS-AML.T0098]

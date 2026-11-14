@@ -57,6 +57,8 @@ class AgentCapabilities(BaseModel):
 
 
 class FindingEvidence(BaseModel):
+    # Set by cross-agent rules, where the evidence spans several agents.
+    agent_id: str | None = None
     server: str
     tool: str | None = None
     # The fields that matched and their actual values, e.g. {"egress": "external"}.

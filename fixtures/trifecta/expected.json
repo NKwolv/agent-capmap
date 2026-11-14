@@ -32,6 +32,7 @@
       ],
       "evidence": [
         {
+          "agent_id": null,
           "server": "github",
           "tool": "get_file_contents",
           "matched": {
@@ -43,6 +44,7 @@
           "unverified": []
         },
         {
+          "agent_id": null,
           "server": "github",
           "tool": "list_issues",
           "matched": {
@@ -54,6 +56,7 @@
           "unverified": []
         },
         {
+          "agent_id": null,
           "server": "mailer",
           "tool": "send_email",
           "matched": {

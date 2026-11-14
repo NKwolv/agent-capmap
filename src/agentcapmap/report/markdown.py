@@ -6,7 +6,7 @@ derived from configs, servers or policy files goes through `md_code`.
 
 from __future__ import annotations
 
-from agentcapmap.findings import Evaluation, Finding, Severity
+from agentcapmap.findings import Evaluation, Finding, FindingEvidence, Severity
 from agentcapmap.report._text import md_code
 
 _SEVERITY_LABEL = {
@@ -27,6 +27,10 @@ _NOT_AN_ALL_CLEAR = (
 )
 
 
+def _server_cell(ev: FindingEvidence) -> str:
+    return f"{ev.server} (agent {ev.agent_id})" if ev.agent_id else ev.server
+
+
 def _finding(index: int, finding: Finding) -> list[str]:
     where = finding.location
     location = f"{where.path}:{where.line}" if where and where.line else finding.config_path
@@ -44,6 +48,9 @@ def _finding(index: int, finding: Finding) -> list[str]:
         )
     if finding.maps_to:
         lines.append(f"- **Maps to:** {', '.join(md_code(m, 64) for m in finding.maps_to)}")
+    if chained := finding.details.get("agents"):
+        rendered = " -> ".join(md_code(a, 200) for a in chained[:_MAX_ROWS])
+        lines.append(f"- **Chain of agents:** {rendered}")
     if finding.details:
         for key in ("changed", "added", "removed"):
             names = finding.details.get(key)
@@ -61,7 +68,7 @@ def _finding(index: int, finding: Finding) -> list[str]:
                 "| "
                 + " | ".join(
                     [
-                        md_code(ev.server, 100, in_table=True),
+                        md_code(_server_cell(ev), 300, in_table=True),
                         md_code(ev.tool or "", 100, in_table=True),
                         md_code(matched, 200, in_table=True),
                         md_code(phrases, 300, in_table=True),

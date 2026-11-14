@@ -24,6 +24,7 @@ from agentcapmap.findings import (
 )
 from agentcapmap.graph import AgentView, ServerView, ToolView, build_views, capabilities
 from agentcapmap.models import Inventory
+from agentcapmap.policy.chains import evaluate_chain_rule, too_many_agents
 from agentcapmap.policy.loader import Policy, Predicate, Rule
 from agentcapmap.redact import get_logger
 
@@ -194,6 +195,13 @@ def evaluate(inventory: Inventory, policy: Policy, baseline: Baseline | None = N
             continue
         if rule.hash_changed and baseline is None:
             skipped.append(SkippedRule(rule_id=rule.id, reason="no baseline provided (--baseline)"))
+            continue
+        if rule.chain:
+            if too_many_agents(views):
+                reason = "too many agents for cross-agent rules"
+                skipped.append(SkippedRule(rule_id=rule.id, reason=reason))
+            else:
+                findings.extend(evaluate_chain_rule(rule, views))
             continue
         for view in views:
             findings.extend(evaluate_rule(rule, view, baseline))

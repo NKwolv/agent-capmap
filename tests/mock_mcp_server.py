@@ -315,3 +315,69 @@ class MockHttpServer:
 
 if __name__ == "__main__":
     run_stdio(json.loads(Path(sys.argv[1]).read_text(encoding="utf-8")))
+
+
+class MockWebSocketServer:
+    """In-process MCP server speaking JSON-RPC over WebSocket on 127.0.0.1.
+
+    require_token: if set, handshakes without `Authorization: Bearer <token>` get 401.
+    redirect_to: if set, every handshake is answered with a 302 to that URL.
+    noise: unrelated messages sent before every response.
+    """
+
+    def __init__(
+        self,
+        spec: dict[str, Any] | None = None,
+        require_token: str | None = None,
+        redirect_to: str | None = None,
+        noise: int = 0,
+    ) -> None:
+        from websockets.sync.server import serve
+
+        self.spec = spec or {}
+        self.require_token = require_token
+        self.redirect_to = redirect_to
+        self.noise = noise
+        self.methods: list[str] = []
+        self.handshakes = 0
+        self._server = serve(
+            self._handle, "127.0.0.1", 0, process_request=self._gate, compression=None
+        )
+        self._thread = threading.Thread(target=self._server.serve_forever, daemon=True)
+
+    @property
+    def url(self) -> str:
+        host, port = self._server.socket.getsockname()[:2]
+        return f"ws://{host}:{port}/mcp"
+
+    def __enter__(self) -> MockWebSocketServer:
+        self._thread.start()
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        self._server.shutdown()
+
+    def _gate(self, connection: Any, request: Any) -> Any:
+        self.handshakes += 1
+        if self.redirect_to:
+            response = connection.respond(302, "moved")
+            response.headers["Location"] = self.redirect_to
+            return response
+        expected = f"Bearer {self.require_token}"
+        if self.require_token and request.headers.get("Authorization") != expected:
+            response = connection.respond(401, "unauthorized")
+            response.headers["WWW-Authenticate"] = 'Bearer realm="mock"'
+            return response
+        return None
+
+    def _handle(self, connection: Any) -> None:
+        for raw in connection:
+            message = json.loads(raw)
+            self.methods.append(message.get("method"))
+            response = handle(self.spec, message)
+            if response is None:
+                continue
+            for index in range(self.noise):
+                connection.send(json.dumps({"jsonrpc": "2.0", "method": f"noise/{index}"}))
+            connection.send("not json")
+            connection.send(json.dumps(response))

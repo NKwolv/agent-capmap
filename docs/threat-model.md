@@ -133,6 +133,9 @@ authentication widen the supply-chain and access surface.
 | CAP-009 | medium | The same tool name on more than one server of one agent |
 | CAP-010 | medium | An MCP server is running but is in no scanned config (`scan --running`) |
 | CAP-011 | high | An MCP server is listening on a non-loopback address (`scan --running`) |
+| CAP-012 | high | Across agents: `untrusted_input`, then `private_read` or `secrets_read`, then `egress: external`, each step in an agent that can pass content to the next through a shared server |
+| CAP-013 | high | Across agents: `untrusted_input`, then `execution: host`, through a shared server |
+| CAP-014 | medium | A GitHub token with administrative scopes (`scan --check-token-scopes`) |
 
 All rules live in [`policies/default.yaml`](../policies/default.yaml) and can be changed
 without touching code. Notes on the defaults:
@@ -148,8 +151,24 @@ without touching code. Notes on the defaults:
 - Tools that were not enumerated or not classified are listed under `not_assessed`
   instead of being treated as safe or as worst-case.
 
-Rules are evaluated per agent over the union of its tools. Every finding will carry
-its evidence: the agent, server, tool names, triggering tags, and source phrases.
+Rules are evaluated per agent over the union of its tools, because an injected
+instruction controls one agent. The exception is `when_agents_chain` (CAP-012, CAP-013):
+content can pass from an agent that can write into a server to another agent that reads
+the same server (identical launch command or URL), so those rules follow that direction
+of flow across agents and fire only when at least two agents are needed. Every finding
+carries its evidence: the agents, servers, tool names, triggering tags, and source
+phrases.
+
+## Runtime guard
+
+`agentcapmap guard` enforces the combination rules (CAP-001, CAP-002, CAP-004) while a
+Claude Code session runs, as a `PreToolUse` hook. Each rule is split into the step that
+acts on the world (egress, mutation, execution, privilege) and the steps that only
+read. A call is flagged when it matches the acting step and the other steps are already
+satisfied in this session; untrusted input counts only from earlier calls, since an
+instruction has to arrive before it can be followed. The guard then asks the user or
+denies. It is taint tracking at the level of tools, not data: it knows that a tool ran,
+not what flowed through it.
 
 ## Threats to agent-capmap itself
 
@@ -158,6 +177,10 @@ its evidence: the agent, server, tool names, triggering tags, and source phrases
 | **Running untrusted code during enumeration.** Enumerating a stdio server means starting the command in the config, which can be anything. | Enumeration is opt-in (`--enumerate`) and prints a warning. Plain `scan` only reads files. Only enumerate configs you trust. |
 | **A launched server stealing our credentials.** A stdio server inherits environment variables, which may include `ANTHROPIC_API_KEY` or cloud keys. | Servers inherit only a minimal allowlist (`PATH`, `HOME`, `TEMP`, ...), mirroring the official MCP SDK. Anything else must be set explicitly in the server's config. |
 | **A remote server redirecting our credentials.** A redirect or a legacy-SSE `endpoint` event could point to another host, which would then receive the configured `Authorization` / API-key headers. | Redirects are never followed. The SSE endpoint must be same-origin with the configured URL. Only `http`/`https` URLs are accepted. |
+| **DNS rebinding to a metadata service.** A name that passes the check could resolve to `169.254.169.254` a moment later. | The transport resolves the name once, checks every answer and connects to those exact addresses (HTTP, SSE and WebSocket), so there is no second lookup. TLS still verifies the certificate against the host name. Behind a configured proxy the proxy resolves names, so pinning does not apply there. |
+| **The runtime guard failing open.** Claude Code lets a tool call through when a hook exits with an unexpected status or times out. | Every error path in the hook ends in exit code 2 (block): bad input, a missing or malformed map, unreadable or corrupt state, bad options, internal errors. The generated settings add `onFailure: block` and a timeout for what the process cannot catch itself. Unknown tools are asked about, never assumed safe, and the hook never emits an `allow` decision. |
+| **The guard's own files.** The session record could leak data or be used to redirect writes. | Only tool names and tags are recorded, never arguments or results. The file name is a hash of the session id, so the id never reaches a path. The guard map is validated field by field before use; it is the user's file, like the policy. |
+| **Sending a credential to the wrong party.** `--check-token-scopes` presents a token to an API. | Off by default and announced on stderr. Only values shaped like GitHub tokens are considered; they go to `https://api.github.com` only (fixed URL, no redirects, pinned client), never to a host from a config, and not at all when the config points at another host. Only scope names are kept. |
 | **Resource exhaustion by a hostile server or config.** Huge responses, endless lines, deeply nested JSON, thousands of tools. | Size limits on messages, lines, SSE events, HTTP bodies and config files; a cap on tools per server; bounded message queues; deep-nesting errors handled. Every enumeration has an overall timeout. See `src/agentcapmap/limits.py`. |
 | **Regular-expression DoS.** Redaction runs on server-controlled text such as stderr. | Every redaction pattern is bounded and anchored at identifier boundaries; regression tests check hostile inputs finish in linear time. |
 | **Terminal escape injection.** A server's output could carry ANSI control sequences into the user's terminal. | Control characters in log output are escaped (`^[`); JSON output escapes them by construction. |

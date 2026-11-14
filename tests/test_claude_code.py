@@ -7,7 +7,6 @@ from typing import Any
 import pytest
 
 from agentcapmap.discovery import discover, user_config_paths
-from agentcapmap.enumerate import enumerate_server
 from agentcapmap.enumerate.hashing import tool_definition_hash
 from agentcapmap.graph import ApprovalGate, build_agent_view
 from agentcapmap.models import (
@@ -147,13 +146,12 @@ def test_permission_rules(home: Path) -> None:
     assert fetch.denied_patterns == ["fetch"]
 
 
-def test_websocket_servers_are_listed_but_not_enumerated(home: Path, tmp_path: Path) -> None:
+def test_websocket_servers_are_listed(home: Path, tmp_path: Path) -> None:
+    # Enumerating them is covered in tests/test_enumerate_ws.py (against a local server).
     proj4 = _agents(home)[f"project:{(tmp_path / 'proj4').as_posix()}"]
     live = next(s for s in proj4.servers if s.name == "live")
     assert live.transport is Transport.WS
-    result = enumerate_server(live)
-    assert result.status is EnumerationStatus.SKIPPED
-    assert result.error is not None and "WebSocket" in result.error
+    assert live.url == "wss://ws.example.com/mcp"
 
 
 def test_no_account_data_or_secrets_in_output(home: Path) -> None:

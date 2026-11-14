@@ -25,6 +25,10 @@ MAX_QUEUED_MESSAGES: Final = 1000
 MAX_PROCESSES: Final = 20000
 MAX_RUNTIME_SERVERS: Final = 200
 MAX_CMDLINE_CHARS: Final = 2000
+# Checked addresses tried for one remote host before giving up.
+MAX_CONNECT_ADDRESSES: Final = 4
+# Agents considered together by cross-agent chain rules; larger inventories skip them.
+MAX_CHAIN_AGENTS: Final = 500
 # Longest stderr line kept for diagnostics.
 MAX_STDERR_LINE_CHARS: Final = 2000
 

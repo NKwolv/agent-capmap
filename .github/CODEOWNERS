@@ -20,6 +20,11 @@ waivers*.yml   @NKwolv
 /src/agentcapmap/classify/reference_labels.json  @NKwolv
 /scripts/build_reference_labels.py              @NKwolv
 
+# Code that blocks tool calls, sends a credential, or decides where connections go.
+/src/agentcapmap/guard/                  @NKwolv
+/src/agentcapmap/enumerate/scopes.py     @NKwolv
+/src/agentcapmap/enumerate/netguard.py   @NKwolv
+
 # CI, releases and the GitHub Action (they hold publishing rights and run in PRs).
 /.github/                @NKwolv
 /action.yml              @NKwolv
